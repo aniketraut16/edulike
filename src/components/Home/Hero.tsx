@@ -2,7 +2,7 @@ export default function Hero() {
     return (
         <section className="hero-section py-16 md:py-24 min-h-[97vh] flex items-center" style={{ borderBottomRightRadius: '35%' }}>
             {/* Background elements */}
-            <div className="hero-background">
+            <div className="hero-background absolute top-0 left-0 w-full h-full z-0">
                 <img
                     src="/hero-background.svg"
                     alt="Background decoration"
@@ -10,7 +10,7 @@ export default function Hero() {
                 />
             </div>
 
-            <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center hero-content">
+            <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center relative z-10">
                 <div className="md:w-1/2 mb-10 md:mb-0">
                     <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                         Learn Anything. From Anywhere.
