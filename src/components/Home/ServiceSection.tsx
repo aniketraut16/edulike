@@ -1,13 +1,9 @@
-'use client'
-import React, { useState } from 'react';
 
 export default function EnhancedServicesSection() {
-    const [activeSection, setActiveSection] = useState(null);
-
     const services = [
         {
-            id: 'students',
-            title: 'For Students',
+            id: 'individuals',
+            title: 'For Individuals',
             subtitle: 'Accelerate Your Learning Journey',
             description: 'Unlock your potential with personalized learning paths and expert guidance tailored to your academic goals.',
             gradient: 'from-pink-400 to-rose-500',
@@ -42,52 +38,12 @@ export default function EnhancedServicesSection() {
                     description: 'Build real-world projects for your portfolio'
                 }
             ],
-            stats: { students: '15k+', completion: '95%', rating: '4.9' },
+            image: '/images/individuals.png',
             cta: 'Start Learning'
         },
         {
-            id: 'professionals',
-            title: 'For Professionals',
-            subtitle: 'Advance Your Career',
-            description: 'Upskill with cutting-edge technologies and leadership training to stay ahead in your field.',
-            gradient: 'from-blue-400 to-indigo-500',
-            bgGradient: 'from-blue-50 to-indigo-100',
-            cardBg: 'bg-gradient-to-br from-blue-50/80 to-indigo-100/80',
-            offerings: [
-                {
-                    icon: (
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                        </svg>
-                    ),
-                    title: 'Industry Certifications',
-                    description: 'Earn recognized credentials from top tech companies'
-                },
-                {
-                    icon: (
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
-                        </svg>
-                    ),
-                    title: 'Leadership Training',
-                    description: 'Develop management and team leadership skills'
-                },
-                {
-                    icon: (
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                        </svg>
-                    ),
-                    title: 'Career Acceleration',
-                    description: 'Strategic guidance for promotions and salary growth'
-                }
-            ],
-            stats: { professionals: '8k+', promotions: '78%', salary: '+35%' },
-            cta: 'Advance Career'
-        },
-        {
-            id: 'businesses',
-            title: 'For Businesses',
+            id: 'corporates',
+            title: 'For Corporates',
             subtitle: 'Transform Your Team',
             description: 'Scale your organization with comprehensive training programs and custom solutions.',
             gradient: 'from-emerald-400 to-teal-500',
@@ -122,12 +78,12 @@ export default function EnhancedServicesSection() {
                     description: 'Track progress and ROI with detailed reporting'
                 }
             ],
-            stats: { companies: '500+', efficiency: '+45%', retention: '92%' },
+            image: '/images/corporates.png',
             cta: 'Transform Team'
         },
         {
-            id: 'enterprises',
-            title: 'For Enterprises',
+            id: 'institutions',
+            title: 'For Institutions',
             subtitle: 'Scale Innovation',
             description: 'Enterprise-grade solutions with dedicated support and strategic consulting services.',
             gradient: 'from-purple-400 to-violet-500',
@@ -162,8 +118,8 @@ export default function EnhancedServicesSection() {
                     description: 'Multi-region support with localized content delivery'
                 }
             ],
-            stats: { enterprises: '50+', countries: '15+', uptime: '99.9%' },
-            cta: 'Enterprise Solutions'
+            image: '/images/institutions.png',
+            cta: 'Institution Solutions'
         }
     ];
 
@@ -199,9 +155,15 @@ export default function EnhancedServicesSection() {
                     {services.map((service, index) => (
                         <div
                             key={service.id}
-                            className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${index % 2 === 1 ? 'lg:grid-flow-col-reverse' : ''
-                                }`}
+                            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
                         >
+                            {/* Visual Side */}
+                            {index % 2 !== 0 ? (
+                                <div className="relative">
+                                    <img src={service.image} alt={service.title} className="w-[85%] object-cover" />
+                                </div>
+                            ) : null}
+
                             {/* Content Side */}
                             <div className="space-y-8">
                                 <div>
@@ -239,21 +201,6 @@ export default function EnhancedServicesSection() {
                                         </div>
                                     ))}
                                 </div>
-
-                                {/* Stats */}
-                                <div className="flex items-center space-x-8">
-                                    {Object.entries(service.stats).map(([key, value]) => (
-                                        <div key={key} className="text-center">
-                                            <div className={`text-2xl font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
-                                                {value}
-                                            </div>
-                                            <div className="text-xs text-gray-500 uppercase tracking-wide">
-                                                {key.replace(/([A-Z])/g, ' $1').trim()}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-
                                 {/* CTA */}
                                 <button className={`px-8 py-4 bg-gradient-to-r ${service.gradient} text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 active:scale-95`}>
                                     {service.cta}
@@ -264,71 +211,13 @@ export default function EnhancedServicesSection() {
                             </div>
 
                             {/* Visual Side */}
-                            <div className="relative">
-                                <div className={`${service.cardBg} backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/50 relative overflow-hidden`}>
-                                    {/* Decorative Elements */}
-                                    <div className={`absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br ${service.gradient} rounded-full opacity-20`}></div>
-                                    <div className={`absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br ${service.gradient} rounded-full opacity-10`}></div>
-
-                                    {/* Avatar/Icon */}
-                                    <div className="relative z-10">
-                                        <div className={`w-32 h-32 bg-gradient-to-br ${service.gradient} rounded-full mx-auto mb-6 flex items-center justify-center relative overflow-hidden`}>
-                                            <div className="text-white text-4xl font-bold">
-                                                {service.title.split(' ')[1][0]}
-                                            </div>
-                                            <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
-                                        </div>
-
-                                        <div className="text-center space-y-4">
-                                            <h4 className="text-xl font-bold text-gray-900">
-                                                {service.title}
-                                            </h4>
-                                            <div className="flex justify-center space-x-6">
-                                                {Object.entries(service.stats).slice(0, 2).map(([key, value]) => (
-                                                    <div key={key} className="text-center">
-                                                        <div className={`text-lg font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
-                                                            {value}
-                                                        </div>
-                                                        <div className="text-xs text-gray-500 capitalize">
-                                                            {key}
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Floating Elements */}
-                                    <div className="absolute top-4 right-4 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-lg">
-                                        <svg className={`w-4 h-4 text-${service.gradient.split('-')[1]}-500`} viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                        </svg>
-                                    </div>
-
-                                    <div className="absolute bottom-4 left-4 w-10 h-10 bg-white/80 rounded-xl flex items-center justify-center shadow-lg">
-                                        <svg className={`w-5 h-5 text-${service.gradient.split('-')[1]}-500`} viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                                        </svg>
-                                    </div>
+                            {index % 2 === 0 ? (
+                                <div className="relative">
+                                    <img src={service.image} alt={service.title} className="w-[85%] object-cover" />
                                 </div>
-                            </div>
+                            ) : null}
                         </div>
                     ))}
-                </div>
-
-                {/* Bottom CTA */}
-                <div className="text-center mt-20">
-                    <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 border border-white/50 max-w-2xl mx-auto">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                            Ready to Get Started?
-                        </h3>
-                        <p className="text-gray-600 mb-6">
-                            Choose the perfect plan for your needs and start your journey today
-                        </p>
-                        <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 active:scale-95">
-                            Explore All Solutions
-                        </button>
-                    </div>
                 </div>
             </div>
         </section>
