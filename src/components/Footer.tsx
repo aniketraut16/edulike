@@ -1,3 +1,5 @@
+import { Facebook, Twitter, Instagram, Linkedin, Youtube, Mail } from 'lucide-react';
+
 export default function Footer() {
     return (
         <footer className="bg-gray-900 text-white py-12">
@@ -9,17 +11,20 @@ export default function Footer() {
                             Making quality education accessible to everyone, everywhere.
                         </p>
                         <div className="flex space-x-4">
-                            <a href="#" className="text-gray-400 hover:text-white">
-                                <span>FB</span>
+                            <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                                <Facebook size={20} />
                             </a>
-                            <a href="#" className="text-gray-400 hover:text-white">
-                                <span>TW</span>
+                            <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                                <Twitter size={20} />
                             </a>
-                            <a href="#" className="text-gray-400 hover:text-white">
-                                <span>IG</span>
+                            <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                                <Instagram size={20} />
                             </a>
-                            <a href="#" className="text-gray-400 hover:text-white">
-                                <span>LI</span>
+                            <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                                <Linkedin size={20} />
+                            </a>
+                            <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                                <Youtube size={20} />
                             </a>
                         </div>
                     </div>
@@ -37,20 +42,22 @@ export default function Footer() {
                         <h4 className="font-bold mb-4">Company</h4>
                         <ul className="space-y-2">
                             <li><a href="#" className="text-gray-400 hover:text-white">About Us</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Careers</a></li>
                             <li><a href="#" className="text-gray-400 hover:text-white">Blog</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Become an Instructor</a></li>
                             <li><a href="#" className="text-gray-400 hover:text-white">Contact Us</a></li>
                         </ul>
                     </div>
                     <div>
                         <h4 className="font-bold mb-4">Support</h4>
                         <ul className="space-y-2">
-                            <li><a href="#" className="text-gray-400 hover:text-white">Help Center</a></li>
                             <li><a href="#" className="text-gray-400 hover:text-white">Terms of Service</a></li>
                             <li><a href="#" className="text-gray-400 hover:text-white">Privacy Policy</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Cookie Policy</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Accessibility</a></li>
+                            <li><a href="#" className="text-gray-400 hover:text-white">Refund Policy</a></li>
+                            <li>
+                                <a href="mailto:support@kceducation.com" className="text-gray-400 hover:text-white flex items-center gap-2">
+                                    <Mail size={16} />
+                                    <span>support@kceducation.com</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
