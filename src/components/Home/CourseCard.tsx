@@ -6,14 +6,17 @@ export default function EnhancedCourseCard({ item }: {
         title: string;
         description: string;
         image: string;
-        instructor: string;
         price: number;
         originalPrice: number;
         lessons: number;
-        updated: string;
+        difficulty: string;
     }
 }) {
     const [isHovered, setIsHovered] = useState(false);
+
+    // Convert prices to INR format
+    const formattedPrice = `₹${item.price.toLocaleString('en-IN')}`;
+    const formattedOriginalPrice = `₹${item.originalPrice.toLocaleString('en-IN')}`;
 
     return (
         <div className="w-full p-4">
@@ -83,19 +86,10 @@ export default function EnhancedCourseCard({ item }: {
                             <span>{item.lessons} Lessons</span>
                         </div>
                         <div className="flex items-center">
-                            <div className="w-2 h-2 bg-violet-400 rounded-full mr-1"></div>
-                            <span>Updated {item.updated}</span>
-                        </div>
-                    </div>
-
-                    {/* Instructor */}
-                    <div className="flex items-center mb-4">
-                        <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-600 rounded-full flex items-center justify-center text-white text-xs font-bold mr-3">
-                            {/* {item.instructor} */}
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-700">{item.instructor}</p>
-                            <p className="text-xs text-gray-500">{item.instructor}</p>
+                            <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z" />
+                            </svg>
+                            <span>Difficulty: {item.difficulty}</span>
                         </div>
                     </div>
 
@@ -103,9 +97,9 @@ export default function EnhancedCourseCard({ item }: {
                     <div className="flex justify-between items-center">
                         <div className="flex items-center space-x-2">
                             <span className="font-bold text-2xl bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
-                                ${item.price}
+                                {formattedPrice}
                             </span>
-                            <span className="text-sm text-gray-400 line-through">${item.originalPrice}</span>
+                            <span className="text-sm text-gray-400 line-through">{formattedOriginalPrice}</span>
                         </div>
                         <button className="bg-gradient-to-r from-purple-600 to-violet-600 text-white px-6 py-3 rounded-xl text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95">
                             Enroll Now
