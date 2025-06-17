@@ -200,6 +200,24 @@ const Navbar = () => {
 
                 {/* Right Section - My Learning, Cart, Profile */}
                 <div className="hidden md:flex items-center space-x-6 ml-auto">
+                    {/* KC for Corporates */}
+                    <Link
+                        href="/for-corporates"
+                        className={`${scrolled ? 'text-white hover:text-purple-200' : 'text-white hover:text-purple-100'
+                            } font-medium transition-colors whitespace-nowrap`}
+                    >
+                        KC for Corporates
+                    </Link>
+
+                    {/* KC for Institutions */}
+                    <Link
+                        href="/for-institutions"
+                        className={`${scrolled ? 'text-white hover:text-purple-200' : 'text-white hover:text-purple-100'
+                            } font-medium transition-colors whitespace-nowrap`}
+                    >
+                        KC for Institutions
+                    </Link>
+
                     {/* My Learning */}
                     <Link
                         href="/my-learning"
