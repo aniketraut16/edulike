@@ -98,9 +98,7 @@ const Navbar = () => {
                 <div className="flex items-center">
                     {/* Logo */}
                     <Link href="/" className="flex items-center mr-6">
-                        <span className={`font-bold text-2xl ${scrolled ? 'text-white' : 'text-white'}`}>
-                            EduLike
-                        </span>
+                        <img src="/logo.png" alt="Logo" className="h-10 w-auto object-contain" />
                     </Link>
 
                     {/* Explore Dropdown - Multi-level */}

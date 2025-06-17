@@ -9,7 +9,7 @@ export default function Stats() {
         <section id="features" className="py-20">
             <div className="container mx-auto px-4 md:px-6">
                 <h2 className="text-3xl md:text-4xl font-extrabold text-center text-gray-800 mb-16">
-                    Why Students Love EduLike
+                    Why Students Love KC Online Education
                 </h2>
 
                 <div

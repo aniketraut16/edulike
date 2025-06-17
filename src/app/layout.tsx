@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "EduLike - Learn Anything. From Anywhere.",
-  description: "Live sessions or self-paced courses—choose how you want to grow with EduLike.",
+  title: "KC Online Education - Learn Anything. From Anywhere.",
+  description: "Live sessions or self-paced courses—choose how you want to grow with KC Online Education.",
 };
 
 export default function RootLayout({
