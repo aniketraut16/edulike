@@ -3,6 +3,7 @@ import Stats from "@/components/Home/Stats";
 import FewCourses from "@/components/Home/FewCourses";
 import FewBlogs from "@/components/Home/FewBlogs";
 import EnhancedServicesSection from "@/components/Home/ServiceSection";
+import Subscriptions from "./Subscriptions";
 
 export const Home = () => {
     return (
@@ -11,6 +12,7 @@ export const Home = () => {
             <Stats />
             <FewCourses />
             <EnhancedServicesSection />
+            <Subscriptions />
             <FewBlogs />
         </main>
     )

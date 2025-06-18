@@ -1,3 +1,4 @@
+import AnimatedText from "./AnimatedText";
 
 export default function EnhancedServicesSection() {
     const services = [
@@ -136,18 +137,18 @@ export default function EnhancedServicesSection() {
             <div className="container mx-auto px-4 md:px-6 relative z-10">
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <div className="inline-block mb-4">
+                    <AnimatedText as="div" className="inline-block mb-4">
                         <span className="bg-gradient-to-r from-purple-200 to-pink-200 text-purple-800 px-4 py-2 rounded-full text-sm font-semibold">
                             Our Services
                         </span>
-                    </div>
-                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                    </AnimatedText>
+                    <AnimatedText as="h2" className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight" delay={0.1}>
                         Tailored Solutions for
                         <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Everyone</span>
-                    </h2>
-                    <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    </AnimatedText>
+                    <AnimatedText className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed" delay={0.2}>
                         From individual learners to global enterprises, we provide comprehensive solutions that drive success
-                    </p>
+                    </AnimatedText>
                 </div>
 
                 {/* Services Grid */}
@@ -167,53 +168,56 @@ export default function EnhancedServicesSection() {
                             {/* Content Side */}
                             <div className="space-y-8">
                                 <div>
-                                    <div className={`inline-block mb-4 px-4 py-2 bg-gradient-to-r ${service.bgGradient} rounded-full`}>
-                                        <span className={`text-sm font-semibold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
-                                            {service.title}
-                                        </span>
-                                    </div>
-                                    <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                                    <AnimatedText as="div" className="inline-block mb-4" delay={0.1 * (index + 1)}>
+                                        <div className={`px-4 py-2 bg-gradient-to-r ${service.bgGradient} rounded-full`}>
+                                            <span className={`text-sm font-semibold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
+                                                {service.title}
+                                            </span>
+                                        </div>
+                                    </AnimatedText>
+                                    <AnimatedText as="h3" className="text-3xl md:text-4xl font-bold text-gray-900 mb-4" delay={0.15 * (index + 1)}>
                                         {service.subtitle}
-                                    </h3>
-                                    <p className="text-lg text-gray-600 leading-relaxed">
+                                    </AnimatedText>
+                                    <AnimatedText className="text-lg text-gray-600 leading-relaxed" delay={0.2 * (index + 1)}>
                                         {service.description}
-                                    </p>
+                                    </AnimatedText>
                                 </div>
 
                                 {/* Offerings */}
                                 <div className="space-y-4">
                                     {service.offerings.map((offering, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="flex items-start space-x-4 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/50 hover:bg-white/80 transition-all duration-300"
-                                        >
-                                            <div className={`flex-shrink-0 w-10 h-10 bg-gradient-to-r ${service.gradient} rounded-xl flex items-center justify-center text-white`}>
-                                                {offering.icon}
+                                        <AnimatedText as="div" key={idx} delay={0.1 * (idx + 1) + 0.2 * (index + 1)}>
+                                            <div
+                                                className="flex items-start space-x-4 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/50 hover:bg-white/80 transition-all duration-300"
+                                            >
+                                                <div className={`flex-shrink-0 w-10 h-10 bg-gradient-to-r ${service.gradient} rounded-xl flex items-center justify-center text-white`}>
+                                                    {offering.icon}
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900 mb-1">
+                                                        {offering.title}
+                                                    </h4>
+                                                    <p className="text-sm text-gray-600">
+                                                        {offering.description}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h4 className="font-semibold text-gray-900 mb-1">
-                                                    {offering.title}
-                                                </h4>
-                                                <p className="text-sm text-gray-600">
-                                                    {offering.description}
-                                                </p>
-                                            </div>
-                                        </div>
+                                        </AnimatedText>
                                     ))}
                                 </div>
+
                                 {/* CTA */}
-                                <button className={`px-8 py-4 bg-gradient-to-r ${service.gradient} text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 active:scale-95`}>
-                                    {service.cta}
-                                    <svg className="w-5 h-5 ml-2 inline" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
-                                    </svg>
-                                </button>
+                                <AnimatedText as="div" delay={0.3 * (index + 1)}>
+                                    <button className={`bg-gradient-to-r ${service.gradient} text-white px-6 py-3 rounded-xl text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95`}>
+                                        {service.cta}
+                                    </button>
+                                </AnimatedText>
                             </div>
 
-                            {/* Visual Side */}
+                            {/* Visual Side (Alternate) */}
                             {index % 2 === 0 ? (
                                 <div className="relative">
-                                    <img src={service.image} alt={service.title} className="w-[85%] object-cover" />
+                                    <img src={service.image} alt={service.title} className="w-[85%] ml-auto object-cover" />
                                 </div>
                             ) : null}
                         </div>

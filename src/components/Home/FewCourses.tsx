@@ -1,23 +1,24 @@
 import EnhancedCourseCard from "@/components/Home/CourseCard";
 import Link from "next/link";
+import AnimatedText from "./AnimatedText";
 
 export default function FewCourses() {
     return (
         <section id="courses" className="py-16 bg-gray-50">
             <div className="container">
                 <div className="text-center mb-16">
-                    <div className="inline-block mb-4">
+                    <AnimatedText as="div" className="inline-block mb-4">
                         <span className="bg-gradient-to-r from-purple-200 to-pink-200 text-purple-800 px-4 py-2 rounded-full text-sm font-semibold">
                             Discover Our Most Popular Courses
                         </span>
-                    </div>
-                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                    </AnimatedText>
+                    <AnimatedText as="h2" className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight" delay={0.1}>
                         Empowering Education for
                         <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Everyone</span>
-                    </h2>
-                    <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    </AnimatedText>
+                    <AnimatedText className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed" delay={0.2}>
                         Whether you're a student, a professional, or a lifelong learner, our curated courses are designed to enhance your skills and knowledge. Join thousands of learners who have transformed their careers and lives with our expert-led programs.
-                    </p>
+                    </AnimatedText>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -86,11 +87,11 @@ export default function FewCourses() {
                         <EnhancedCourseCard key={index} item={item} />
                     ))}
                 </div>
-                <div className="text-center mt-16">
+                <AnimatedText as="div" className="text-center mt-16" delay={0.3}>
                     <Link href="/courses" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95">
                         View All Courses
                     </Link>
-                </div>
+                </AnimatedText>
             </div>
         </section>
     )
