@@ -1,4 +1,5 @@
 import AnimatedText from "./AnimatedText";
+import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 
 export default function Hero() {
     return (

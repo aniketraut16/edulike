@@ -1,4 +1,5 @@
 import AnimatedText from "./AnimatedText";
+import { BoxReveal } from "@/components/magicui/box-reveal";
 
 export default function Subscriptions() {
     return (
@@ -7,18 +8,27 @@ export default function Subscriptions() {
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                     <div className="max-w-lg">
-                        <AnimatedText as="h2" className="text-4xl md:text-5xl font-bold text-white mb-4">
-                            Flexible Subscription Options
-                        </AnimatedText>
-                        <AnimatedText className="text-lg text-white/90 mb-8" delay={0.1}>
-                            Access a wide range of quality content with our diverse subscription plans.
-                            Choose the duration that suits you best and enjoy learning at reasonable prices.
-                        </AnimatedText>
-                        <AnimatedText as="div" delay={0.2}>
+
+                        <BoxReveal boxColor={"#8b5cf6"} duration={0.5} width="100%">
+                            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                                Flexible Subscription Options
+                            </h2>
+                        </BoxReveal>
+                        <BoxReveal boxColor={"#8b5cf6"} duration={0.5} width="fit-content">
+                            <p className="text-lg text-white/90 mb-8">
+                                Access a wide range of quality content with our diverse subscription plans.
+                            </p>
+                        </BoxReveal>
+                        <BoxReveal boxColor={"#8b5cf6"} duration={0.5} width="fit-content">
+                            <p className="text-lg text-white/90 mb-8">
+                                Choose the duration that suits you best and enjoy learning at reasonable prices.
+                            </p>
+                        </BoxReveal>
+                        <div>
                             <button className="bg-[#f97316] hover:bg-[#ea580c] text-white font-medium py-3 px-6 rounded-md transition-colors">
                                 Discover Subscription Plans
                             </button>
-                        </AnimatedText>
+                        </div>
                     </div>
                     <div className="w-full md:w-1/2 flex justify-center">
                         <img

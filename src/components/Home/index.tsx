@@ -4,6 +4,7 @@ import FewCourses from "@/components/Home/FewCourses";
 import FewBlogs from "@/components/Home/FewBlogs";
 import EnhancedServicesSection from "@/components/Home/ServiceSection";
 import Subscriptions from "./Subscriptions";
+import Testimonials from "./Testimonials";
 
 export const Home = () => {
     return (
@@ -14,6 +15,7 @@ export const Home = () => {
             <EnhancedServicesSection />
             <Subscriptions />
             <FewBlogs />
+            <Testimonials />
         </main>
     )
 }

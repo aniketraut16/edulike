@@ -98,7 +98,7 @@ const Navbar = () => {
                 <div className="flex items-center">
                     {/* Logo */}
                     <Link href="/" className="flex items-center mr-6">
-                        <img src="/logo.png" alt="Logo" className="h-10 w-auto object-contain" />
+                        <img src="/logo.png" alt="Logo" className="h-14 w-auto object-contain " />
                     </Link>
 
                     {/* Explore Dropdown - Multi-level */}
