@@ -1,12 +1,14 @@
 import EnhancedCourseCard from "@/components/Home/CourseCard";
 import Link from "next/link";
 import AnimatedText from "./AnimatedText";
+import { BoxReveal } from "../magicui/box-reveal";
 
 export default function FewCourses() {
     return (
         <section id="courses" className="py-16 bg-gray-50">
             <div className="container">
                 <div className="text-center mb-16">
+
                     <AnimatedText as="div" className="inline-block mb-4">
                         <span
                             className="px-4 py-2 rounded-full text-sm font-semibold"
@@ -18,25 +20,27 @@ export default function FewCourses() {
                             Discover Our Most Popular Courses
                         </span>
                     </AnimatedText>
-                    <AnimatedText
-                        as="h2"
-                        className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
-                        delay={0.1}
-                    >
-                        Empowering Education for{" "}
-                        <span
-                            className="bg-clip-text text-transparent"
-                            style={{
-                                backgroundImage: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                                backgroundClip: "text",
-                                color: "transparent"
-                            }}
+                    <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
+                        <AnimatedText
+                            as="h2"
+                            className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
+                            delay={0.1}
                         >
-                            Everyone
-                        </span>
-                    </AnimatedText>
+                            Empowering Education for{" "}
+                            <span
+                                className="bg-clip-text text-transparent font-playfair"
+                                style={{
+                                    backgroundImage: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                    WebkitBackgroundClip: "text",
+                                    WebkitTextFillColor: "transparent",
+                                    backgroundClip: "text",
+                                    color: "transparent"
+                                }}
+                            >
+                                Everyone
+                            </span>
+                        </AnimatedText>
+                    </BoxReveal>
                     <AnimatedText className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed" delay={0.2}>
                         Whether you're a student, a professional, or a lifelong learner, our curated courses are designed to enhance your skills and knowledge. Join thousands of learners who have transformed their careers and lives with our expert-led programs.
                     </AnimatedText>

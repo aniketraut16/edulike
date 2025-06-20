@@ -1,5 +1,6 @@
 import { HiArrowRight } from "react-icons/hi";
 import { FaUserGraduate, FaChalkboardTeacher, FaProjectDiagram, FaRegLightbulb, FaUsers, FaChartLine, FaClipboardList, FaCogs, FaUniversity, FaHeadset, FaGlobe, FaHandsHelping } from "react-icons/fa";
+import { BoxReveal } from "../magicui/box-reveal";
 
 export default function ServiceSection() {
 
@@ -72,32 +73,42 @@ const ServiceCard = ({ service, index }: { service: any, index: number }) => {
 
 
             <div className="flex flex-col space-y-7 w-[53%]">
-                <div className="text-[#67180C] font-medium text-sm tracking-wide">
-                    {service.title}
-                </div>
+                <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
+                    <div className="text-[#67180C] font-medium text-sm tracking-wide">
+                        {service.title}
+                    </div>
+                </BoxReveal>
 
-                <h2 className="text-[#461217] text-5xl font-bold leading-tight">
-                    {service.subtitle}
-                </h2>
+                <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
+                    <h2 className="text-[#461217] text-5xl font-bold leading-tight">
+                        {service.subtitle}
+                    </h2>
+                </BoxReveal>
 
-                <p className="text-gray-700 text-lg">
-                    {service.description}
-                </p>
+                <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
+                    <p className="text-gray-700 text-lg">
+                        {service.description}
+                    </p>
+                </BoxReveal>
 
-                <a href={service.link} className="inline-flex items-center text-[#67180C] font-medium">
-                    Learn More <HiArrowRight className="ml-2" />
-                </a>
+                <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
+                    <a href={service.link} className="inline-flex items-center text-[#67180C] font-medium">
+                        Learn More <HiArrowRight className="ml-2" />
+                    </a>
+                </BoxReveal>
 
                 <div className="grid grid-cols-2 gap-y-4 mt-auto mb-10">
                     {service.features.map((feature: any, index: number) => (
                         <div key={index} className="flex items-center gap-2">
                             <div className="w-6 h-6 flex items-center justify-center">
                                 {feature.icons || (
-                                    <div className="w-5 h-5 rounded-full border border-gray-400 flex items-center justify-center">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M5 12H19M12 5V19" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    </div>
+                                    <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
+                                        <div className="w-5 h-5 rounded-full border border-gray-400 flex items-center justify-center">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M5 12H19M12 5V19" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        </div>
+                                    </BoxReveal>
                                 )}
                             </div>
                             <span className="text-gray-700">{feature.text}</span>
