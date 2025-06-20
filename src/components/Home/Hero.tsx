@@ -1,47 +1,42 @@
-import AnimatedText from "./AnimatedText";
-import { ContainerTextFlip } from "@/components/ui/container-text-flip";
+"use client"
+import { useEffect, useState } from 'react';
 
 export default function Hero() {
-    return (
-        <section className="hero-section py-16 md:py-24 min-h-[97vh] flex items-center" style={{ borderBottomRightRadius: '35%' }}>
-            {/* Background elements */}
-            <div className="hero-background absolute top-0 left-0 w-full h-full z-0">
-                <img
-                    src="/hero-background.svg"
-                    alt="Background decoration"
-                    className="object-cover"
-                />
-            </div>
+    const [padding, setPadding] = useState('7%');
+    const [borderRadius, setBorderRadius] = useState('100%');
+    const vigorousChangeHeightPadding = 0.2;
+    const vigorousChangeHeightRadius = 0.5;
 
-            <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center relative z-10">
-                <div className="md:w-1/2 mb-10 md:mb-0">
-                    <AnimatedText as="h1" className="text-4xl md:text-5xl font-bold text-white mb-4">
-                        Learn Anything. From Anywhere.
-                    </AnimatedText>
-                    <AnimatedText className="text-lg md:text-xl text-purple-100 mb-8" delay={0.1}>
-                        Live sessions or self-paced courses—choose how you want to grow.
-                    </AnimatedText>
-                    <AnimatedText as="div" delay={0.2}>
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <button className="bg-white hover:bg-purple-50 text-purple-700 font-medium py-3 px-6 rounded-lg transition-all">
-                                Explore Courses
-                            </button>
-                            <button className="bg-transparent hover:bg-purple-800 text-white border border-white font-medium py-3 px-6 rounded-lg transition-all">
-                                Join a Free Demo
-                            </button>
-                        </div>
-                    </AnimatedText>
-                </div>
-                <div className="md:w-2/3 flex justify-center">
-                    <div className="relative w-full max-w-lg h-96 md:h-[28rem]">
-                        <img
-                            src="/hero-illustration.svg"
-                            alt="Person learning online"
-                            className="object-contain"
-                        />
-                    </div>
-                </div>
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollPosition = window.scrollY;
+            const viewportHeight = window.innerHeight;
+            const vigorousChangePositionPadding = vigorousChangeHeightPadding * viewportHeight;
+            const vigorousChangePositionRadius = vigorousChangeHeightRadius * viewportHeight;
+
+            if (scrollPosition >= vigorousChangePositionPadding) {
+                setPadding('0%');
+            } else {
+                const newPadding = Math.max(0, 5 - (scrollPosition / vigorousChangePositionPadding) * 5);
+                setPadding(`${newPadding}%`);
+            }
+
+            if (scrollPosition >= vigorousChangePositionRadius) {
+                setBorderRadius('0%');
+            } else {
+                const newBorderRadius = Math.max(0, 50 - (scrollPosition / vigorousChangePositionRadius) * 50);
+                setBorderRadius(`${newBorderRadius}%`);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    return (
+        <div className="flex flex-col items-center justify-center h-[160vh] pt-[20vh] bg-gradient-to-b from-white to-slate-50" style={{ paddingLeft: padding, paddingRight: padding }}>
+            <div className="h-full w-full bg-center bg-cover" style={{ backgroundImage: 'url(/images/bg.png)', borderTopLeftRadius: borderRadius, borderTopRightRadius: borderRadius }}>
             </div>
-        </section>
-    )
+        </div>
+    );
 }
