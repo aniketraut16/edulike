@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-
 export default function Subscriptions() {
     return (
         <section className="py-16" style={{ backgroundColor: '#f5f0e8' }}>

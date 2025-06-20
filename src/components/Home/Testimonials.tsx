@@ -1,108 +1,76 @@
-import { cn } from "@/lib/utils";
-import { Marquee } from "@/components/magicui/marquee";
+"use client";
 
-const reviews = [
+import React from "react";
+import { InfiniteMovingCards } from "../ui/infinite-moving-cards";
+
+const studentTestimonials = [
     {
-        name: "Jack",
-        username: "@jack",
-        body: "I've never seen anything like this before. It's amazing. I love it.",
-        img: "https://avatar.vercel.sh/jack",
+        quote:
+            "The courses on this platform completely transformed my career path. I went from knowing nothing about web development to landing my dream job in just six months. The instructors are incredibly knowledgeable and supportive.",
+        name: "Sarah Johnson",
+        title: "Web Developer",
     },
     {
-        name: "Jill",
-        username: "@jill",
-        body: "I don't know what to say. I'm speechless. This is amazing.",
-        img: "https://avatar.vercel.sh/jill",
+        quote:
+            "As a working professional, I needed flexible learning options that wouldn't compromise on quality. This platform delivered exactly that. The self-paced courses allowed me to learn on my own schedule while still receiving excellent instruction.",
+        name: "Michael Chen",
+        title: "Product Manager",
     },
     {
-        name: "John",
-        username: "@john",
-        body: "I'm at a loss for words. This is amazing. I love it.",
-        img: "https://avatar.vercel.sh/john",
+        quote:
+            "The interactive projects and real-world applications made learning complex topics much easier. I particularly enjoyed the community aspect where I could collaborate with other students from around the world.",
+        name: "Priya Patel",
+        title: "Data Scientist",
     },
     {
-        name: "Jane",
-        username: "@jane",
-        body: "I'm at a loss for words. This is amazing. I love it.",
-        img: "https://avatar.vercel.sh/jane",
+        quote:
+            "I've tried many online learning platforms, but this one stands out for its exceptional quality and attention to detail. The courses are comprehensive, up-to-date, and taught by industry experts who truly care about student success.",
+        name: "David Rodriguez",
+        title: "Software Engineer",
     },
     {
-        name: "Jenny",
-        username: "@jenny",
-        body: "I'm at a loss for words. This is amazing. I love it.",
-        img: "https://avatar.vercel.sh/jenny",
+        quote:
+            "The value for money is incredible. I gained skills that immediately translated to a 30% salary increase. The investment in these courses has paid for itself many times over.",
+        name: "Emma Wilson",
+        title: "UX Designer",
     },
     {
-        name: "James",
-        username: "@james",
-        body: "I'm at a loss for words. This is amazing. I love it.",
-        img: "https://avatar.vercel.sh/james",
+        quote:
+            "The community support is what makes this platform special. Whenever I got stuck, there was always someone ready to help, whether it was an instructor or a fellow student.",
+        name: "James Taylor",
+        title: "Frontend Developer",
+    },
+    {
+        quote:
+            "I appreciate how the courses are structured to build upon each other. The learning path is clear, and you can see your progress which is incredibly motivating.",
+        name: "Sophia Garcia",
+        title: "Full Stack Developer",
     },
 ];
 
-const firstRow = reviews.slice(0, reviews.length / 2);
-const secondRow = reviews.slice(reviews.length / 2);
-
-const ReviewCard = ({
-    img,
-    name,
-    username,
-    body,
-}: {
-    img: string;
-    name: string;
-    username: string;
-    body: string;
-}) => {
-    return (
-        <figure
-            className={cn(
-                "relative h-full w-64 cursor-pointer overflow-hidden rounded-xl border p-4",
-                // light styles
-                "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
-                // dark styles
-                "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]",
-            )}
-        >
-            <div className="flex flex-row items-center gap-2">
-                <img className="rounded-full" width="32" height="32" alt="" src={img} />
-                <div className="flex flex-col">
-                    <figcaption className="text-sm font-medium dark:text-white">
-                        {name}
-                    </figcaption>
-                    <p className="text-xs font-medium dark:text-white/40">{username}</p>
-                </div>
-            </div>
-            <blockquote className="mt-2 text-sm">{body}</blockquote>
-        </figure>
-    );
-};
-
-
 export default function Testimonials() {
     return (
-        <section className="py-16 w-full">
-            <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-3">What Our Students Say</h2>
-                <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                    Discover why thousands of learners choose our platform for their educational journey
-                </p>
+        <section className="py-20 w-full relative overflow-hidden bg-gradient-to-b from-white to-gray-50">
+            <div className="container mx-auto px-4 mb-12">
+                <div className="text-center mb-10">
+                    <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">What Our Students Say</h2>
+                    <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+                        Discover why thousands of learners choose our platform for their educational journey
+                    </p>
+                </div>
             </div>
 
-            <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
-                <Marquee pauseOnHover className="[--duration:20s]">
-                    {firstRow.map((review) => (
-                        <ReviewCard key={review.username} {...review} />
-                    ))}
-                </Marquee>
-                <Marquee reverse pauseOnHover className="[--duration:20s]">
-                    {secondRow.map((review) => (
-                        <ReviewCard key={review.username} {...review} />
-                    ))}
-                </Marquee>
-                <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-background to-transparent"></div>
-                <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-background to-transparent"></div>
+            <div className="space-y-16 w-full">
+                <div>
+                    <div className="w-full overflow-hidden">
+                        <InfiniteMovingCards
+                            items={studentTestimonials}
+                            direction="right"
+                            speed="normal"
+                        />
+                    </div>
+                </div>
             </div>
         </section>
-    )
+    );
 }
