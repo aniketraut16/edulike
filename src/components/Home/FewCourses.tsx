@@ -8,15 +8,36 @@ export default function FewCourses() {
             <div className="container">
                 <div className="text-center mb-16">
                     <AnimatedText as="div" className="inline-block mb-4">
-                        <span className="bg-gradient-to-r from-purple-200 to-pink-200 text-purple-800 px-4 py-2 rounded-full text-sm font-semibold">
+                        <span
+                            className="px-4 py-2 rounded-full text-sm font-semibold"
+                            style={{
+                                background: "linear-gradient(90deg, #F3E6F1 0%, #FDE6F1 100%)",
+                                color: "#8D1A5F"
+                            }}
+                        >
                             Discover Our Most Popular Courses
                         </span>
                     </AnimatedText>
-                    <AnimatedText as="h2" className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight" delay={0.1}>
-                        Empowering Education for
-                        <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Everyone</span>
+                    <AnimatedText
+                        as="h2"
+                        className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
+                        delay={0.1}
+                    >
+                        Empowering Education for{" "}
+                        <span
+                            className="bg-clip-text text-transparent"
+                            style={{
+                                backgroundImage: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                WebkitBackgroundClip: "text",
+                                WebkitTextFillColor: "transparent",
+                                backgroundClip: "text",
+                                color: "transparent"
+                            }}
+                        >
+                            Everyone
+                        </span>
                     </AnimatedText>
-                    <AnimatedText className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed" delay={0.2}>
+                    <AnimatedText className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed" delay={0.2}>
                         Whether you're a student, a professional, or a lifelong learner, our curated courses are designed to enhance your skills and knowledge. Join thousands of learners who have transformed their careers and lives with our expert-led programs.
                     </AnimatedText>
                 </div>
@@ -24,71 +45,78 @@ export default function FewCourses() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {[
                         {
-                            title: "Course 1",
-                            description: "Description for Course 1",
-                            image: "image1.jpg",
-                            instructor: "Instructor 1",
-                            price: 100,
-                            originalPrice: 150,
-                            lessons: 10,
-                            difficulty: "Beginner"
-                        },
-                        {
-                            title: "Course 2",
-                            description: "Description for Course 2",
-                            image: "image2.jpg",
-                            instructor: "Instructor 2",
-                            price: 120,
-                            originalPrice: 180,
-                            lessons: 12,
+                            title: "Full-Stack Web Development with React & Node.js",
+                            description: "Master modern web development by building real-world applications using React, Node.js, Express, and MongoDB.",
+                            image: "https://i.ytimg.com/vi/5i8ej1-GpFU/maxresdefault.jpg",
+                            instructor: "Sarah Thompson",
+                            price: 149,
+                            originalPrice: 249,
+                            lessons: 42,
                             difficulty: "Intermediate"
                         },
                         {
-                            title: "Course 3",
-                            description: "Description for Course 3",
-                            image: "image3.jpg",
-                            instructor: "Instructor 3",
-                            price: 90,
-                            originalPrice: 130,
-                            lessons: 8,
-                            difficulty: "Advanced"
-                        },
-                        {
-                            title: "Course 4",
-                            description: "Description for Course 4",
-                            image: "image4.jpg",
-                            instructor: "Instructor 4",
-                            price: 110,
-                            originalPrice: 160,
-                            lessons: 11,
+                            title: "Python for Data Science & Machine Learning",
+                            description: "Learn Python from scratch and apply it to data analysis, visualization, and machine learning projects.",
+                            image: "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20230318230239/Python-Data-Science-Tutorial.jpg",
+                            instructor: "Dr. Anil Mehra",
+                            price: 129,
+                            originalPrice: 199,
+                            lessons: 38,
                             difficulty: "Beginner"
                         },
                         {
-                            title: "Course 5",
-                            description: "Description for Course 5",
-                            image: "image5.jpg",
-                            instructor: "Instructor 5",
-                            price: 95,
-                            originalPrice: 140,
-                            lessons: 9,
+                            title: "UI/UX Design Essentials: Figma to Prototyping",
+                            description: "Design beautiful and user-friendly interfaces with Figma, and learn the fundamentals of UX research and prototyping.",
+                            image: "https://static.skillshare.com/uploads/video/thumbnails/0bcdb57f80be0d1cceb3f11e51408c6e/original",
+                            instructor: "Emily Carter",
+                            price: 99,
+                            originalPrice: 159,
+                            lessons: 27,
+                            difficulty: "Beginner"
+                        },
+                        {
+                            title: "Advanced JavaScript: ES6+, TypeScript & Patterns",
+                            description: "Deep dive into modern JavaScript, TypeScript, and advanced programming patterns for scalable applications.",
+                            image: "https://miro.medium.com/v2/resize:fit:1400/1*8njcJv-4iLyrZV76FhdkDg.png",
+                            instructor: "Michael Lee",
+                            price: 139,
+                            originalPrice: 199,
+                            lessons: 34,
+                            difficulty: "Advanced"
+                        },
+                        {
+                            title: "Digital Marketing Masterclass: SEO, SEM & Analytics",
+                            description: "Grow your business or career with hands-on digital marketing strategies, SEO, SEM, and Google Analytics.",
+                            image: "https://media.assettype.com/analyticsinsight/2024-08-06/9k7iet26/Top-75-Digital-Marketing-Courses-to-Explore.jpg?w=1200&h=675&auto=format%2Ccompress&fit=max&enlarge=true",
+                            instructor: "Priya Sharma",
+                            price: 119,
+                            originalPrice: 179,
+                            lessons: 30,
                             difficulty: "Intermediate"
                         },
                         {
-                            title: "Course 6",
-                            description: "Description for Course 6",
-                            image: "image6.jpg",
-                            instructor: "Instructor 6",
-                            price: 105,
-                            originalPrice: 155,
-                            lessons: 10,
-                            difficulty: "Advanced"
+                            title: "Introduction to Cloud Computing with AWS",
+                            description: "Get started with cloud computing and learn how to deploy, manage, and scale applications on AWS.",
+                            image: "https://images.squarespace-cdn.com/content/v1/60cfd646701da4034512a1c5/ca3d678a-cbfc-4c9c-bc79-9d3be9fb907e/AWS-Cloud.png?format=2500w",
+                            instructor: "David Kim",
+                            price: 109,
+                            originalPrice: 169,
+                            lessons: 22,
+                            difficulty: "Beginner"
                         }
                     ].map((item, index) => (
                         <EnhancedCourseCard key={index} item={item} />
                     ))}
                 </div>
                 <AnimatedText as="div" className="text-center mt-16" delay={0.3}>
-                    <Link href="/courses" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95">
+                    <Link
+                        href="/courses"
+                        className="px-6 py-3 rounded-xl text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95"
+                        style={{
+                            background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                            color: "#fff"
+                        }}
+                    >
                         View All Courses
                     </Link>
                 </AnimatedText>
