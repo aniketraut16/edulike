@@ -10,8 +10,8 @@ export const Home = () => {
     return (
         <main className="min-h-screen bg-white" >
             <Hero />
-            <Stats />
             <FewCourses />
+            <Stats />
             <EnhancedServicesSection />
             <Subscriptions />
             <FewBlogs />
