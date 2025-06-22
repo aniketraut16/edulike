@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import { Course } from '@/utils/coursemanagement';
+import Link from 'next/link';
 
 export default function CourseCard({ item }: { item: Course }) {
     const [isHovered, setIsHovered] = useState(false);
@@ -97,14 +98,15 @@ export default function CourseCard({ item }: { item: Course }) {
                             </span>
                             <span className="text-sm text-gray-400 line-through">{formattedOriginalPrice}</span>
                         </div>
-                        <button
+                        <Link
                             className="text-white px-6 py-3 rounded-xl text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95"
                             style={{
                                 background: 'linear-gradient(to right, #8D1A5F, #8D1A5F)'
                             }}
+                            href={`/course?id=${item.title.toLowerCase().replace(/ /g, '-')}`}
                         >
                             Enroll Now
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

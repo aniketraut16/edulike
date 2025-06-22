@@ -155,7 +155,7 @@ function OneCoursePageContent({ course }: { course: DetailCourse }) {
 
                                 <h3 className="text-xl font-semibold mt-8 mb-4 text-gray-800 flex items-center">
                                     <Users size={20} className="mr-2 text-[#8D1A5F]" />
-                                    Target Audience
+                                    Who this course is for
                                 </h3>
                                 <p className="text-gray-700 leading-relaxed text-lg bg-gray-50 p-4 rounded-lg border-l-4 border-[#8D1A5F]">
                                     {course.targetAudience}

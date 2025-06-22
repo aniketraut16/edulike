@@ -13,7 +13,7 @@ import {
     HelpCircle,
     LogOut,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Course, getCourses } from '@/utils/courses';
 import { usePathname } from 'next/navigation';
 
@@ -116,7 +116,7 @@ const ExploreDropdown = ({ hoveredCategory, setHoveredCategory }: ExploreDropdow
                             {hoveredCategory.courseList.map((course, idx) => (
                                 <Link
                                     key={idx}
-                                    href={`/courses/${course.slug}`}
+                                    href={`/course?id=${course.slug}`}
                                     className='text-sm text-gray-700 rounded-md transition-all border-l-3 border-transparent hover:border-gray-500 px-3 py-3 hover:bg-white/70'
                                 >
                                     {course.name}
@@ -210,6 +210,10 @@ const Navbar = () => {
         setIsUserDropdownOpen(false);
         setHoveredCategory(null);
     };
+
+    useEffect(() => {
+        handleOverlayMouseEnter();
+    }, [pathname]);
 
     return (
         <>
