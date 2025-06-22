@@ -23,7 +23,7 @@ export default function ServiceSection() {
         {
             image: "/images/corporate.jpg",
             title: "For Corporate Teams",
-            link: "/courses",
+            link: "/for-corporates",
             subtitle: "Transform Your Team with Powerful Upskilling",
             description: "Scale your organization with comprehensive training programs, custom solutions, and actionable analytics. Empower your workforce to stay ahead in a rapidly evolving business landscape with our tailored corporate learning experiences.",
             features: [

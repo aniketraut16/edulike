@@ -34,6 +34,47 @@ body *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
   font-style: normal;
 }
 
+:root {
+  --color-primary: #8d1a5f;
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.hover\:text-primary:hover {
+  color: var(--color-primary);
+}
+
+.hover\:bg-primary:hover {
+  background-color: var(--color-primary);
+}
+
+.hover\:border-primary:hover {
+  border-color: var(--color-primary);
+}
+
+/* Gradient utilities using the primary color */
+.bg-primary-gradient {
+  background: linear-gradient(to right, var(--color-primary), #a82573);
+}
+
+.text-primary-gradient {
+  background: linear-gradient(to right, var(--color-primary), #a82573);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
 @theme inline {
   --animate-scroll: scroll var(--animation-duration, 40s)
     var(--animation-direction, forwards) linear infinite;
