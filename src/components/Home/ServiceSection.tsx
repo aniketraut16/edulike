@@ -51,8 +51,8 @@ export default function ServiceSection() {
     ]
 
     return (
-        <div>
-            <div className="w-full flex flex-col gap-4 justify-center items-center py-10 px-10 max-w-[1010px] mx-auto">
+        <div className="bg-[#f5f0e8]">
+            <div className="w-full flex flex-col gap-4 justify-center items-center py-10 px-10 max-w-[1010px] mx-auto  ">
                 {services.map((service, index) => (
                     <ServiceCard key={index} service={service} index={index} />
                 ))}

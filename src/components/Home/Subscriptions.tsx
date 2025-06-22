@@ -1,6 +1,6 @@
 export default function Subscriptions() {
     return (
-        <section className="py-16" style={{ backgroundColor: '#f5f0e8' }}>
+        <section className="py-16 bg-white" >
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h2 className="text-6xl font-bold mb-4 text-gray-800">Your Pace, Your Plan</h2>

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Course, getCourses } from '@/utils/courses';
+import { usePathname } from 'next/navigation';
 
 
 type Category = Course & {
@@ -187,6 +188,7 @@ const UserDropdown = () => {
 // Navbar component
 const Navbar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const pathname = usePathname();
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
     const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
 
@@ -211,8 +213,8 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className={`fixed flex flex-col gap-3 top-0 left-0 z-50 h-full w-full px-[10px] pt-[10px] ${(isDropdownOpen || isUserDropdownOpen) ? 'bg-black/50' : 'transparent'}`}>
-                <div className='w-full transition-all duration-300 bg-white rounded-xl py-2 px-4 shadow-lg'>
+            <nav className={`fixed flex flex-col gap-3 top-0 left-0 z-50 ${pathname === '/' ? 'px-[10px] pt-[10px]' : ''} ${(!isDropdownOpen && !isUserDropdownOpen) ? 'h-fit ' : 'h-full bg-black/50'} w-full`}>
+                <div className={`w-full transition-all duration-300 bg-white ${pathname === '/' ? 'rounded-xl' : ''} py-2 px-4 shadow-lg`}>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <Link href="/" className="flex items-center mr-6">
