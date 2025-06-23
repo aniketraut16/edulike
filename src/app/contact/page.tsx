@@ -1,7 +1,6 @@
 "use client";
 import AnimatedText from "@/components/Home/AnimatedText";
 import { BoxReveal } from "@/components/magicui/box-reveal";
-import WorldMap from "@/components/ui/world-map";
 import { motion } from "motion/react";
 import { FiMessageCircle, FiMessageSquare, FiMapPin, FiPhone } from "react-icons/fi";
 import {
@@ -23,7 +22,18 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import dynamic from "next/dynamic";
+
+// Dynamically import the WorldMap component with no SSR
+const WorldMap = dynamic(() => import("@/components/ui/world-map"), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-[400px] flex items-center justify-center bg-gray-50">
+            <div className="animate-pulse text-gray-400">Loading map...</div>
+        </div>
+    )
+});
 
 const formSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -62,6 +72,7 @@ const faqs = [
 export default function ContactPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [showMap, setShowMap] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -85,10 +96,25 @@ export default function ContactPage() {
         }, 1500);
     }
 
+    // Defer loading the map until after initial page render and animations
+    useEffect(() => {
+        // Wait for initial animations to complete before showing map
+        const timer = setTimeout(() => {
+            setShowMap(true);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
-        <div className=" py-40 bg-white w-full">
+        <div className="py-40 bg-white w-full">
             <div className="text-center mb-16">
-                <AnimatedText as="div" className="inline-block mb-4">
+                {/* Framer Motion animation for heading section */}
+                <motion.div
+                    className="inline-block mb-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                >
                     <span
                         className="px-4 py-2 rounded-full text-sm font-semibold"
                         style={{
@@ -98,67 +124,92 @@ export default function ContactPage() {
                     >
                         Contact Us
                     </span>
-                </AnimatedText>
-                <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
-                    <AnimatedText
-                        as="h2"
-                        className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
-                        delay={0.1}
+                </motion.div>
+                <motion.h2
+                    className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
+                >
+                    We're Here to Help{" "}
+                    <span
+                        className="bg-clip-text text-transparent font-playfair"
+                        style={{
+                            backgroundImage: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            backgroundClip: "text",
+                            color: "transparent"
+                        }}
                     >
-                        We're Here to Help{" "}
-                        <span
-                            className="bg-clip-text text-transparent font-playfair"
-                            style={{
-                                backgroundImage: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                                backgroundClip: "text",
-                                color: "transparent"
-                            }}
-                        >
-                            You
-                        </span>
-                    </AnimatedText>
-                </BoxReveal>
-                <AnimatedText className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed" delay={0.1}>
+                        You
+                    </span>
+                </motion.h2>
+                <motion.p
+                    className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+                >
                     Have a question, feedback, or need support? Reach out to us and our team will get back to you as soon as possible. You can email us at <a href="mailto:support@kceducation.com" className="text-[#8D1A5F] underline">support@kceducation.com</a> or use the contact form below.
-                </AnimatedText>
+                </motion.p>
             </div>
-            <WorldMap
-                lineColor="#8D1A5F"
-                dots={[
-                    {
-                        start: {
-                            lat: 64.2008,
-                            lng: -149.4937,
-                        }, // Alaska (Fairbanks)
-                        end: {
-                            lat: 34.0522,
-                            lng: -118.2437,
-                        }, // Los Angeles
-                    },
-                    {
-                        start: { lat: 64.2008, lng: -149.4937 }, // Alaska (Fairbanks)
-                        end: { lat: -15.7975, lng: -47.8919 }, // Brazil (Brasília)
-                    },
-                    {
-                        start: { lat: -15.7975, lng: -47.8919 }, // Brazil (Brasília)
-                        end: { lat: 38.7223, lng: -9.1393 }, // Lisbon
-                    },
-                    {
-                        start: { lat: 51.5074, lng: -0.1278 }, // London
-                        end: { lat: 28.6139, lng: 77.209 }, // New Delhi
-                    },
-                    {
-                        start: { lat: 28.6139, lng: 77.209 }, // New Delhi
-                        end: { lat: 43.1332, lng: 131.9113 }, // Vladivostok
-                    },
-                    {
-                        start: { lat: 28.6139, lng: 77.209 }, // New Delhi
-                        end: { lat: -1.2921, lng: 36.8219 }, // Nairobi
-                    },
-                ]}
-            />
+
+            {/* Map section with deferred loading */}
+            <div className="w-full relative h-[400px] bg-gray-50">
+                {!showMap && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="flex flex-col items-center">
+                            <div className="w-12 h-12 border-4 border-[#8D1A5F] border-t-transparent rounded-full animate-spin mb-4"></div>
+                            <p className="text-gray-500">Loading global presence map...</p>
+                        </div>
+                    </div>
+                )}
+
+                {showMap && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <WorldMap
+                            lineColor="#8D1A5F"
+                            dots={[
+                                {
+                                    start: {
+                                        lat: 64.2008,
+                                        lng: -149.4937,
+                                    }, // Alaska (Fairbanks)
+                                    end: {
+                                        lat: 34.0522,
+                                        lng: -118.2437,
+                                    }, // Los Angeles
+                                },
+                                {
+                                    start: { lat: 64.2008, lng: -149.4937 }, // Alaska (Fairbanks)
+                                    end: { lat: -15.7975, lng: -47.8919 }, // Brazil (Brasília)
+                                },
+                                {
+                                    start: { lat: -15.7975, lng: -47.8919 }, // Brazil (Brasília)
+                                    end: { lat: 38.7223, lng: -9.1393 }, // Lisbon
+                                },
+                                {
+                                    start: { lat: 51.5074, lng: -0.1278 }, // London
+                                    end: { lat: 28.6139, lng: 77.209 }, // New Delhi
+                                },
+                                {
+                                    start: { lat: 28.6139, lng: 77.209 }, // New Delhi
+                                    end: { lat: 43.1332, lng: 131.9113 }, // Vladivostok
+                                },
+                                {
+                                    start: { lat: 28.6139, lng: 77.209 }, // New Delhi
+                                    end: { lat: -1.2921, lng: 36.8219 }, // Nairobi
+                                },
+                            ]}
+                        />
+                    </motion.div>
+                )}
+            </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
