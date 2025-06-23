@@ -4,6 +4,7 @@ import ServiceCardies from '@/components/Services/ServiceCardies'
 import SomeWords from '@/components/Services/SomeWords'
 import OrganizationCourses from '@/components/Services/OrganizationCourses'
 import HowItWorks from '@/components/Services/HowItWorks'
+import { FiCreditCard, FiCheckSquare, FiUserPlus } from 'react-icons/fi'
 
 export default function CorporatePage() {
     // Key benefits for corporates
@@ -36,38 +37,31 @@ export default function CorporatePage() {
             {
                 title: "Buy Corporate Courses",
                 description: "Browse our catalog and purchase courses under your corporate account. Enjoy volume discounts and centralized billing.",
-                icon: (
-                    <svg viewBox="0 0 24 24" fill="none" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="3" y="7" width="18" height="13" rx="2" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.5" />
-                        <path d="M3 10H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                        <circle cx="8" cy="16" r="1" fill="currentColor" />
-                        <circle cx="16" cy="16" r="1" fill="currentColor" />
-                    </svg>
-                )
+                icon: <FiCreditCard size={48} />
             },
             {
                 title: "Select & Assign Courses",
                 description: "Choose which courses to assign, set the number of seats per course, and allocate them to specific employees or teams.",
-                icon: (
-                    <svg viewBox="0 0 24 24" fill="none" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.5" />
-                        <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                )
+                icon: <FiCheckSquare size={48} />
             },
             {
                 title: "Share with Employees",
                 description: "Send course invitations to your employees. They can start learning right away, and you can monitor their progress in real time.",
-                icon: (
-                    <svg viewBox="0 0 24 24" fill="none" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.5" />
-                        <path d="M4 20C4 16.6863 7.13401 14 11 14H13C16.866 14 20 16.6863 20 20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                        <path d="M16 8L20 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                        <path d="M20 8L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                    </svg>
-                )
+                icon: <FiUserPlus size={48} />
             }
         ]
+    };
+
+    // Function to handle smooth scrolling for anchor links
+    const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+        e.preventDefault();
+        const element = document.getElementById(targetId);
+        if (element) {
+            window.scrollTo({
+                top: element.offsetTop,
+                behavior: 'smooth'
+            });
+        }
     };
 
     return (
@@ -76,11 +70,11 @@ export default function CorporatePage() {
                 title="Knowledge Center for Corporates"
                 buttons={[
                     {
-                        text: "Book a Demo",
-                        link: "/contact"
+                        text: "Get Started",
+                        link: "/courses?for=corporates"
                     },
                     {
-                        text: "See How It Works",
+                        text: "How It Works",
                         link: "#how-it-works"
                     }
                 ]}
@@ -105,14 +99,14 @@ export default function CorporatePage() {
                         <h3 className="text-2xl font-semibold mb-4">Ready to Upskill Your Organization?</h3>
                         <p className="mb-6 text-gray-700">Get started today and see how easy it is to manage learning for your entire workforce.</p>
                         <a
-                            href="/contact"
+                            href="/courses?for=corporates"
                             className="inline-block px-8 py-3 rounded-lg text-white font-semibold shadow-lg hover:scale-105 transition"
                             style={{
                                 background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
                                 color: "#fff"
                             }}
                         >
-                            Book a Corporate Demo
+                            Get Started
                         </a>
                     </div>
                 </div>

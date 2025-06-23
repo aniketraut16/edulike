@@ -3,6 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import AnimatedText from '../Home/AnimatedText';
+import { FiArrowRight } from 'react-icons/fi';
 
 export default function Hero(data: {
     title: string;
@@ -12,6 +13,23 @@ export default function Hero(data: {
     }[]
     image: string;
 }) {
+    // Function to handle smooth scrolling for anchor links
+    const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        // Check if the link is an anchor link
+        if (href.startsWith('#')) {
+            e.preventDefault();
+            const targetId = href.substring(1);
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    };
+
     return (
         <div className="relative w-full bg-[#f5f0e8] overflow-hidden pt-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,10 +52,12 @@ export default function Hero(data: {
                                     whileTap={{ scale: 0.95 }}
                                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                                 >
-                                    <Link href={button.link}>
-                                        <span
+                                    {button.link.startsWith('#') ? (
+                                        <a
+                                            href={button.link}
+                                            onClick={(e) => handleAnchorClick(e, button.link)}
                                             className={
-                                                `px-6 py-3 rounded-xl text-sm font-semibold inline-flex items-center ` +
+                                                `px-6 py-3 rounded-xl text-sm font-semibold inline-flex items-center cursor-pointer ` +
                                                 (index === 0
                                                     ? ""
                                                     : "border border-[#8D1A5F] bg-transparent text-[#8D1A5F] hover:bg-[#8D1A5F] hover:text-white")
@@ -53,19 +73,46 @@ export default function Hero(data: {
                                         >
                                             {button.text}
                                             {index === 0 && (
-                                                <motion.svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-4 w-4 ml-2"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
+                                                <motion.div
+                                                    className="ml-2 flex items-center justify-center"
                                                     animate={{ x: [0, 5, 0] }}
                                                     transition={{ repeat: Infinity, duration: 1.5, repeatDelay: 1 }}
                                                 >
-                                                    <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                </motion.svg>
+                                                    <FiArrowRight size={16} />
+                                                </motion.div>
                                             )}
-                                        </span>
-                                    </Link>
+                                        </a>
+                                    ) : (
+                                        <Link href={button.link}>
+                                            <span
+                                                className={
+                                                    `px-6 py-3 rounded-xl text-sm font-semibold inline-flex items-center ` +
+                                                    (index === 0
+                                                        ? ""
+                                                        : "border border-[#8D1A5F] bg-transparent text-[#8D1A5F] hover:bg-[#8D1A5F] hover:text-white")
+                                                }
+                                                style={
+                                                    index === 0
+                                                        ? {
+                                                            background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                                            color: "#fff"
+                                                        }
+                                                        : {}
+                                                }
+                                            >
+                                                {button.text}
+                                                {index === 0 && (
+                                                    <motion.div
+                                                        className="ml-2 flex items-center justify-center"
+                                                        animate={{ x: [0, 5, 0] }}
+                                                        transition={{ repeat: Infinity, duration: 1.5, repeatDelay: 1 }}
+                                                    >
+                                                        <FiArrowRight size={16} />
+                                                    </motion.div>
+                                                )}
+                                            </span>
+                                        </Link>
+                                    )}
                                 </motion.div>
                             ))}
                         </motion.div>

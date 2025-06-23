@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import AnimatedText from '../Home/AnimatedText'
 import { BoxReveal } from '../magicui/box-reveal'
+import { FiShoppingCart, FiCheckSquare, FiUsers } from 'react-icons/fi'
 
 export default function HowItWorks(data: {
     title: string,
@@ -19,6 +20,13 @@ export default function HowItWorks(data: {
         threshold: 0.1,
     });
 
+    // Default icons if none provided
+    const defaultIcons = [
+        <FiShoppingCart size={48} />,
+        <FiCheckSquare size={48} />,
+        <FiUsers size={48} />
+    ];
+
     return (
         <div className="w-full py-20 bg-[#f5f0e8]">
             <div className="container mx-auto px-4">
@@ -28,12 +36,9 @@ export default function HowItWorks(data: {
                             initial={{ opacity: 0, scale: 0.5 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.5 }}
+                            className="text-[#8D1A5F]"
                         >
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7.5 6L7.5 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M12 10L12 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M16.5 14L16.5 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
+                            <FiUsers size={40} />
                         </motion.div>
                     </div>
                     <AnimatedText as="h2" className="text-4xl font-bold mb-4">
@@ -66,8 +71,8 @@ export default function HowItWorks(data: {
                             {/* Icon Circle */}
                             <BoxReveal width="fit-content" boxColor="#8D1A5F" duration={0.7}>
                                 <div className="w-36 h-36 rounded-full bg-white shadow-md flex items-center justify-center mb-6 relative z-10 border border-gray-100">
-                                    <div className="w-16 h-16 text-[#8D1A5F]">
-                                        {step.icon}
+                                    <div className="text-[#8D1A5F] flex items-center justify-center">
+                                        {step.icon || defaultIcons[index]}
                                     </div>
                                 </div>
                             </BoxReveal>
