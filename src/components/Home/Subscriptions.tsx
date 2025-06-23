@@ -11,7 +11,7 @@ export default function Subscriptions() {
 
                 <div className="flex flex-col lg:flex-row gap-6 mx-auto justify-evenly items-center lg:items-stretch">
                     {/* Free Plan */}
-                    <div className="bg-white/20 backdrop-blur-xl rounded-3xl p-8 border border-white shadow-2xl relative overflow-hidden group hover:shadow-3xl transition-all duration-300 hover:scale-105 flex-1 flex flex-col">
+                    <div className="bg-gray-100/50 backdrop-blur-xl rounded-3xl p-8 border border-white shadow-2xl relative overflow-hidden group hover:shadow-3xl transition-all duration-300 hover:scale-105 flex-1 flex flex-col">
                         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col h-full">
                             <h3 className="text-3xl font-bold text-[#461217] mb-3 font-raleway">Free</h3>

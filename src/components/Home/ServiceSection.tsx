@@ -52,7 +52,7 @@ export default function ServiceSection() {
 
     return (
         <div className="bg-[#f5f0e8]">
-            <div className="w-full flex flex-col gap-4 justify-center items-center py-10 px-10 max-w-[1010px] mx-auto  ">
+            <div className="w-full flex flex-col gap-4 justify-center items-center py-10 px-10 max-w-[1200px] mx-auto  ">
                 {services.map((service, index) => (
                     <ServiceCard key={index} service={service} index={index} />
                 ))}
@@ -64,7 +64,7 @@ export default function ServiceSection() {
 
 const ServiceCard = ({ service, index }: { service: any, index: number }) => {
     return (
-        <div className="w-full flex gap-10 py-10">
+        <div className="w-full flex gap-15 py-10">
             {index % 2 === 0 && (
                 <img src={service.image} alt={service.title} className="w-[47%] h-auto rounded-lg" />
             )}
