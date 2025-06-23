@@ -2,63 +2,68 @@ import React from 'react'
 import Hero from '@/components/Services/Hero'
 import ServiceCardies from '@/components/Services/ServiceCardies'
 import SomeWords from '@/components/Services/SomeWords'
-import OrganizationCourses from '@/components/Services/OrganizationCourses';
-import HowItWorks from '@/components/Services/HowItWorks';
+import OrganizationCourses from '@/components/Services/OrganizationCourses'
+import HowItWorks from '@/components/Services/HowItWorks'
 
 export default function CorporatePage() {
-    const corporateServices = [
+    // Key benefits for corporates
+    const corporateBenefits = [
         {
-            tag: "Enterprise-wide training",
-            title: "Upskill your entire organization",
-            description: "Comprehensive training programs designed to elevate skills across your entire workforce, ensuring everyone stays ahead in a rapidly evolving business landscape.",
-            image: "/images/corporate.jpg"
+            tag: "Cost Savings",
+            title: "Volume Discounts & Centralized Billing",
+            description: "Save more with bulk course purchases and manage all transactions under a single corporate account for simplified billing.",
+            image: "/images/billing.jpg"
         },
         {
-            tag: "Certification preparation",
-            title: "Develop and validate skills",
-            description: "Prepare your team for industry-recognized certifications with structured learning paths and practice assessments that ensure high pass rates.",
-            image: "/images/institution.jpg"
+            tag: "Team Empowerment",
+            title: "Upskill Your Workforce",
+            description: "Provide your employees with access to industry-leading courses, helping them grow their skills and drive organizational success.",
+            image: "/images/growth.jpg"
         },
         {
-            tag: "AI Upskilling",
-            title: "Partner with us on your learning strategy",
-            description: "Leverage our expertise to create a customized learning strategy that aligns with your business goals and prepares your workforce for the AI-driven future.",
-            image: "/images/individual.jpg"
+            tag: "Easy Management",
+            title: "Seamless Admin Controls",
+            description: "Assign courses, set seat limits, and monitor employee progress with an intuitive admin dashboard designed for organizations.",
+            image: "/images/controls.jpg"
         }
     ];
 
+    // How it works steps for KC Corporate
     const howItWorksData = {
-        title: "Learn More About Process",
-        description: "Was are delightful solicitude discovered collecting man day. Resolving neglected sir tolerably.",
+        title: "How Corporate Course Access Works",
+        description: "Empower your workforce in just a few simple steps. Our Knowledge Center for Corporates makes upskilling your team effortless and efficient.",
         steps: [
             {
-                title: "Register",
-                description: "It more shed went up is roof if loud case. Delay music in lived noise an.",
+                title: "Buy Corporate Courses",
+                description: "Browse our catalog and purchase courses under your corporate account. Enjoy volume discounts and centralized billing.",
                 icon: (
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="currentColor" fillOpacity="0.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M20 21C20 16.5817 16.4183 13 12 13C7.58172 13 4 16.5817 4 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg viewBox="0 0 24 24" fill="none" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="7" width="18" height="13" rx="2" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.5" />
+                        <path d="M3 10H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        <circle cx="8" cy="16" r="1" fill="currentColor" />
+                        <circle cx="16" cy="16" r="1" fill="currentColor" />
                     </svg>
                 )
             },
             {
-                title: "Complete Setup",
-                description: "Beyond genius really enough passed is up. Up maids me an ample stood given.",
+                title: "Select & Assign Courses",
+                description: "Choose which courses to assign, set the number of seats per course, and allocate them to specific employees or teams.",
                 icon: (
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="8" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" />
-                        <path d="M12 8V12L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg viewBox="0 0 24 24" fill="none" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.5" />
+                        <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 )
             },
             {
-                title: "Utilize App",
-                description: "Certainty say suffering his him collected intention promotion. Hill sold ham men.",
+                title: "Share with Employees",
+                description: "Send course invitations to your employees. They can start learning right away, and you can monitor their progress in real time.",
                 icon: (
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M3 17L12 22L21 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M3 12L12 17L21 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg viewBox="0 0 24 24" fill="none" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.5" />
+                        <path d="M4 20C4 16.6863 7.13401 14 11 14H13C16.866 14 20 16.6863 20 20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        <path d="M16 8L20 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        <path d="M20 8L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                     </svg>
                 )
             }
@@ -68,30 +73,50 @@ export default function CorporatePage() {
     return (
         <div>
             <Hero
-                title="Online training today for the skills you need tomorrow"
+                title="Knowledge Center for Corporates"
                 buttons={[
                     {
-                        text: "Book a demo",
+                        text: "Book a Demo",
                         link: "/contact"
                     },
                     {
-                        text: "Guided tour",
-                        link: "/tour"
+                        text: "See How It Works",
+                        link: "#how-it-works"
                     }
                 ]}
                 image="/images/corporate.jpg"
             />
-            <ServiceCardies services={corporateServices} />
-            <HowItWorks {...howItWorksData} />
+            <ServiceCardies services={corporateBenefits} />
+            <div id="how-it-works">
+                <HowItWorks {...howItWorksData} />
+            </div>
             <SomeWords
-                title="Don't just take it from us"
+                title="What Our Corporate Clients Say"
                 personImage="/images/individual.jpg"
                 companyImage="/logo.png"
                 personName="Thaiyal Nayaki Sathyamoorthy"
                 personTitle="Assistant Manager of L&D for Data and AI, Genpact"
-                personWords="We wanted a holistic, easy- to-use, cloud-based platform where we could curate our own GenAI program — all from a partner who understood the industry landscape. We chose Udemy."
+                personWords="The Knowledge Center for Corporates made it incredibly easy to purchase and distribute courses to our teams. The admin dashboard gives us full visibility into employee progress and engagement."
             />
             <OrganizationCourses forCorporate={true} />
+            <section className="bg-gray-50 pb-12">
+                <div className="container mx-auto bg-white rounded-lg p-8">
+                    <div className="container mx-auto text-center">
+                        <h3 className="text-2xl font-semibold mb-4">Ready to Upskill Your Organization?</h3>
+                        <p className="mb-6 text-gray-700">Get started today and see how easy it is to manage learning for your entire workforce.</p>
+                        <a
+                            href="/contact"
+                            className="inline-block px-8 py-3 rounded-lg text-white font-semibold shadow-lg hover:scale-105 transition"
+                            style={{
+                                background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                color: "#fff"
+                            }}
+                        >
+                            Book a Corporate Demo
+                        </a>
+                    </div>
+                </div>
+            </section>
         </div>
     )
 }

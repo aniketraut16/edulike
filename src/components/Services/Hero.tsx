@@ -23,11 +23,21 @@ export default function Hero(data: {
                         <div className="flex flex-wrap gap-4 mt-8">
                             {data.buttons.map((button, index) => (
                                 <Link href={button.link} key={index}>
-                                    <Button
-                                        className={`${index === 0
-                                            ? "bg-[#E75C2B] hover:bg-[#d04e21] text-white"
-                                            : "bg-transparent border border-[#E75C2B] text-[#E75C2B] hover:bg-[#E75C2B] hover:text-white"
-                                            } rounded-full px-6 py-2.5 text-base font-medium transition-all duration-200`}
+                                    <span
+                                        className={
+                                            `px-6 py-3 rounded-xl text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 inline-flex items-center ` +
+                                            (index === 0
+                                                ? ""
+                                                : "border border-[#8D1A5F] bg-transparent text-[#8D1A5F] hover:bg-[#8D1A5F] hover:text-white")
+                                        }
+                                        style={
+                                            index === 0
+                                                ? {
+                                                    background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                                    color: "#fff"
+                                                }
+                                                : {}
+                                        }
                                     >
                                         {button.text}
                                         {index === 0 && (
@@ -35,7 +45,7 @@ export default function Hero(data: {
                                                 <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                                             </svg>
                                         )}
-                                    </Button>
+                                    </span>
                                 </Link>
                             ))}
                         </div>
