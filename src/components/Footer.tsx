@@ -1,4 +1,5 @@
 import { Facebook, Twitter, Instagram, Linkedin, Youtube, Mail } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Footer() {
     return (
@@ -49,9 +50,9 @@ export default function Footer() {
                     <div>
                         <h4 className="font-bold mb-4">Support</h4>
                         <ul className="space-y-2">
-                            <li><a href="#" className="text-gray-400 hover:text-white">Terms of Service</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Privacy Policy</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Refund Policy</a></li>
+                            <li><Link href="/terms-and-conditions" className="text-gray-400 hover:text-white">Terms of Service</Link></li>
+                            <li><Link href="/privacy-policy" className="text-gray-400 hover:text-white">Privacy Policy</Link></li>
+                            <li><Link href="/refund-policy" className="text-gray-400 hover:text-white">Refund Policy</Link></li>
                             <li>
                                 <a href="mailto:support@kceducation.com" className="text-gray-400 hover:text-white flex items-center gap-2">
                                     <Mail size={16} />
