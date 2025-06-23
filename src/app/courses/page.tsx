@@ -4,10 +4,9 @@ import { Course } from "@/utils/coursemanagement"
 import { getAllCourses } from "@/utils/coursemanagement"
 import CourseCard from "@/components/Courses/CourseCard";
 import { FaFilter } from "react-icons/fa";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function AllCoursesPage() {
-    const router = useRouter();
     const searchParams = useSearchParams();
 
     const [courses, setCourses] = useState<Course[]>([]);
