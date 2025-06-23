@@ -1,10 +1,15 @@
+'use client'
 import { DetailCourse, getOneCourse } from '@/utils/coursemanagement';
 import { Suspense } from 'react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Clock, Award, Globe, CheckCircle, ShoppingCart, Star, Bookmark, Users, Play, Tag, BarChart3, Zap } from 'lucide-react';
+import { BookOpen, Clock, Award, Globe, CheckCircle, ShoppingCart, Star, Bookmark, Users, Play, Tag, BarChart3, Zap, Loader } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
-function OneCoursePageContent({ course }: { course: DetailCourse }) {
+function OneCoursePageContent() {
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id");
+    const course: DetailCourse = getOneCourse(id || '');
     return (
         <div className="bg-white min-h-screen pt-16">
             {/* Hero Section with Course Banner */}
@@ -264,28 +269,12 @@ function OneCoursePageContent({ course }: { course: DetailCourse }) {
     );
 }
 
-function CourseLoader({ id }: { id: string }) {
-    const course = getOneCourse(id);
-    return <OneCoursePageContent course={course} />;
-}
 
-export default function OneCoursePage({
-    params,
-}: {
-    params: { id: string };
-}) {
+export default function OneCoursePage() {
+
     return (
-        <div className="bg-gray-50">
-            <Suspense fallback={
-                <div className="min-h-screen flex items-center justify-center">
-                    <div className="animate-pulse flex flex-col items-center">
-                        <div className="w-16 h-16 border-4 border-[#8D1A5F] border-t-transparent rounded-full animate-spin"></div>
-                        <p className="mt-4 text-lg font-medium text-gray-700">Loading course...</p>
-                    </div>
-                </div>
-            }>
-                <CourseLoader id={params.id} />
-            </Suspense>
-        </div>
+        <Suspense fallback={<Loader className="animate-spin" />}>
+            <OneCoursePageContent />
+        </Suspense>
     );
 }
