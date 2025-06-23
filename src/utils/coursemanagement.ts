@@ -10,6 +10,7 @@ export type Course = {
   language: string;
   rating: number;
   category: string;
+  kcType?: string;
 };
 
 export const courses = [
@@ -27,6 +28,7 @@ export const courses = [
     language: "English",
     rating: 4.8,
     category: "Web Development",
+    kcType: "Individual",
   },
   {
     title: "Advanced JavaScript: ES6+, TypeScript & Patterns",
@@ -42,6 +44,7 @@ export const courses = [
     language: "English",
     rating: 4.7,
     category: "Web Development",
+    kcType: "Corporate",
   },
   {
     title: "Introduction to HTML & CSS",
@@ -56,6 +59,7 @@ export const courses = [
     language: "English",
     rating: 4.6,
     category: "Web Development",
+    kcType: "Individual",
   },
   {
     title: "TypeScript for Modern Web Apps",
@@ -176,6 +180,7 @@ export const courses = [
     language: "English",
     rating: 4.9,
     category: "Data Science",
+    kcType: "Institution",
   },
   {
     title: "Machine Learning with scikit-learn",
@@ -191,6 +196,7 @@ export const courses = [
     language: "English",
     rating: 4.7,
     category: "Data Science",
+    kcType: "Corporate",
   },
   {
     title: "Deep Learning with TensorFlow & Keras",
@@ -206,6 +212,7 @@ export const courses = [
     language: "English",
     rating: 4.8,
     category: "Data Science",
+    kcType: "Institution",
   },
   {
     title: "Data Visualization with Python",
@@ -1165,10 +1172,12 @@ export const getAllCourses = (
   language: string,
   category: string,
   rating: number,
-  difficulty: string
+  difficulty: string,
+  kcType: string = ""
 ) => {
   const seletedLanguages = language ? language.split(",") : [];
   const seletedCategories = category ? category.split(",") : [];
+  const selectedKcTypes = kcType ? kcType.split(",") : [];
   const filteredCourses = courses.filter((course) => {
     const matchesLanguage =
       seletedLanguages.length === 0 ||
@@ -1181,12 +1190,16 @@ export const getAllCourses = (
       difficulty === "" || course.difficulty === difficulty;
     const matchesQuery =
       query === "" || course.title.toLowerCase().includes(query.toLowerCase());
+    const matchesKcType =
+      selectedKcTypes.length === 0 ||
+      (course.kcType && selectedKcTypes.includes(course.kcType));
     return (
       matchesLanguage &&
       matchesCategory &&
       matchesRating &&
       matchesDifficulty &&
-      matchesQuery
+      matchesQuery &&
+      matchesKcType
     );
   });
   const limit = 15;

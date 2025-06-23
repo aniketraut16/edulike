@@ -4,8 +4,12 @@ import { Course } from "@/utils/coursemanagement"
 import { getAllCourses } from "@/utils/coursemanagement"
 import CourseCard from "@/components/Courses/CourseCard";
 import { FaFilter } from "react-icons/fa";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AllCoursesPage() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -19,11 +23,13 @@ export default function AllCoursesPage() {
     const [showAllCategories, setShowAllCategories] = useState(false);
     const [showAllLanguages, setShowAllLanguages] = useState(false);
     const [showAllDifficulties, setShowAllDifficulties] = useState(false);
+    const [showAllKcTypes, setShowAllKcTypes] = useState(false);
 
     // Convert to arrays for multiple selections
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
     const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
+    const [selectedKcTypes, setSelectedKcTypes] = useState<string[]>([]);
 
     // Available filter options
     const languages = ["English", "Spanish", "French", "Chinese"];
@@ -35,6 +41,49 @@ export default function AllCoursesPage() {
         "Technology", "Mobile Development", "Programming"
     ];
     const difficulties = ["Beginner", "Intermediate", "Advanced"];
+    const kcTypes = ["Individual", "Corporate", "Institution"];
+
+    // Initialize state from URL parameters
+    useEffect(() => {
+        if (searchParams) {
+            const pageParam = searchParams.get('page');
+            const queryParam = searchParams.get('query');
+            const ratingParam = searchParams.get('rating');
+            const sortByParam = searchParams.get('sortBy');
+            const categoriesParam = searchParams.get('categories');
+            const languagesParam = searchParams.get('languages');
+            const difficultiesParam = searchParams.get('difficulties');
+            const kcTypesParam = searchParams.get('kcTypes');
+
+            if (pageParam) setPage(parseInt(pageParam));
+            if (queryParam) setQuery(queryParam);
+            if (ratingParam) setRating(parseFloat(ratingParam));
+            if (sortByParam) setSortBy(sortByParam);
+            if (categoriesParam) setSelectedCategories(categoriesParam.split(','));
+            if (languagesParam) setSelectedLanguages(languagesParam.split(','));
+            if (difficultiesParam) setSelectedDifficulties(difficultiesParam.split(','));
+            if (kcTypesParam) setSelectedKcTypes(kcTypesParam.split(','));
+        }
+    }, []);
+
+    // Update URL with current filters
+    useEffect(() => {
+        const params = new URLSearchParams();
+
+        if (page > 1) params.set('page', page.toString());
+        if (query) params.set('query', query);
+        if (rating > 0) params.set('rating', rating.toString());
+        if (sortBy !== 'title') params.set('sortBy', sortBy);
+        if (selectedCategories.length > 0) params.set('categories', selectedCategories.join(','));
+        if (selectedLanguages.length > 0) params.set('languages', selectedLanguages.join(','));
+        if (selectedDifficulties.length > 0) params.set('difficulties', selectedDifficulties.join(','));
+        if (selectedKcTypes.length > 0) params.set('kcTypes', selectedKcTypes.join(','));
+
+        const queryString = params.toString();
+        const url = queryString ? `?${queryString}` : '';
+
+        window.history.replaceState({}, '', `${window.location.pathname}${url}`);
+    }, [page, query, selectedLanguages, selectedCategories, rating, selectedDifficulties, selectedKcTypes, sortBy]);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -44,8 +93,9 @@ export default function AllCoursesPage() {
                 const categoryStr = selectedCategories.join(',');
                 const languageStr = selectedLanguages.join(',');
                 const difficultyStr = selectedDifficulties.join(',');
+                const kcTypeStr = selectedKcTypes.join(',');
 
-                const data = getAllCourses(page, query, languageStr, categoryStr, rating, difficultyStr);
+                const data = getAllCourses(page, query, languageStr, categoryStr, rating, difficultyStr, kcTypeStr);
 
                 // Sort courses
                 let sortedCourses = [...data.courses];
@@ -75,7 +125,7 @@ export default function AllCoursesPage() {
             }
         }
         fetchCourses();
-    }, [page, query, selectedLanguages, selectedCategories, rating, selectedDifficulties, sortBy]);
+    }, [page, query, selectedLanguages, selectedCategories, rating, selectedDifficulties, selectedKcTypes, sortBy]);
 
     const handleFilterChange = (filterType: string, value: any) => {
         setPage(1); // Reset to first page when filters change
@@ -91,6 +141,9 @@ export default function AllCoursesPage() {
                 break;
             case "difficulty":
                 handleMultiSelect(value, selectedDifficulties, setSelectedDifficulties);
+                break;
+            case "kcType":
+                handleMultiSelect(value, selectedKcTypes, setSelectedKcTypes);
                 break;
         }
     };
@@ -117,6 +170,7 @@ export default function AllCoursesPage() {
         setSelectedCategories([]);
         setRating(0);
         setSelectedDifficulties([]);
+        setSelectedKcTypes([]);
         setPage(1);
     };
 
@@ -136,9 +190,9 @@ export default function AllCoursesPage() {
                                 <span>
                                     Filters
                                 </span>
-                                {(selectedCategories.length > 0 || selectedLanguages.length > 0 || selectedDifficulties.length > 0 || rating > 0) && (
+                                {(selectedCategories.length > 0 || selectedLanguages.length > 0 || selectedDifficulties.length > 0 || selectedKcTypes.length > 0 || rating > 0) && (
                                     <span className="ml-2 bg-white text-[#8D1A5F] rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
-                                        {selectedCategories.length + selectedLanguages.length + selectedDifficulties.length + (rating > 0 ? 1 : 0)}
+                                        {selectedCategories.length + selectedLanguages.length + selectedDifficulties.length + selectedKcTypes.length + (rating > 0 ? 1 : 0)}
                                     </span>
                                 )}
                             </button>
@@ -197,6 +251,39 @@ export default function AllCoursesPage() {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </button>
+                                </div>
+                            </div>
+
+                            {/* KC Type Filter */}
+                            <div className="mb-6">
+                                <h4 className="font-bold text-gray-900 mb-3 font-raleway text-lg">
+                                    KC Type
+                                    {selectedKcTypes.length > 0 && (
+                                        <span className="ml-2 text-sm text-[#8D1A5F]">({selectedKcTypes.length} selected)</span>
+                                    )}
+                                </h4>
+                                <div className="space-y-2">
+                                    {kcTypes.slice(0, showAllKcTypes ? kcTypes.length : 5).map((type) => (
+                                        <label key={type} className="flex items-center cursor-pointer group">
+                                            <input
+                                                type="checkbox"
+                                                name="kcType"
+                                                value={type}
+                                                checked={selectedKcTypes.includes(type)}
+                                                onChange={(e) => handleFilterChange("kcType", e.target.value)}
+                                                className="text-[#8D1A5F] focus:ring-[#8D1A5F] border-gray-300 rounded"
+                                            />
+                                            <span className="ml-2 text-sm text-gray-700 group-hover:text-gray-900">KC for {type}</span>
+                                        </label>
+                                    ))}
+                                    {kcTypes.length > 5 && (
+                                        <button
+                                            onClick={() => setShowAllKcTypes(!showAllKcTypes)}
+                                            className="text-sm text-[#8D1A5F] hover:text-[#6B1548] font-medium mt-2"
+                                        >
+                                            {showAllKcTypes ? "Show Less" : "View More"}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 
