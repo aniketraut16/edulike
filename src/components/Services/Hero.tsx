@@ -1,7 +1,8 @@
 "use client"
 import React from 'react';
 import Link from 'next/link';
-import { Button } from '../ui/button';
+import { motion } from 'framer-motion';
+import AnimatedText from '../Home/AnimatedText';
 
 export default function Hero(data: {
     title: string;
@@ -17,48 +18,74 @@ export default function Hero(data: {
                 <div className="flex flex-col md:flex-row items-center py-16 md:py-24">
                     {/* Text Content */}
                     <div className="w-full md:w-1/2 mb-10 md:mb-0 md:pr-8">
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#461217] leading-tight mb-6">
+                        <AnimatedText as="h1" className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#461217] leading-tight mb-6">
                             {data.title}
-                        </h1>
-                        <div className="flex flex-wrap gap-4 mt-8">
+                        </AnimatedText>
+                        <motion.div
+                            className="flex flex-wrap gap-4 mt-8"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4, duration: 0.6 }}
+                        >
                             {data.buttons.map((button, index) => (
-                                <Link href={button.link} key={index}>
-                                    <span
-                                        className={
-                                            `px-6 py-3 rounded-xl text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 inline-flex items-center ` +
-                                            (index === 0
-                                                ? ""
-                                                : "border border-[#8D1A5F] bg-transparent text-[#8D1A5F] hover:bg-[#8D1A5F] hover:text-white")
-                                        }
-                                        style={
-                                            index === 0
-                                                ? {
-                                                    background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
-                                                    color: "#fff"
-                                                }
-                                                : {}
-                                        }
-                                    >
-                                        {button.text}
-                                        {index === 0 && (
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                                            </svg>
-                                        )}
-                                    </span>
-                                </Link>
+                                <motion.div
+                                    key={index}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                                >
+                                    <Link href={button.link}>
+                                        <span
+                                            className={
+                                                `px-6 py-3 rounded-xl text-sm font-semibold inline-flex items-center ` +
+                                                (index === 0
+                                                    ? ""
+                                                    : "border border-[#8D1A5F] bg-transparent text-[#8D1A5F] hover:bg-[#8D1A5F] hover:text-white")
+                                            }
+                                            style={
+                                                index === 0
+                                                    ? {
+                                                        background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                                        color: "#fff"
+                                                    }
+                                                    : {}
+                                            }
+                                        >
+                                            {button.text}
+                                            {index === 0 && (
+                                                <motion.svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-4 w-4 ml-2"
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
+                                                    animate={{ x: [0, 5, 0] }}
+                                                    transition={{ repeat: Infinity, duration: 1.5, repeatDelay: 1 }}
+                                                >
+                                                    <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </motion.svg>
+                                            )}
+                                        </span>
+                                    </Link>
+                                </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
                     </div>
 
                     {/* Image */}
-                    <div className="w-full md:w-1/2 relative">
-                        <img
+                    <motion.div
+                        className="w-full md:w-1/2 relative"
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                        <motion.img
                             src={data.image}
                             alt="Hero image"
                             className="w-8/10 h-auto aspect-[3/2] object-cover rounded-lg shadow-lg"
+                            whileHover={{ scale: 1.03 }}
+                            transition={{ duration: 0.3 }}
                         />
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </div>
