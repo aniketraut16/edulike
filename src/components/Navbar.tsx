@@ -16,6 +16,7 @@ import {
 import { useState, useEffect } from 'react';
 import { Course, getCourses } from '@/utils/courses';
 import { usePathname } from 'next/navigation';
+import { useAuth } from "@/context/AuthContext";
 
 
 type Category = Course & {
@@ -137,8 +138,10 @@ const UserDropdown = () => {
         { icon: Heart, label: 'Wishlist', href: '/wishlist' },
         { icon: Settings, label: 'Settings', href: '/settings' },
         { icon: HelpCircle, label: 'Help & Support', href: '/help' },
-        { icon: LogOut, label: 'Log Out', href: '/logout', isLogout: true },
     ];
+
+
+    const { user, logout } = useAuth();
 
     return (
         <div className='ml-auto h-auto flex overflow-hidden'
@@ -154,11 +157,15 @@ const UserDropdown = () => {
                 {/* User Info Section */}
                 <div className='flex items-center gap-3 pb-4 border-b border-gray-200 group hover:bg-purple-50 transition-colors duration-200'>
                     <div className="w-12 h-12 bg-purple-300 rounded-full flex items-center justify-center group-hover:bg-purple-400 transition-colors duration-200">
-                        <User className="h-6 w-6 text-purple-700 group-hover:text-purple-900 transition-colors duration-200" />
+                        {user?.photoURL ? (
+                            <img src={user.photoURL} alt="User" className="rounded-full" />
+                        ) : (
+                            <User className="h-6 w-6 text-purple-700 group-hover:text-purple-900 transition-colors duration-200" />
+                        )}
                     </div>
                     <div className='flex flex-col'>
-                        <span className='text-sm font-semibold text-gray-800 group-hover:text-purple-800 transition-colors duration-200'>John Doe</span>
-                        <span className='text-xs text-gray-500 group-hover:text-purple-600 transition-colors duration-200'>john.doe@example.com</span>
+                        <span className='text-sm font-semibold text-gray-800 group-hover:text-purple-800 transition-colors duration-200'>{user?.displayName}</span>
+                        <span className='text-xs text-gray-500 group-hover:text-purple-600 transition-colors duration-200'>{user?.email}</span>
                         <span className='text-xs text-blue-600 font-medium group-hover:text-blue-800 transition-colors duration-200'>Pro Member</span>
                     </div>
                 </div>
@@ -169,16 +176,19 @@ const UserDropdown = () => {
                         <Link
                             key={idx}
                             href={item.href}
-                            className={`flex items-center gap-3 p-3 rounded-md cursor-pointer transition-all duration-200 group
-                                ${item.isLogout
-                                    ? 'text-red-600 hover:bg-red-50 border-t border-gray-200 mt-2 pt-3 hover:text-red-800'
-                                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                                }`}
+                            className="flex items-center gap-3 p-3 rounded-md cursor-pointer transition-all duration-200 group text-gray-700 hover:text-gray-900 hover:bg-gray-100"
                         >
                             <item.icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
                             <span className='text-sm font-medium'>{item.label}</span>
                         </Link>
                     ))}
+                    <button
+                        onClick={logout}
+                        className="flex items-center gap-3 p-3 rounded-md cursor-pointer transition-all duration-200 group text-red-600 hover:text-white hover:bg-red-500 mt-2"
+                    >
+                        <LogOut className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+                        <span className='text-sm font-medium'>Log Out</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -191,6 +201,7 @@ const Navbar = () => {
     const pathname = usePathname();
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
     const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
+    const { user } = useAuth();
 
     const handleExploreMouseEnter = () => {
         setIsDropdownOpen(true);
@@ -269,7 +280,11 @@ const Navbar = () => {
                                     onMouseEnter={handleUserMouseEnter}
                                 >
                                     <div className="w-8 h-8 bg-purple-300 rounded-full flex items-center justify-center">
-                                        <User className="h-5 w-5 text-purple-700" />
+                                        {user?.photoURL ? (
+                                            <img src={user.photoURL} alt="User" className="rounded-full" />
+                                        ) : (
+                                            <User className="h-5 w-5 text-purple-700" />
+                                        )}
                                     </div>
                                 </button>
                             </div>
