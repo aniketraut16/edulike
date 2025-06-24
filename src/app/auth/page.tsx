@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Loader } from "lucide-react";
 
 
-export default function Login() {
+function LoginPageContent() {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -264,4 +265,13 @@ export default function Login() {
             </div>
         </div>
     );
-} 
+}
+
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<Loader className="animate-spin" />}>
+            <LoginPageContent />
+        </Suspense>
+    );
+}

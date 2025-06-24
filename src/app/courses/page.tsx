@@ -1,12 +1,13 @@
 "use client"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { Course } from "@/utils/coursemanagement"
 import { getAllCourses } from "@/utils/coursemanagement"
 import CourseCard from "@/components/Courses/CourseCard";
 import { FaFilter } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
+import { Loader } from "lucide-react";
 
-export default function AllCoursesPage() {
+function AllCoursesPageContent() {
     const searchParams = useSearchParams();
 
     const [courses, setCourses] = useState<Course[]>([]);
@@ -514,5 +515,14 @@ export default function AllCoursesPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+
+export default function AllCoursesPage() {
+    return (
+        <Suspense fallback={<Loader className="animate-spin" />}>
+            <AllCoursesPageContent />
+        </Suspense>
     );
 }
