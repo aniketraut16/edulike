@@ -80,6 +80,7 @@ export default function CorporatePage() {
                 ]}
                 image="/images/corporate.jpg"
             />
+            <OrganizationCourses forCorporate={true} />
             <ServiceCardies services={corporateBenefits} />
             <div id="how-it-works">
                 <HowItWorks {...howItWorksData} />
@@ -92,7 +93,7 @@ export default function CorporatePage() {
                 personTitle="Assistant Manager of L&D for Data and AI, Genpact"
                 personWords="The Knowledge Center for Corporates made it incredibly easy to purchase and distribute courses to our teams. The admin dashboard gives us full visibility into employee progress and engagement."
             />
-            <OrganizationCourses forCorporate={true} />
+
             <section className="bg-gray-50 pb-12">
                 <div className="container mx-auto bg-white rounded-lg p-8">
                     <div className="container mx-auto text-center">

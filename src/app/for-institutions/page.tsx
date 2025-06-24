@@ -52,18 +52,6 @@ export default function InstitutionsPage() {
         ]
     };
 
-    // Function to handle smooth scrolling for anchor links
-    const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
-        e.preventDefault();
-        const element = document.getElementById(targetId);
-        if (element) {
-            window.scrollTo({
-                top: element.offsetTop,
-                behavior: 'smooth'
-            });
-        }
-    };
-
     return (
         <div>
             <Hero
@@ -80,6 +68,7 @@ export default function InstitutionsPage() {
                 ]}
                 image="/images/institution.jpg"
             />
+            <OrganizationCourses forCorporate={false} />
             <ServiceCardies services={institutionBenefits} />
             <div id="how-it-works">
                 <HowItWorks {...howItWorksData} />
@@ -92,7 +81,6 @@ export default function InstitutionsPage() {
                 personTitle="Dean of Digital Learning, University of Technology"
                 personWords="The Knowledge Center has transformed how we approach supplemental learning. Our students now have access to industry-relevant content that perfectly complements our curriculum, and the analytics help us identify areas where students need additional support."
             />
-            <OrganizationCourses forCorporate={false} />
             <section className="bg-gray-50 pb-12">
                 <div className="container mx-auto bg-white rounded-lg p-8">
                     <div className="container mx-auto text-center">
