@@ -202,6 +202,11 @@ const Navbar = () => {
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
     const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
     const { user } = useAuth();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        setIsLoggedIn(!!user);
+    }, [user]);
 
     const handleExploreMouseEnter = () => {
         setIsDropdownOpen(true);
@@ -270,24 +275,42 @@ const Navbar = () => {
                             </Link>
                             <Link href="/cart" className="transition-colors relative">
                                 <ShoppingCart className="h-5 w-5" />
-                                <span className="absolute -top-2 -right-2 bg-red-500 text-black text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                <span className="absolute -top-2 -right-2 text-[10px] rounded-full h-4 w-4 flex items-center justify-center"
+                                    style={{
+                                        background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                        color: "#fff"
+                                    }}
+                                >
                                     2
                                 </span>
                             </Link>
-                            <div className="relative profile-dropdown">
-                                <button
-                                    className={`flex items-center space-x-2 transition-colors`}
-                                    onMouseEnter={handleUserMouseEnter}
+                            {isLoggedIn && (
+                                <div className="relative profile-dropdown">
+                                    <button
+                                        className={`flex items-center space-x-2 transition-colors`}
+                                        onMouseEnter={handleUserMouseEnter}
+                                    >
+                                        <div className="w-8 h-8 bg-purple-300 rounded-full flex items-center justify-center">
+                                            {user?.photoURL ? (
+                                                <img src={user.photoURL} alt="User" className="rounded-full" />
+                                            ) : (
+                                                <User className="h-5 w-5 text-purple-700" />
+                                            )}
+                                        </div>
+                                    </button>
+                                </div>
+                            )}
+                            {!isLoggedIn && (
+                                <Link href="/auth"
+                                    className="px-6 py-3 rounded-xl text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95"
+                                    style={{
+                                        background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                        color: "#fff"
+                                    }}
                                 >
-                                    <div className="w-8 h-8 bg-purple-300 rounded-full flex items-center justify-center">
-                                        {user?.photoURL ? (
-                                            <img src={user.photoURL} alt="User" className="rounded-full" />
-                                        ) : (
-                                            <User className="h-5 w-5 text-purple-700" />
-                                        )}
-                                    </div>
-                                </button>
-                            </div>
+                                    Login
+                                </Link>
+                            )}
                         </div>
 
                         <button className="md:hidden text-black ml-auto">

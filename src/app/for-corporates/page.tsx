@@ -52,18 +52,6 @@ export default function CorporatePage() {
         ]
     };
 
-    // Function to handle smooth scrolling for anchor links
-    const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
-        e.preventDefault();
-        const element = document.getElementById(targetId);
-        if (element) {
-            window.scrollTo({
-                top: element.offsetTop,
-                behavior: 'smooth'
-            });
-        }
-    };
-
     return (
         <div>
             <Hero
