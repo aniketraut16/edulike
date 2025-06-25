@@ -61,18 +61,27 @@ export default function ServiceSection() {
     );
 }
 
-
 const ServiceCard = ({ service, index }: { service: any, index: number }) => {
     return (
-        <div className="w-full flex gap-15 py-10">
+        <div className="w-full flex flex-col md:flex-row gap-0 md:gap-15 py-10">
+            {/* On mobile: always image first, then content. On desktop: alternate left/right */}
+            {/* Mobile image (always first) */}
+            <img
+                src={service.image}
+                alt={service.title}
+                className="w-full md:hidden h-auto rounded-lg mb-6"
+            />
+
+            {/* Desktop image left (even index) */}
             {index % 2 === 0 && (
-                <img src={service.image} alt={service.title} className="w-[47%] h-auto rounded-lg" />
+                <img
+                    src={service.image}
+                    alt={service.title}
+                    className="hidden md:block w-[47%] h-auto rounded-lg mb-0"
+                />
             )}
 
-
-
-
-            <div className="flex flex-col space-y-7 w-[53%]">
+            <div className="flex flex-col space-y-7 w-full md:w-[53%]">
                 <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
                     <div className="text-[#67180C] font-medium text-sm tracking-wide">
                         {service.title}
@@ -117,8 +126,13 @@ const ServiceCard = ({ service, index }: { service: any, index: number }) => {
                 </div>
             </div>
 
+            {/* Desktop image right (odd index) */}
             {index % 2 !== 0 && (
-                <img src={service.image} alt={service.title} className="w-[47%] h-auto rounded-lg" />
+                <img
+                    src={service.image}
+                    alt={service.title}
+                    className="hidden md:block w-[47%] h-auto rounded-lg mt-0"
+                />
             )}
         </div>
     )
