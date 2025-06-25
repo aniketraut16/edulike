@@ -12,6 +12,9 @@ import {
     Heart,
     HelpCircle,
     LogOut,
+    Menu,
+    X,
+    ChevronUp,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Course, getCourses } from '@/utils/courses';
@@ -195,18 +198,206 @@ const UserDropdown = () => {
     );
 };
 
+// Mobile menu component
+const MobileMenu = ({ isOpen, onClose, isLoggedIn, user, logout }: {
+    isOpen: boolean;
+    onClose: () => void;
+    isLoggedIn: boolean;
+    user: any;
+    logout: () => void;
+}) => {
+    const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+
+    const userMenuItems = [
+        { icon: User, label: 'My Profile', href: '/profile' },
+        { icon: BookOpen, label: 'My Courses', href: '/my-courses' },
+        { icon: Heart, label: 'Wishlist', href: '/wishlist' },
+        { icon: Settings, label: 'Settings', href: '/settings' },
+        { icon: HelpCircle, label: 'Help & Support', href: '/help' },
+    ];
+
+    const toggleCategory = (categoryName: string) => {
+        if (expandedCategory === categoryName) {
+            setExpandedCategory(null);
+        } else {
+            setExpandedCategory(categoryName);
+        }
+    };
+
+    return (
+        <div className={`fixed top-0 right-0 h-full w-full bg-white z-50 shadow-xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'} overflow-y-auto`}>
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <img src="/logo.png" alt="Logo" className="h-10 w-auto object-contain" />
+                </div>
+                <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+                    <X className="h-6 w-6" />
+                </button>
+            </div>
+
+            <div className="p-4">
+                {isLoggedIn && (
+                    <div className="mb-6 pb-4 border-b border-gray-200">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-12 h-12 bg-purple-300 rounded-full flex items-center justify-center">
+                                {user?.photoURL ? (
+                                    <img src={user.photoURL} alt="User" className="rounded-full" />
+                                ) : (
+                                    <User className="h-6 w-6 text-purple-700" />
+                                )}
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-sm font-semibold text-gray-800">{user?.displayName}</span>
+                                <span className="text-xs text-gray-500">{user?.email}</span>
+                                <span className="text-xs text-blue-600 font-medium">Pro Member</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div className="mb-6 pb-4 border-b border-gray-200">
+                    <Link href="/for-corporates" className="flex items-center py-3 font-medium">
+                        KC for Corporates
+                    </Link>
+                    <Link href="/for-institutions" className="flex items-center py-3 font-medium">
+                        KC for Institutions
+                    </Link>
+                    <Link href="/my-learning" className="flex items-center py-3 font-medium">
+                        My Learning
+                    </Link>
+                </div>
+
+                {isLoggedIn ? (
+                    <div className="mb-6 pb-4 border-b border-gray-200">
+                        {userMenuItems.map((item, idx) => (
+                            <Link
+                                key={idx}
+                                href={item.href}
+                                className="flex items-center gap-3 py-3"
+                                onClick={onClose}
+                            >
+                                <item.icon className="h-5 w-5 text-gray-600" />
+                                <span className="font-medium">{item.label}</span>
+                            </Link>
+                        ))}
+                        <button
+                            onClick={() => {
+                                logout();
+                                onClose();
+                            }}
+                            className="flex w-full items-center gap-3 py-3 text-red-600"
+                        >
+                            <LogOut className="h-5 w-5" />
+                            <span className="font-medium">Log Out</span>
+                        </button>
+                    </div>
+                ) : (
+                    <div className="mb-6 pb-4 border-b border-gray-200">
+                        <Link href="/auth"
+                            className="flex items-center justify-center py-3 rounded-xl font-semibold w-full"
+                            onClick={onClose}
+                            style={{
+                                background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                color: "#fff"
+                            }}
+                        >
+                            Login
+                        </Link>
+                    </div>
+                )}
+
+                <div className="mb-4">
+                    <h3 className="font-bold text-gray-700 mb-2">Course Categories</h3>
+                    {categories.map((category, idx) => (
+                        <div key={idx} className="mb-2 bg-gray-50 hover:bg-gray-100 rounded-lg p-2">
+                            <div
+                                className="flex items-center justify-between py-3 cursor-pointer"
+                                onClick={() => toggleCategory(category.name)}
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-10 h-10 p-2 font-bold flex items-center justify-center rounded-full ${category.bg}`}>
+                                        {category.iconElement}
+                                    </div>
+                                    <span className="font-medium">
+                                        {category.name}
+                                        <span className="text-xs text-gray-500">  ({category.noofcourses} Courses)</span>
+                                    </span>
+                                </div>
+                                {expandedCategory === category.name ? (
+                                    <ChevronUp className="mr-2 h-5 w-5" />
+                                ) : (
+                                    <ChevronDown className="mr-2 h-5 w-5" />
+                                )}
+                            </div>
+
+                            {expandedCategory === category.name && (
+                                <div>
+                                    {category.courseList && category.courseList.length > 0 ? (
+                                        <ul>
+                                            {category.courseList.map((course, courseIdx) => (
+                                                <li key={course.slug || courseIdx}>
+                                                    <Link
+                                                        href={`/course?id=${course.slug}`}
+                                                        className="block py-2 text-sm text-gray-700 hover:text-[#8D1A5F] transition-colors bg-gray-50 rounded-lg p-2 mb-2"
+                                                        onClick={onClose}
+                                                    >
+                                                        <span className="font-medium">{course.name}</span>
+
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <div className="py-2 text-sm text-gray-400">No courses available.</div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                    <div className="mb-6 pb-4 border-b border-gray-200">
+                        <Link href="/courses"
+                            className="flex items-center justify-center py-3 rounded-xl font-semibold w-full"
+                            onClick={onClose}
+                            style={{
+                                background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                color: "#fff"
+                            }}
+                        >
+                            View All Courses
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // Navbar component
 const Navbar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const pathname = usePathname();
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
     const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     useEffect(() => {
         setIsLoggedIn(!!user);
     }, [user]);
+
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [isMobileMenuOpen]);
 
     const handleExploreMouseEnter = () => {
         setIsDropdownOpen(true);
@@ -229,6 +420,8 @@ const Navbar = () => {
 
     useEffect(() => {
         handleOverlayMouseEnter();
+        setIsMobileMenuOpen(false);
+        setIsSearchOpen(false);
     }, [pathname]);
 
     return (
@@ -252,6 +445,7 @@ const Navbar = () => {
                             </div>
                         </div>
 
+                        {/* Desktop Search */}
                         <div className="hidden md:flex flex-1 mx-6">
                             <div className="relative w-full max-w-3xl mx-auto">
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -263,6 +457,7 @@ const Navbar = () => {
                             </div>
                         </div>
 
+                        {/* Desktop Navigation */}
                         <div className="hidden md:flex items-center space-x-6 ml-auto">
                             <Link href="/for-corporates" className="font-medium transition-colors whitespace-nowrap">
                                 KC for Corporates
@@ -313,18 +508,48 @@ const Navbar = () => {
                             )}
                         </div>
 
-                        <button className="md:hidden text-black ml-auto">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                className="w-6 h-6"
+                        {/* Mobile Navigation */}
+                        <div className="flex md:hidden items-center space-x-4">
+                            <button
+                                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                                className="text-gray-700"
                             >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </button>
+                                <Search className="h-5 w-5" />
+                            </button>
+                            <Link href="/cart" className="transition-colors relative">
+                                <ShoppingCart className="h-5 w-5" />
+                                <span className="absolute -top-2 -right-2 text-[10px] rounded-full h-4 w-4 flex items-center justify-center"
+                                    style={{
+                                        background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
+                                        color: "#fff"
+                                    }}
+                                >
+                                    2
+                                </span>
+                            </Link>
+                            <button
+                                onClick={() => setIsMobileMenuOpen(true)}
+                                className="text-gray-700"
+                            >
+                                <Menu className="h-6 w-6" />
+                            </button>
+                        </div>
                     </div>
+
+                    {/* Mobile Search Bar */}
+                    {isSearchOpen && (
+                        <div className="md:hidden mt-3 pb-2">
+                            <div className="relative w-full">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                                <input
+                                    type="text"
+                                    placeholder="Search for courses..."
+                                    className="w-full pl-10 pr-4 py-2 rounded-xl bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                    autoFocus
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Black overlay area that resets dropdown when hovered */}
@@ -344,6 +569,23 @@ const Navbar = () => {
 
                 {isUserDropdownOpen && <UserDropdown />}
             </nav>
+
+            {/* Mobile Menu */}
+            <MobileMenu
+                isOpen={isMobileMenuOpen}
+                onClose={() => setIsMobileMenuOpen(false)}
+                isLoggedIn={isLoggedIn}
+                user={user}
+                logout={logout}
+            />
+
+            {/* Overlay for mobile menu */}
+            {isMobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-40"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
         </>
     );
 };
