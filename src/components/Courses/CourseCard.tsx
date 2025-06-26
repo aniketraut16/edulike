@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react';
-import { Course } from '@/utils/coursemanagement';
+import { Course } from '@/types/courses';
 import Link from 'next/link';
 
 export default function CourseCard({ item }: { item: Course }) {

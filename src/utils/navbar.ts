@@ -256,9 +256,9 @@ const getRandomColor = () => {
   return colorPalette[Math.floor(Math.random() * colorPalette.length)];
 };
 
-export const getCourses = async (): Promise<Course[]> => {
+export const getNavbarCourses = async (): Promise<Course[]> => {
   try {
-    const navbarCourses = await getNavbarCourses();
+    const navbarCourses = await getRawNavbarCourses();
 
     const transformedCourses: Course[] = navbarCourses.map((category) => {
       const randomIcon = getRandomIcon();
@@ -300,7 +300,7 @@ type NavbarCourses = {
   }[];
 };
 
-export const getNavbarCourses = async (): Promise<NavbarCourses[]> => {
+export const getRawNavbarCourses = async (): Promise<NavbarCourses[]> => {
   try {
     const response = await axios.get(`${baseUrl}/courses/dashboard`);
     return response.data.dashboard.top_categories as NavbarCourses[];

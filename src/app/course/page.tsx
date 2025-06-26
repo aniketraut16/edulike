@@ -1,5 +1,6 @@
 'use client'
-import { DetailCourse, getOneCourse } from '@/utils/coursemanagement';
+import { getOneCourse } from '@/utils/course';
+import { DetailCourse } from '@/types/courses';
 import { Suspense, useEffect, useState } from 'react';
 import React from 'react';
 import { Button } from '@/components/ui/button';

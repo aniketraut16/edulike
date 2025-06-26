@@ -17,7 +17,7 @@ import {
     ChevronUp,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { Course, getCourses } from '@/utils/courses';
+import { Course, getNavbarCourses } from '@/utils/navbar';
 import { usePathname } from 'next/navigation';
 import { useAuth } from "@/context/AuthContext";
 
@@ -365,7 +365,7 @@ const Navbar = () => {
     useEffect(() => {
         const loadCategories = async () => {
             try {
-                const preprocessedCategories = await getCourses();
+                const preprocessedCategories = await getNavbarCourses();
                 setCategories(preprocessedCategories);
             } catch (error) {
                 console.error('Error loading categories:', error);

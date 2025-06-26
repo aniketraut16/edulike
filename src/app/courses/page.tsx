@@ -1,6 +1,7 @@
 "use client"
 import { Suspense, useEffect, useState } from "react"
-import { Course, getAllCourses, getCategories, Category } from "@/utils/coursemanagement"
+import { getAllCourses, getCategories } from "@/utils/course"
+import { Course, Category } from "@/types/courses"
 import CourseCard from "@/components/Courses/CourseCard";
 import { FaFilter } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
