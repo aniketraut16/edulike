@@ -2,7 +2,6 @@
 import { FaBookOpen, FaUserGraduate, FaCalendarAlt } from "react-icons/fa";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
-import { getCourses } from "@/utils/courses";
 import { useState, useEffect } from "react";
 
 export default function Stats() {
@@ -10,8 +9,8 @@ export default function Stats() {
     const [hasAnimated, setHasAnimated] = useState(false);
 
     // Calculate total courses and students (example numbers)
-    const categories = getCourses();
-    const totalCourses = categories.reduce((sum, cat) => sum + cat.noofcourses, 0);
+    // const categories = getCourses();
+    const totalCourses = 20;
     const totalStudents = 1200000; // Example: 1.2M students learning
     const yearsActive = 5; // Example: 5 years
 

@@ -21,47 +21,16 @@ import { Course, getCourses } from '@/utils/courses';
 import { usePathname } from 'next/navigation';
 import { useAuth } from "@/context/AuthContext";
 
-
-type Category = Course & {
-    iconElement: React.ReactNode;
-    bg: string;
-    border: string;
-};
-
-const colorPalette = [
-    { bg: 'bg-blue-100', border: 'hover:border-blue-500', icon: '#3B82F6' },
-    { bg: 'bg-orange-100', border: 'hover:border-orange-500', icon: '#F97316' },
-    { bg: 'bg-green-100', border: 'hover:border-green-500', icon: '#10B981' },
-    { bg: 'bg-indigo-100', border: 'hover:border-indigo-500', icon: '#6366F1' },
-    { bg: 'bg-pink-100', border: 'hover:border-pink-500', icon: '#EC4899' },
-    { bg: 'bg-yellow-100', border: 'hover:border-yellow-500', icon: '#FBBF24' },
-    { bg: 'bg-purple-100', border: 'hover:border-purple-500', icon: '#A855F7' },
-    { bg: 'bg-red-100', border: 'hover:border-red-500', icon: '#EF4444' },
-    { bg: 'bg-teal-100', border: 'hover:border-teal-500', icon: '#14B8A6' },
-    { bg: 'bg-lime-100', border: 'hover:border-lime-500', icon: '#84CC16' },
-    { bg: 'bg-rose-100', border: 'hover:border-rose-500', icon: '#F43F5E' },
-    { bg: 'bg-cyan-100', border: 'hover:border-cyan-500', icon: '#06B6D4' },
-    { bg: 'bg-amber-100', border: 'hover:border-amber-500', icon: '#F59E0B' },
-    { bg: 'bg-sky-100', border: 'hover:border-sky-500', icon: '#0EA5E9' },
-    { bg: 'bg-fuchsia-100', border: 'hover:border-fuchsia-500', icon: '#D946EF' },
-];
-
-const shuffleArray = (arr: any[]) => [...arr].sort(() => Math.random() - 0.5);
-const rawCategories = getCourses();
-const shuffledColors = shuffleArray(colorPalette).slice(0, rawCategories.length);
-const categories = rawCategories.map((cat, idx) => ({
-    ...cat,
-    iconElement: <cat.icon size={28} color={shuffledColors[idx].icon} />,
-    bg: shuffledColors[idx].bg,
-    border: shuffledColors[idx].border,
-}));
+// Category type is now the same as Course since preprocessing is done in courses.ts
+type Category = Course;
 
 interface ExploreDropdownProps {
     hoveredCategory: Category | null;
     setHoveredCategory: (category: Category | null) => void;
+    categories: Category[];
 }
 
-const ExploreDropdown = ({ hoveredCategory, setHoveredCategory }: ExploreDropdownProps) => {
+const ExploreDropdown = ({ hoveredCategory, setHoveredCategory, categories }: ExploreDropdownProps) => {
     return (
         <div className='ml-[5vw] h-[70vh] flex overflow-hidden'
             style={{
@@ -80,24 +49,30 @@ const ExploreDropdown = ({ hoveredCategory, setHoveredCategory }: ExploreDropdow
                     </Link>
                 </div>
                 <div className='flex flex-col gap-2 mt-4 h-full overflow-y-auto mb-4'>
-                    {categories.map((category, idx) => (
-                        <div
-                            key={idx}
-                            onMouseEnter={() => setHoveredCategory(category)}
-                            className={`flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md cursor-pointer w-full min-h-10 border-l-4 border-transparent ${category.border} hover:font-semibold transition-all duration-300 ${hoveredCategory?.name === category.name ? 'bg-gray-50 font-semibold' : ''}`}
-                        >
-                            <div className={`w-9 h-9 flex items-center justify-center rounded-full p-2 mr-2 ${category.bg}`}>
-                                {category.iconElement}
-                            </div>
-                            <div className='flex flex-col'>
-                                <span className='text-sm text-gray-700'>{category.name}</span>
-                                <span className='text-sm text-gray-500'>({category.noofcourses} Courses)</span>
-                            </div>
-                            <div className='ml-auto'>
-                                <ChevronRight className='h-4 w-4' />
-                            </div>
+                    {categories.length === 0 ? (
+                        <div className="flex items-center justify-center h-full">
+                            <span className="text-gray-500">Loading categories...</span>
                         </div>
-                    ))}
+                    ) : (
+                        categories.map((category: Category, idx: number) => (
+                            <div
+                                key={idx}
+                                onMouseEnter={() => setHoveredCategory(category)}
+                                className={`flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md cursor-pointer w-full min-h-10 border-l-4 border-transparent ${category.border} hover:font-semibold transition-all duration-300 ${hoveredCategory?.name === category.name ? 'bg-gray-50 font-semibold' : ''}`}
+                            >
+                                <div className={`w-9 h-9 flex items-center justify-center rounded-full p-2 mr-2 ${category.bg}`}>
+                                    {category.iconElement}
+                                </div>
+                                <div className='flex flex-col'>
+                                    <span className='text-sm text-gray-700'>{category.name}</span>
+                                    <span className='text-sm text-gray-500'>({category.noofcourses} Courses)</span>
+                                </div>
+                                <div className='ml-auto'>
+                                    <ChevronRight className='h-4 w-4' />
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
 
@@ -117,7 +92,7 @@ const ExploreDropdown = ({ hoveredCategory, setHoveredCategory }: ExploreDropdow
                         </span>
                         <hr className='my-4' />
                         <div className='flex flex-col h-full overflow-y-auto'>
-                            {hoveredCategory.courseList.map((course, idx) => (
+                            {hoveredCategory.courseList.map((course: { name: string; slug: string }, idx: number) => (
                                 <Link
                                     key={idx}
                                     href={`/course?id=${course.slug}`}
@@ -199,12 +174,13 @@ const UserDropdown = () => {
 };
 
 // Mobile menu component
-const MobileMenu = ({ isOpen, onClose, isLoggedIn, user, logout }: {
+const MobileMenu = ({ isOpen, onClose, isLoggedIn, user, logout, categories }: {
     isOpen: boolean;
     onClose: () => void;
     isLoggedIn: boolean;
     user: any;
     logout: () => void;
+    categories: Category[];
 }) => {
     const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
@@ -308,7 +284,7 @@ const MobileMenu = ({ isOpen, onClose, isLoggedIn, user, logout }: {
 
                 <div className="mb-4">
                     <h3 className="font-bold text-gray-700 mb-2">Course Categories</h3>
-                    {categories.map((category, idx) => (
+                    {categories.map((category: Category, idx: number) => (
                         <div key={idx} className="mb-2 bg-gray-50 hover:bg-gray-100 rounded-lg p-2">
                             <div
                                 className="flex items-center justify-between py-3 cursor-pointer"
@@ -334,7 +310,7 @@ const MobileMenu = ({ isOpen, onClose, isLoggedIn, user, logout }: {
                                 <div>
                                     {category.courseList && category.courseList.length > 0 ? (
                                         <ul>
-                                            {category.courseList.map((course, courseIdx) => (
+                                            {category.courseList.map((course: { name: string; slug: string }, courseIdx: number) => (
                                                 <li key={course.slug || courseIdx}>
                                                     <Link
                                                         href={`/course?id=${course.slug}`}
@@ -382,6 +358,24 @@ const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Load categories from API
+    useEffect(() => {
+        const loadCategories = async () => {
+            try {
+                const preprocessedCategories = await getCourses();
+                setCategories(preprocessedCategories);
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadCategories();
+    }, []);
 
     useEffect(() => {
         setIsLoggedIn(!!user);
@@ -564,6 +558,7 @@ const Navbar = () => {
                     <ExploreDropdown
                         hoveredCategory={hoveredCategory}
                         setHoveredCategory={setHoveredCategory}
+                        categories={categories}
                     />
                 )}
 
@@ -577,6 +572,7 @@ const Navbar = () => {
                 isLoggedIn={isLoggedIn}
                 user={user}
                 logout={logout}
+                categories={categories}
             />
 
             {/* Overlay for mobile menu */}

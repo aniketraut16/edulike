@@ -1,3 +1,7 @@
+import axios from "axios";
+import React from "react";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
 import {
   FlaskConical,
   Sigma,
@@ -5,7 +9,69 @@ import {
   Settings,
   Palette,
   Briefcase,
+  BookOpen,
+  Brain,
+  Camera,
+  Code,
+  Database,
+  Globe,
+  GraduationCap,
+  Heart,
+  Lightbulb,
+  Music,
+  Paintbrush,
+  Rocket,
+  Shield,
+  Stethoscope,
+  Target,
+  Trophy,
+  Users,
+  Zap,
+  Circle,
+  Square,
+  Hexagon,
+  Star,
+  CircleDashed,
+  CircleEllipsis,
+  CircleDot,
+  CircleSlash,
+  CircleCheck,
+  CircleHelp,
+  CircleUser,
+  CircleEqual,
+  CircleOff,
+  CirclePause,
+  CirclePlay,
+  CirclePlus,
+  CircleMinus,
+  CircleX,
+  Dot,
+  Ellipsis,
+  MoreHorizontal,
+  MoreVertical,
+  SquareDashedBottom,
+  SquareEqual,
+  SquareUser,
+  SquareCheck,
+  SquarePlus,
+  SquareMinus,
+  SquareX,
+  StarHalf,
+  StarOff,
+  Octagon,
+  Pentagon,
+  Triangle,
+  Diamond,
+  Infinity,
+  Shapes,
+  LayoutGrid,
+  LayoutList,
+  Layers,
+  Grid,
+  AppWindow,
 } from "lucide-react";
+
+// Only include neutral icons in the type (not category-specific)
 export type Course = {
   name: string;
   icon:
@@ -14,267 +80,235 @@ export type Course = {
     | typeof Cpu
     | typeof Settings
     | typeof Palette
-    | typeof Briefcase;
+    | typeof Briefcase
+    | typeof BookOpen
+    | typeof Brain
+    | typeof Camera
+    | typeof Code
+    | typeof Database
+    | typeof Globe
+    | typeof GraduationCap
+    | typeof Heart
+    | typeof Lightbulb
+    | typeof Music
+    | typeof Paintbrush
+    | typeof Rocket
+    | typeof Shield
+    | typeof Stethoscope
+    | typeof Target
+    | typeof Trophy
+    | typeof Users
+    | typeof Zap
+    // Neutral icons:
+    | typeof Circle
+    | typeof Square
+    | typeof Hexagon
+    | typeof Star
+    | typeof CircleDashed
+    | typeof CircleEllipsis
+    | typeof CircleDot
+    | typeof CircleSlash
+    | typeof CircleCheck
+    | typeof CircleHelp
+    | typeof CircleUser
+    | typeof CircleEqual
+    | typeof CircleOff
+    | typeof CirclePause
+    | typeof CirclePlay
+    | typeof CirclePlus
+    | typeof CircleMinus
+    | typeof CircleX
+    | typeof Dot
+    | typeof Ellipsis
+    | typeof MoreHorizontal
+    | typeof MoreVertical
+    | typeof SquareDashedBottom
+    | typeof SquareEqual
+    | typeof SquareUser
+    | typeof SquareCheck
+    | typeof SquarePlus
+    | typeof SquareMinus
+    | typeof SquareX
+    | typeof StarHalf
+    | typeof StarOff
+    | typeof Octagon
+    | typeof Pentagon
+    | typeof Triangle
+    | typeof Diamond
+    | typeof Infinity
+    | typeof Shapes
+    | typeof LayoutGrid
+    | typeof LayoutList
+    | typeof Layers
+    | typeof Grid
+    | typeof AppWindow;
   noofcourses: number;
   courseList: {
     name: string;
     slug: string;
   }[];
+  iconElement: React.ReactNode;
+  bg: string;
+  border: string;
 };
 
-const rawCategories: Course[] = [
-  {
-    name: "Science",
-    icon: FlaskConical,
-    noofcourses: 10,
-    courseList: [
-      {
-        name: "Introduction to Physics",
-        slug: "introduction-to-physics",
-      },
-      {
-        name: "General Chemistry",
-        slug: "general-chemistry",
-      },
-      {
-        name: "Biology: The Science of Life",
-        slug: "biology-the-science-of-life",
-      },
-      {
-        name: "Environmental Science",
-        slug: "environmental-science",
-      },
-      {
-        name: "Astronomy: Exploring the Universe",
-        slug: "astronomy-exploring-the-universe",
-      },
-      {
-        name: "Organic Chemistry",
-        slug: "organic-chemistry",
-      },
-      {
-        name: "Genetics and Evolution",
-        slug: "genetics-and-evolution",
-      },
-      {
-        name: "Earth Science Fundamentals",
-        slug: "earth-science-fundamentals",
-      },
-      {
-        name: "Human Anatomy & Physiology",
-        slug: "human-anatomy-physiology",
-      },
-      {
-        name: "Scientific Research Methods",
-        slug: "scientific-research-methods",
-      },
-    ],
-  },
-  {
-    name: "Mathematics",
-    icon: Sigma,
-    noofcourses: 8,
-    courseList: [
-      {
-        name: "Calculus I",
-        slug: "calculus-i",
-      },
-      {
-        name: "Linear Algebra",
-        slug: "linear-algebra",
-      },
-      {
-        name: "Statistics and Probability",
-        slug: "statistics-and-probability",
-      },
-      {
-        name: "Discrete Mathematics",
-        slug: "discrete-mathematics",
-      },
-      {
-        name: "Differential Equations",
-        slug: "differential-equations",
-      },
-      {
-        name: "Mathematical Logic",
-        slug: "mathematical-logic",
-      },
-      {
-        name: "Number Theory",
-        slug: "number-theory",
-      },
-      {
-        name: "Geometry Essentials",
-        slug: "geometry-essentials",
-      },
-    ],
-  },
-  {
-    name: "Technology",
-    icon: Cpu,
-    noofcourses: 12,
-    courseList: [
-      {
-        name: "Introduction to Computer Science",
-        slug: "introduction-to-computer-science",
-      },
-      {
-        name: "Web Development Fundamentals",
-        slug: "web-development-fundamentals",
-      },
-      {
-        name: "Data Structures and Algorithms",
-        slug: "data-structures-and-algorithms",
-      },
-      {
-        name: "Introduction to Artificial Intelligence",
-        slug: "introduction-to-artificial-intelligence",
-      },
-      {
-        name: "Cybersecurity Basics",
-        slug: "cybersecurity-basics",
-      },
-      {
-        name: "Mobile App Development",
-        slug: "mobile-app-development",
-      },
-      {
-        name: "Cloud Computing Essentials",
-        slug: "cloud-computing-essentials",
-      },
-      {
-        name: "Database Management Systems",
-        slug: "database-management-systems",
-      },
-      {
-        name: "Machine Learning Foundations",
-        slug: "machine-learning-foundations",
-      },
-      {
-        name: "Internet of Things (IoT)",
-        slug: "internet-of-things-iot",
-      },
-      {
-        name: "Software Engineering Principles",
-        slug: "software-engineering-principles",
-      },
-      {
-        name: "Blockchain Technology",
-        slug: "blockchain-technology",
-      },
-    ],
-  },
-  {
-    name: "Engineering",
-    icon: Settings,
-    noofcourses: 7,
-    courseList: [
-      {
-        name: "Fundamentals of Engineering",
-        slug: "fundamentals-of-engineering",
-      },
-      {
-        name: "Electrical Engineering Basics",
-        slug: "electrical-engineering-basics",
-      },
-      {
-        name: "Mechanical Engineering Principles",
-        slug: "mechanical-engineering-principles",
-      },
-      {
-        name: "Civil Engineering Design",
-        slug: "civil-engineering-design",
-      },
-      {
-        name: "Thermodynamics",
-        slug: "thermodynamics",
-      },
-      {
-        name: "Materials Science",
-        slug: "materials-science",
-      },
-      {
-        name: "Engineering Project Management",
-        slug: "engineering-project-management",
-      },
-    ],
-  },
-  {
-    name: "Arts",
-    icon: Palette,
-    noofcourses: 6,
-    courseList: [
-      {
-        name: "Modern Art History",
-        slug: "modern-art-history",
-      },
-      {
-        name: "Introduction to Painting",
-        slug: "introduction-to-painting",
-      },
-      {
-        name: "Digital Photography",
-        slug: "digital-photography",
-      },
-      {
-        name: "Music Theory Basics",
-        slug: "music-theory-basics",
-      },
-      {
-        name: "Creative Writing Workshop",
-        slug: "creative-writing-workshop",
-      },
-      {
-        name: "Graphic Design Fundamentals",
-        slug: "graphic-design-fundamentals",
-      },
-    ],
-  },
-  {
-    name: "Business",
-    icon: Briefcase,
-    noofcourses: 9,
-    courseList: [
-      {
-        name: "Principles of Marketing",
-        slug: "principles-of-marketing",
-      },
-      {
-        name: "Financial Accounting",
-        slug: "financial-accounting",
-      },
-      {
-        name: "Business Management Essentials",
-        slug: "business-management-essentials",
-      },
-      {
-        name: "Entrepreneurship 101",
-        slug: "entrepreneurship-101",
-      },
-      {
-        name: "Human Resource Management",
-        slug: "human-resource-management",
-      },
-      {
-        name: "Business Communication",
-        slug: "business-communication",
-      },
-      {
-        name: "Operations Management",
-        slug: "operations-management",
-      },
-      {
-        name: "International Business",
-        slug: "international-business",
-      },
-      {
-        name: "Business Ethics and Law",
-        slug: "business-ethics-and-law",
-      },
-    ],
-  },
+// Neutral icons: geometric shapes, layout, generic UI, etc.
+const neutralIcons = [
+  Circle,
+  Square,
+  Hexagon,
+  Star,
+  CircleDashed,
+  CircleEllipsis,
+  CircleDot,
+  CircleSlash,
+  CircleCheck,
+  CircleHelp,
+  CircleUser,
+  CircleEqual,
+  CircleOff,
+  CirclePause,
+  CirclePlay,
+  CirclePlus,
+  CircleMinus,
+  CircleX,
+  Dot,
+  Ellipsis,
+  MoreHorizontal,
+  MoreVertical,
+  SquareDashedBottom,
+  SquareEqual,
+  SquareUser,
+  SquareCheck,
+  SquarePlus,
+  SquareMinus,
+  SquareX,
+  StarHalf,
+  StarOff,
+  Octagon,
+  Pentagon,
+  Triangle,
+  Diamond,
+  Infinity,
+  Shapes,
+  LayoutGrid,
+  LayoutList,
+  Layers,
+  Grid,
+  AppWindow,
 ];
 
-export const getCourses = () => {
-  return rawCategories;
+// All icons available for random selection (category + neutral)
+const availableIcons = [
+  FlaskConical,
+  Sigma,
+  Cpu,
+  Settings,
+  Palette,
+  Briefcase,
+  BookOpen,
+  Brain,
+  Camera,
+  Code,
+  Database,
+  Globe,
+  GraduationCap,
+  Heart,
+  Lightbulb,
+  Music,
+  Paintbrush,
+  Rocket,
+  Shield,
+  Stethoscope,
+  Target,
+  Trophy,
+  Users,
+  Zap,
+  ...neutralIcons,
+];
+
+const colorPalette = [
+  { bg: "bg-blue-100", border: "hover:border-blue-500", icon: "#3B82F6" },
+  { bg: "bg-orange-100", border: "hover:border-orange-500", icon: "#F97316" },
+  { bg: "bg-green-100", border: "hover:border-green-500", icon: "#10B981" },
+  { bg: "bg-indigo-100", border: "hover:border-indigo-500", icon: "#6366F1" },
+  { bg: "bg-pink-100", border: "hover:border-pink-500", icon: "#EC4899" },
+  { bg: "bg-yellow-100", border: "hover:border-yellow-500", icon: "#FBBF24" },
+  { bg: "bg-purple-100", border: "hover:border-purple-500", icon: "#A855F7" },
+  { bg: "bg-red-100", border: "hover:border-red-500", icon: "#EF4444" },
+  { bg: "bg-teal-100", border: "hover:border-teal-500", icon: "#14B8A6" },
+  { bg: "bg-lime-100", border: "hover:border-lime-500", icon: "#84CC16" },
+  { bg: "bg-rose-100", border: "hover:border-rose-500", icon: "#F43F5E" },
+  { bg: "bg-cyan-100", border: "hover:border-cyan-500", icon: "#06B6D4" },
+  { bg: "bg-amber-100", border: "hover:border-amber-500", icon: "#F59E0B" },
+  { bg: "bg-sky-100", border: "hover:border-sky-500", icon: "#0EA5E9" },
+  { bg: "bg-fuchsia-100", border: "hover:border-fuchsia-500", icon: "#D946EF" },
+  { bg: "bg-emerald-100", border: "hover:border-emerald-500", icon: "#059669" },
+  { bg: "bg-violet-100", border: "hover:border-violet-500", icon: "#7C3AED" },
+  { bg: "bg-slate-100", border: "hover:border-slate-500", icon: "#475569" },
+];
+
+const shuffleArray = (arr: any[]) => [...arr].sort(() => Math.random() - 0.5);
+
+const getRandomIcon = () => {
+  return availableIcons[Math.floor(Math.random() * availableIcons.length)];
+};
+
+const getRandomColor = () => {
+  return colorPalette[Math.floor(Math.random() * colorPalette.length)];
+};
+
+export const getCourses = async (): Promise<Course[]> => {
+  try {
+    const navbarCourses = await getNavbarCourses();
+
+    const transformedCourses: Course[] = navbarCourses.map((category) => {
+      const randomIcon = getRandomIcon();
+      const randomColor = getRandomColor();
+
+      return {
+        name: category.name,
+        icon: randomIcon,
+        noofcourses: category.total_courses,
+        courseList: category.sample_courses.map((course) => ({
+          name: course.title,
+          slug: course.slug,
+        })),
+        iconElement: React.createElement(randomIcon, {
+          size: 28,
+          color: randomColor.icon,
+        }),
+        bg: randomColor.bg,
+        border: randomColor.border,
+      };
+    });
+
+    return transformedCourses;
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return [];
+  }
+};
+
+type NavbarCourses = {
+  id: string;
+  name: string;
+  slug: string;
+  total_courses: number;
+  sample_courses: {
+    id: string;
+    title: string;
+    slug: string;
+  }[];
+};
+
+export const getNavbarCourses = async (): Promise<NavbarCourses[]> => {
+  try {
+    const response = await axios.get(`${baseUrl}/courses/dashboard`);
+    console.log(response.data.dashboard.top_categories);
+    return response.data.dashboard.top_categories as NavbarCourses[];
+  } catch (error) {
+    console.error("Error fetching navbar courses:", error);
+    return [];
+  }
 };
