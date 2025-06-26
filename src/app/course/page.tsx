@@ -1,6 +1,6 @@
 'use client'
 import { DetailCourse, getOneCourse } from '@/utils/coursemanagement';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Clock, Award, Globe, CheckCircle, ShoppingCart, Star, Bookmark, Users, Play, Tag, BarChart3, Zap, Loader } from 'lucide-react';
@@ -9,7 +9,23 @@ import { useSearchParams } from 'next/navigation';
 function OneCoursePageContent() {
     const searchParams = useSearchParams();
     const id = searchParams.get("id");
-    const course: DetailCourse = getOneCourse(id || '');
+    const [course, setCourse] = useState<DetailCourse | null>(null);
+
+
+    useEffect(() => {
+        const fetchCourse = async () => {
+            const { success, course } = await getOneCourse(id || '');
+            if (success) {
+                setCourse(course);
+            }
+        };
+        fetchCourse();
+    }, [id]);
+
+    if (!course) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="bg-white min-h-screen pt-16">
             {/* Hero Section with Course Banner */}
@@ -25,7 +41,7 @@ function OneCoursePageContent() {
                                     </span>
                                     <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center">
                                         <BarChart3 size={14} className="mr-1.5" />
-                                        {course.difficultyLevel}
+                                        {course.difficulty_level.charAt(0).toUpperCase() + course.difficulty_level.slice(1)}
                                     </span>
                                 </div>
                                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight">
@@ -34,18 +50,18 @@ function OneCoursePageContent() {
                             </div>
 
                             <p className="text-lg md:text-xl text-white/90 leading-relaxed font-light">
-                                {course.shortDescription}
+                                {course.description}
                             </p>
 
                             <div className="flex flex-wrap items-center gap-6 text-sm">
                                 <div className="flex items-center">
                                     <div className="flex mr-2">
                                         {[...Array(5)].map((_, i) => (
-                                            <Star key={i} size={16} className={`${i < Math.floor(4.7) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
+                                            <Star key={i} size={16} className={`${i < Math.floor(course.rating || 0) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
                                         ))}
                                     </div>
-                                    <span className="font-medium">4.7</span>
-                                    <span className="text-white/70 ml-1">(243 reviews)</span>
+                                    <span className="font-medium">{course.rating || 0}</span>
+                                    <span className="text-white/70 ml-1">({course.reviews || 0} reviews)</span>
                                 </div>
                                 <div className="flex items-center">
                                     <BookOpen size={16} className="mr-2" />
@@ -53,15 +69,15 @@ function OneCoursePageContent() {
                                 </div>
                                 <div className="flex items-center">
                                     <Clock size={16} className="mr-2" />
-                                    <span className="font-medium">{course.totalDuration} hours total</span>
+                                    <span className="font-medium">{course.timetofinish} hours total</span>
                                 </div>
                                 <div className="flex items-center">
                                     <Globe size={16} className="mr-2" />
-                                    <span className="font-medium">{course.language === 'en' ? 'English' : course.language}</span>
+                                    <span className="font-medium">{course.language.charAt(0).toUpperCase() + course.language.slice(1)}</span>
                                 </div>
                                 <div className="flex items-center">
                                     <Users size={16} className="mr-2" />
-                                    <span className="font-medium">3,245 enrolled</span>
+                                    <span className="font-medium">{course.enrollment_count} enrolled</span>
                                 </div>
                             </div>
                         </div>
@@ -80,8 +96,8 @@ function OneCoursePageContent() {
 
                             <div className="mb-6">
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-3xl font-bold bg-gradient-to-r from-[#8D1A5F] to-[#AD3A7F] bg-clip-text text-transparent">₹1,499</span>
-                                    <span className="text-gray-500 line-through">₹2,999</span>
+                                    <span className="text-3xl font-bold bg-gradient-to-r from-[#8D1A5F] to-[#AD3A7F] bg-clip-text text-transparent">₹{course.price || 0}</span>
+                                    <span className="text-gray-500 line-through">₹{course.originalPrice || 0}</span>
                                 </div>
                                 <div className="text-sm text-emerald-600 font-medium mb-6 flex items-center">
                                     <Zap size={16} className="mr-1.5" />
@@ -101,7 +117,6 @@ function OneCoursePageContent() {
                             </div>
 
                             <div className="text-sm space-y-4">
-                                <p className="font-medium text-center">This course includes:</p>
                                 <div className="flex items-start">
                                     <BookOpen size={16} className="mr-2.5 mt-0.5 text-[#8D1A5F]" />
                                     <span>Full lifetime access</span>
@@ -130,7 +145,7 @@ function OneCoursePageContent() {
                                 What You'll Learn
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {course.whatYouWillLearn.map((item, index) => (
+                                {course.what_you_will_learn.map((item, index) => (
                                     <div key={index} className="flex items-start bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-colors duration-300">
                                         <CheckCircle size={18} className="mr-3 mt-0.5 text-[#8D1A5F]" />
                                         <span className="text-gray-700">{item}</span>
@@ -155,7 +170,7 @@ function OneCoursePageContent() {
                                     Prerequisites
                                 </h3>
                                 <p className="text-gray-700 leading-relaxed text-lg bg-gray-50 p-4 rounded-lg border-l-4 border-[#8D1A5F]">
-                                    {course.prerequisites}
+                                    {course.prerequisites || "No prerequisites"}
                                 </p>
 
                                 <h3 className="text-xl font-semibold mt-8 mb-4 text-gray-800 flex items-center">
@@ -163,7 +178,7 @@ function OneCoursePageContent() {
                                     Who this course is for
                                 </h3>
                                 <p className="text-gray-700 leading-relaxed text-lg bg-gray-50 p-4 rounded-lg border-l-4 border-[#8D1A5F]">
-                                    {course.targetAudience}
+                                    {course.target_audience}
                                 </p>
                             </div>
                         </div>
@@ -176,7 +191,7 @@ function OneCoursePageContent() {
                             </h2>
                             <div className="text-sm text-gray-500 mb-6 flex items-center">
                                 <Bookmark size={16} className="mr-2 text-[#8D1A5F]" />
-                                {course.modules.length} modules • {course.totalDuration} hours total
+                                {course.modules.length} modules • {course.timetofinish} hours total
                             </div>
 
                             <div className="space-y-4">
@@ -218,8 +233,8 @@ function OneCoursePageContent() {
 
                             <div className="mb-8">
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-3xl font-bold bg-gradient-to-r from-[#8D1A5F] to-[#AD3A7F] bg-clip-text text-transparent">₹1,499</span>
-                                    <span className="text-gray-500 line-through">₹2,999</span>
+                                    <span className="text-3xl font-bold bg-gradient-to-r from-[#8D1A5F] to-[#AD3A7F] bg-clip-text text-transparent">₹{course.price || 0}</span>
+                                    <span className="text-gray-500 line-through">₹{course.originalPrice || 0}</span>
                                 </div>
                                 <div className="text-sm text-emerald-600 font-medium mb-6 flex items-center">
                                     <Zap size={16} className="mr-1.5" />
@@ -239,7 +254,6 @@ function OneCoursePageContent() {
                             </div>
 
                             <div className="text-sm space-y-4 border-t border-gray-100 pt-6">
-                                <p className="font-medium text-center mb-2">This course includes:</p>
                                 <div className="flex items-start">
                                     <BookOpen size={16} className="mr-2.5 mt-0.5 text-[#8D1A5F]" />
                                     <span>Full lifetime access</span>
@@ -251,14 +265,6 @@ function OneCoursePageContent() {
                                 <div className="flex items-start">
                                     <Award size={16} className="mr-2.5 mt-0.5 text-[#8D1A5F]" />
                                     <span>Certificate of completion</span>
-                                </div>
-                                <div className="flex items-start">
-                                    <Users size={16} className="mr-2.5 mt-0.5 text-[#8D1A5F]" />
-                                    <span>3,245 students enrolled</span>
-                                </div>
-                                <div className="flex items-start">
-                                    <Clock size={16} className="mr-2.5 mt-0.5 text-[#8D1A5F]" />
-                                    <span>Last updated {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
                                 </div>
                             </div>
                         </div>

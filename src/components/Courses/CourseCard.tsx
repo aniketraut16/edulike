@@ -103,7 +103,7 @@ export default function CourseCard({ item }: { item: Course }) {
                             style={{
                                 background: 'linear-gradient(to right, #8D1A5F, #8D1A5F)'
                             }}
-                            href={`/course?id=${item.slug}`}
+                            href={`/course?id=${item.id}`}
                         >
                             Enroll Now
                         </Link>
