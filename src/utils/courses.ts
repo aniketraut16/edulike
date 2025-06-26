@@ -248,8 +248,6 @@ const colorPalette = [
   { bg: "bg-slate-100", border: "hover:border-slate-500", icon: "#475569" },
 ];
 
-const shuffleArray = (arr: any[]) => [...arr].sort(() => Math.random() - 0.5);
-
 const getRandomIcon = () => {
   return availableIcons[Math.floor(Math.random() * availableIcons.length)];
 };
@@ -305,7 +303,6 @@ type NavbarCourses = {
 export const getNavbarCourses = async (): Promise<NavbarCourses[]> => {
   try {
     const response = await axios.get(`${baseUrl}/courses/dashboard`);
-    console.log(response.data.dashboard.top_categories);
     return response.data.dashboard.top_categories as NavbarCourses[];
   } catch (error) {
     console.error("Error fetching navbar courses:", error);

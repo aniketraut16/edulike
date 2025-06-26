@@ -14,9 +14,9 @@ export default function CourseCard({ item }: { item: Course }) {
     const safeRating = Math.max(0, Math.min(5, Math.floor(Number(item.rating) || 0)));
 
     return (
-        <div className="w-full p-4">
+        <div className="w-full h-full p-4">
             <div
-                className={`bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl ${isHovered ? 'shadow-2xl' : ''}`}
+                className={`bg-white rounded-2xl shadow-lg overflow-hidden h-full transform transition-all duration-500 hover:scale-105 hover:shadow-2xl ${isHovered ? 'shadow-2xl' : ''}`}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
@@ -48,7 +48,7 @@ export default function CourseCard({ item }: { item: Course }) {
                                 <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="#8D1A5F">
                                     <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2c0 .74-.4 1.38-1 1.72v.78h-2v-.78c-.6-.34-1-.98-1-1.72zM15.5 17c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5zM3 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H9.42c-.14 0-.25-.11-.25-.25l.03-.12L10.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H3z" />
                                 </svg>
-                                <span>3k enrolled</span>
+                                <span>{item.enrollment_count} enrolled</span>
                             </div>
                         </div>
                     </div>
@@ -77,12 +77,12 @@ export default function CourseCard({ item }: { item: Course }) {
                             <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="#8D1A5F">
                                 <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z" />
                             </svg>
-                            <span>Difficulty: {item.difficulty}</span>
+                            <span>Difficulty: {item.difficulty_level.charAt(0).toUpperCase() + item.difficulty_level.slice(1)}</span>
                         </div>
                     </div>
 
                     {/* Price and Action */}
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center mt-auto">
                         <div className="flex items-center space-x-2">
                             <span
                                 className="font-bold text-2xl"
@@ -103,7 +103,7 @@ export default function CourseCard({ item }: { item: Course }) {
                             style={{
                                 background: 'linear-gradient(to right, #8D1A5F, #8D1A5F)'
                             }}
-                            href={`/course?id=${item.title.toLowerCase().replace(/ /g, '-')}`}
+                            href={`/course?id=${item.slug}`}
                         >
                             Enroll Now
                         </Link>

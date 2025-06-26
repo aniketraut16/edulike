@@ -1,7 +1,6 @@
 "use client"
 import { Suspense, useEffect, useState } from "react"
-import { Course } from "@/utils/coursemanagement"
-import { getAllCourses } from "@/utils/coursemanagement"
+import { Course, getAllCourses, getCategories, Category } from "@/utils/coursemanagement"
 import CourseCard from "@/components/Courses/CourseCard";
 import { FaFilter } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
@@ -18,7 +17,7 @@ function AllCoursesPageContent() {
     const [rating, setRating] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    const [sortBy, setSortBy] = useState("title");
+    const [sortBy, setSortBy] = useState<"price-low" | "price-high" | "rating" | "title">("title");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [showAllCategories, setShowAllCategories] = useState(false);
     const [showAllLanguages, setShowAllLanguages] = useState(false);
@@ -31,15 +30,12 @@ function AllCoursesPageContent() {
     const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
     const [selectedKcTypes, setSelectedKcTypes] = useState<string[]>([]);
 
+    // Backend categories state
+    const [backendCategories, setBackendCategories] = useState<Category[]>([]);
+    const [categoriesLoading, setCategoriesLoading] = useState(true);
+
     // Available filter options
     const languages = ["English", "Spanish", "French", "Chinese"];
-    const categories = [
-        "Web Development", "Data Science", "Design", "Business",
-        "Cloud Computing", "DevOps", "Security", "Science",
-        "Mathematics", "Personal Development", "Language",
-        "Creative", "Personal Finance", "Health", "Humanities",
-        "Technology", "Mobile Development", "Programming"
-    ];
     const difficulties = ["Beginner", "Intermediate", "Advanced"];
     const kcTypes = ["Individual", "Corporate", "Institution"];
 
@@ -58,7 +54,7 @@ function AllCoursesPageContent() {
             if (pageParam) setPage(parseInt(pageParam));
             if (queryParam) setQuery(queryParam);
             if (ratingParam) setRating(parseFloat(ratingParam));
-            if (sortByParam) setSortBy(sortByParam);
+            if (sortByParam) setSortBy(sortByParam as "price-low" | "price-high" | "rating" | "title");
             if (categoriesParam) setSelectedCategories(categoriesParam.split(','));
             if (languagesParam) setSelectedLanguages(languagesParam.split(','));
             if (difficultiesParam) setSelectedDifficulties(difficultiesParam.split(','));
@@ -94,30 +90,29 @@ function AllCoursesPageContent() {
                 const languageStr = selectedLanguages.join(',');
                 const difficultyStr = selectedDifficulties.join(',');
                 const kcTypeStr = selectedKcTypes.join(',');
-
-                const data = getAllCourses(page, query, languageStr, categoryStr, rating, difficultyStr, kcTypeStr);
-
-                // Sort courses
-                let sortedCourses = [...data.courses];
-                switch (sortBy) {
-                    case "price-low":
-                        sortedCourses.sort((a, b) => a.price - b.price);
-                        break;
-                    case "price-high":
-                        sortedCourses.sort((a, b) => b.price - a.price);
-                        break;
-                    case "rating":
-                        sortedCourses.sort((a, b) => b.rating - a.rating);
-                        break;
-                    case "title":
-                    default:
-                        sortedCourses.sort((a, b) => a.title.localeCompare(b.title));
-                        break;
+                let orderBy = "created_at";
+                let order = "desc";
+                if (sortBy === "price-low") {
+                    orderBy = "price";
+                    order = "asc";
+                } else if (sortBy === "price-high") {
+                    orderBy = "price";
+                    order = "desc";
+                }
+                if (sortBy === "rating") {
+                    orderBy = "rating";
+                    order = "desc";
+                }
+                if (sortBy === "title") {
+                    orderBy = "title";
+                    order = "asc";
                 }
 
-                setCourses(sortedCourses);
-                setTotalPages(data.totalPages);
-                setCurrentPage(data.currentPage);
+                const data = await getAllCourses(page, query, languageStr, categoryStr, rating, difficultyStr, kcTypeStr, orderBy, order);
+
+                setCourses(data.courses);
+                setTotalPages(data.pagination.total_pages);
+                setCurrentPage(data.pagination.current_page);
                 setLoading(false);
             } catch (error: any) {
                 setError(error);
@@ -126,6 +121,23 @@ function AllCoursesPageContent() {
         }
         fetchCourses();
     }, [page, query, selectedLanguages, selectedCategories, rating, selectedDifficulties, selectedKcTypes, sortBy]);
+
+    // Fetch categories from backend
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                setCategoriesLoading(true);
+                const categories = await getCategories();
+                setBackendCategories(categories);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            } finally {
+                setCategoriesLoading(false);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     const handleFilterChange = (filterType: string, value: any) => {
         setPage(1); // Reset to first page when filters change
@@ -219,7 +231,7 @@ function AllCoursesPageContent() {
                             <select
                                 className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#8D1A5F] focus:border-transparent outline-none"
                                 value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
+                                onChange={(e) => setSortBy(e.target.value as "price-low" | "price-high" | "rating" | "title")}
                             >
                                 <option value="title">Name (A-Z)</option>
                                 <option value="price-low">Price (Low to High)</option>
@@ -296,26 +308,37 @@ function AllCoursesPageContent() {
                                     )}
                                 </h4>
                                 <div className="space-y-2">
-                                    {categories.slice(0, showAllCategories ? categories.length : 5).map((cat) => (
-                                        <label key={cat} className="flex items-center cursor-pointer group">
-                                            <input
-                                                type="checkbox"
-                                                name="category"
-                                                value={cat}
-                                                checked={selectedCategories.includes(cat)}
-                                                onChange={(e) => handleFilterChange("category", e.target.value)}
-                                                className="text-[#8D1A5F] focus:ring-[#8D1A5F] border-gray-300 rounded"
-                                            />
-                                            <span className="ml-2 text-sm text-gray-700 group-hover:text-gray-900">{cat}</span>
-                                        </label>
-                                    ))}
-                                    {categories.length > 5 && (
-                                        <button
-                                            onClick={() => setShowAllCategories(!showAllCategories)}
-                                            className="text-sm text-[#8D1A5F] hover:text-[#6B1548] font-medium mt-2"
-                                        >
-                                            {showAllCategories ? "Show Less" : "View More"}
-                                        </button>
+                                    {categoriesLoading ? (
+                                        <div className="flex items-center justify-center py-4">
+                                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#8D1A5F]"></div>
+                                            <span className="ml-2 text-sm text-gray-500">Loading categories...</span>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {backendCategories.slice(0, showAllCategories ? backendCategories.length : 5).map((cat) => (
+                                                <label key={cat.id} className="flex items-center cursor-pointer group">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="category"
+                                                        value={cat.id}
+                                                        checked={selectedCategories.includes(cat.id)}
+                                                        onChange={(e) => handleFilterChange("category", e.target.value)}
+                                                        className="text-[#8D1A5F] focus:ring-[#8D1A5F] border-gray-300 rounded"
+                                                    />
+                                                    <span className="ml-2 text-sm text-gray-700 group-hover:text-gray-900">
+                                                        {cat.name} <span className="text-xs text-gray-400">({cat.course_count})</span>
+                                                    </span>
+                                                </label>
+                                            ))}
+                                            {backendCategories.length > 5 && (
+                                                <button
+                                                    onClick={() => setShowAllCategories(!showAllCategories)}
+                                                    className="text-sm text-[#8D1A5F] hover:text-[#6B1548] font-medium mt-2"
+                                                >
+                                                    {showAllCategories ? "Show Less" : `View More (${backendCategories.length - 5} more)`}
+                                                </button>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             </div>
@@ -444,15 +467,29 @@ function AllCoursesPageContent() {
                         {!loading && !error && (
                             <>
                                 {courses.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8 ">
                                         {courses.map((course, index) => (
                                             <CourseCard key={`${course.title}-${index}`} item={course} />
                                         ))}
                                     </div>
                                 ) : (
                                     <div className="text-center py-20">
-                                        <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.044-5.709-2.709M15 3.935A7.962 7.962 0 0112 3c-2.34 0-4.29.044-5.709 1.935M12 18h.01" />
+                                        <svg
+                                            className="w-16 h-16 text-gray-400 mx-auto mb-4"
+                                            viewBox="0 0 64 64"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <circle cx="32" cy="32" r="30" stroke="currentColor" strokeWidth="2" fill="#F3F4F6" />
+                                            <g>
+                                                <rect x="18" y="36" width="28" height="10" rx="5" fill="#E5E7EB" />
+                                                <ellipse cx="32" cy="28" rx="10" ry="8" fill="#E5E7EB" />
+                                                <ellipse cx="26" cy="27" rx="2" ry="2.5" fill="#9CA3AF" />
+                                                <ellipse cx="38" cy="27" rx="2" ry="2.5" fill="#9CA3AF" />
+                                                <path d="M28 32c1.333 1.333 6.667 1.333 8 0" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" />
+                                            </g>
+                                            <path d="M44 44L54 54" stroke="#D1D5DB" strokeWidth="2" strokeLinecap="round" />
+                                            <circle cx="54" cy="54" r="2" fill="#D1D5DB" />
                                         </svg>
                                         <h3 className="text-lg font-medium text-gray-900 mb-2">No courses found</h3>
                                         <p className="text-gray-600 mb-4">Try adjusting your search criteria or filters</p>
