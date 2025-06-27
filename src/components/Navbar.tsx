@@ -20,6 +20,7 @@ import { useState, useEffect } from 'react';
 import { Course, getNavbarCourses } from '@/utils/navbar';
 import { usePathname } from 'next/navigation';
 import { useAuth } from "@/context/AuthContext";
+import { getCartItemsNumber } from '@/utils/cart';
 
 // Category type is now the same as Course since preprocessing is done in courses.ts
 type Category = Course;
@@ -360,6 +361,16 @@ const Navbar = () => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [cartItemsNumber, setCartItemsNumber] = useState(0);
+
+
+    useEffect(() => {
+        const fetchCartItemsNumber = async () => {
+            const data = await getCartItemsNumber();
+            setCartItemsNumber(data);
+        };
+        fetchCartItemsNumber();
+    }, []);
 
     // Load categories from API
     useEffect(() => {
@@ -470,7 +481,7 @@ const Navbar = () => {
                                         color: "#fff"
                                     }}
                                 >
-                                    2
+                                    {cartItemsNumber}
                                 </span>
                             </Link>
                             {isLoggedIn && (
@@ -518,7 +529,7 @@ const Navbar = () => {
                                         color: "#fff"
                                     }}
                                 >
-                                    2
+                                    {cartItemsNumber}
                                 </span>
                             </Link>
                             <button

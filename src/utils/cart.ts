@@ -1,112 +1,141 @@
-export type CartItem = {
-  courseId: string;
-  courseName: string;
-  coursePrice: number;
-  courseImage: string;
-  courseCategory: string;
-  courseModulesLength: number;
-  courseTotalDuration: number;
-  courseLanguage: string;
-  quantity: number;
-  for: "individual" | "institution" | "corporate";
-  assingLimit?: number;
-};
+import { AddToCart, updateCart, CartItem } from "@/types/cart";
+import axios from "axios";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export const getCart = () => {
-  if (typeof window === "undefined") return [];
+// Export CartItem type for use in other files
+export type { CartItem };
 
-  const cart = localStorage.getItem("cart");
-  if (cart) {
-    return JSON.parse(cart);
-  } else {
-    return [
-      {
-        courseId: "course-001",
-        courseName: "Full-Stack Web Development with React & Node.js",
-        coursePrice: 149,
-        courseImage: "https://i.ytimg.com/vi/5i8ej1-GpFU/maxresdefault.jpg",
-        courseCategory: "Web Development",
-        courseModulesLength: 42,
-        courseTotalDuration: 60,
-        courseLanguage: "English",
-        quantity: 1,
-        for: "individual",
-      },
-      {
-        courseId: "course-002",
-        courseName: "Python for Data Science & Machine Learning",
-        coursePrice: 129,
-        courseImage:
-          "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20230318230239/Python-Data-Science-Tutorial.jpg",
-        courseCategory: "Data Science",
-        courseModulesLength: 38,
-        courseTotalDuration: 48,
-        courseLanguage: "English",
-        quantity: 1,
-        for: "institution",
-        assingLimit: 10,
-      },
-      {
-        courseId: "course-003",
-        courseName: "UI/UX Design Essentials: Figma to Prototyping",
-        coursePrice: 99,
-        courseImage:
-          "https://static.skillshare.com/uploads/video/thumbnails/0bcdb57f80be0d1cceb3f11e51408c6e/original",
-        courseCategory: "Design",
-        courseModulesLength: 27,
-        courseTotalDuration: 30,
-        courseLanguage: "English",
-        quantity: 1,
-        for: "individual",
-      },
-    ];
+export const addToCart = async (data: AddToCart) => {
+  try {
+    let cartId = localStorage.getItem("kc-device-token");
+    if (!cartId) {
+      const randomStr = Math.random().toString(36).substring(2, 7);
+      cartId = `cart_${Date.now()}${randomStr}`;
+      localStorage.setItem("kc-device-token", cartId);
+    }
+    data.cartId = cartId;
+    const response = await axios.post(`${baseUrl}/cart/add`, data);
+    return {
+      success: true,
+      message: "Course added to cart successfully",
+      data: response.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to add course to cart",
+      error: error,
+    };
   }
 };
 
-export const saveCart = (cart: CartItem[]) => {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("cart", JSON.stringify(cart));
-};
-
-export const addToCart = (item: CartItem) => {
-  const cart = getCart();
-  const existingItemIndex = cart.findIndex(
-    (cartItem: CartItem) => cartItem.courseId === item.courseId
-  );
-
-  if (existingItemIndex !== -1) {
-    cart[existingItemIndex].quantity += item.quantity;
-  } else {
-    cart.push(item);
+export const getCart = async () => {
+  try {
+    const cartId = localStorage.getItem("kc-device-token");
+    if (!cartId) {
+      return {
+        success: false,
+        message: "Cart not found",
+        data: [],
+      };
+    }
+    const response = await axios.get(`${baseUrl}/cart/items?cartId=${cartId}`);
+    return {
+      success: true,
+      message: "Cart items fetched successfully",
+      data: response.data.cartItems,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to get cart",
+      data: [],
+      error: error,
+    };
   }
-
-  saveCart(cart);
-  return cart;
 };
 
-export const removeFromCart = (courseId: string) => {
-  const cart = getCart();
-  const updatedCart = cart.filter(
-    (item: CartItem) => item.courseId !== courseId
-  );
-  saveCart(updatedCart);
-  return updatedCart;
+export const getCartItemsNumber = async () => {
+  try {
+    const cartId = localStorage.getItem("kc-device-token");
+    if (!cartId) {
+      return 0;
+    }
+    const response = await axios.get(`${baseUrl}/cart/items?cartId=${cartId}`);
+    return response.data.cartItems.length;
+  } catch (error) {
+    return 0;
+  }
 };
 
-export const updateCartItemQuantity = (courseId: string, quantity: number) => {
-  if (quantity < 1) return getCart();
-
-  const cart = getCart();
-  const updatedCart = cart.map((item: CartItem) =>
-    item.courseId === courseId ? { ...item, quantity } : item
-  );
-
-  saveCart(updatedCart);
-  return updatedCart;
+export const updateCartItem = async (data: updateCart) => {
+  try {
+    const cartId = localStorage.getItem("kc-device-token");
+    if (!cartId) {
+      return {
+        success: false,
+        message: "Cart not found",
+      };
+    }
+    data.cartId = cartId;
+    await axios.put(`${baseUrl}/cart/update`, data);
+    return {
+      success: true,
+      message: "Cart item updated successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to update cart",
+    };
+  }
 };
 
-export const clearCart = () => {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem("cart");
-  return [];
+// Helper function to update cart item quantity
+export const updateCartItemQuantity = async (
+  courseId: string,
+  newQuantity: number
+): Promise<CartItem[]> => {
+  try {
+    const cartId = localStorage.getItem("kc-device-token");
+    if (!cartId) {
+      return [];
+    }
+
+    await updateCartItem({
+      cartId,
+      courseId,
+      quantity: newQuantity,
+    });
+
+    // Get updated cart
+    const cartResponse = await getCart();
+    return cartResponse.success ? cartResponse.data : [];
+  } catch (error) {
+    console.error("Failed to update cart item quantity:", error);
+    return [];
+  }
+};
+
+// Helper function to remove item from cart (by setting quantity to 0)
+export const removeFromCart = async (courseId: string): Promise<CartItem[]> => {
+  try {
+    const cartId = localStorage.getItem("kc-device-token");
+    if (!cartId) {
+      return [];
+    }
+
+    await updateCartItem({
+      cartId,
+      courseId,
+      quantity: 0,
+    });
+
+    // Get updated cart
+    const cartResponse = await getCart();
+    return cartResponse.success ? cartResponse.data : [];
+  } catch (error) {
+    console.error("Failed to remove item from cart:", error);
+    return [];
+  }
 };

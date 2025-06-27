@@ -1,17 +1,19 @@
 'use client'
 import { getOneCourse } from '@/utils/course';
+import { addToCart } from '@/utils/cart';
 import { DetailCourse } from '@/types/courses';
 import { Suspense, useEffect, useState } from 'react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Clock, Award, Globe, CheckCircle, ShoppingCart, Star, Bookmark, Users, Play, Tag, BarChart3, Zap, Loader } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import toast, { Toaster } from 'react-hot-toast';
 
 function OneCoursePageContent() {
     const searchParams = useSearchParams();
     const id = searchParams.get("id");
     const [course, setCourse] = useState<DetailCourse | null>(null);
-
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -23,12 +25,53 @@ function OneCoursePageContent() {
         fetchCourse();
     }, [id]);
 
+    const handleAddToCart = async () => {
+        if (!course) return;
+
+        setIsAddingToCart(true);
+        try {
+            toast.loading("Adding to cart...", { id: 'add-to-cart' });
+
+            const result = await addToCart({
+                courseId: course.id,
+                cartId: '', // Will be set in the function
+                quantity: 1,
+                accessType: "individual", // Default to individual for now
+            });
+
+            if (result.success) {
+                toast.success("Course added to cart successfully!", { id: 'add-to-cart' });
+            } else {
+                toast.error(result.message || "Failed to add course to cart", { id: 'add-to-cart' });
+            }
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            toast.error("Failed to add course to cart", { id: 'add-to-cart' });
+        } finally {
+            setIsAddingToCart(false);
+        }
+    };
+
+    const handleEnrollNow = () => {
+        // Implement direct enrollment logic here
+        toast.success("Redirecting to enrollment...");
+        // You can redirect to checkout or enrollment page
+    };
+
     if (!course) {
-        return <div>Loading...</div>;
+        return (
+            <div className="bg-white min-h-screen pt-16 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8D1A5F] mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading course details...</p>
+                </div>
+            </div>
+        );
     }
 
     return (
         <div className="bg-white min-h-screen pt-16">
+            <Toaster position="top-right" />
             {/* Hero Section with Course Banner */}
             <div className="bg-gradient-to-br from-[#8D1A5F] via-[#9D2A6F] to-[#AD3A7F] text-white">
                 <div className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
@@ -106,13 +149,21 @@ function OneCoursePageContent() {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <Button className="w-full bg-gradient-to-r from-[#8D1A5F] to-[#AD3A7F] hover:from-[#7A1751] hover:to-[#9A2A6F] text-white font-semibold py-3 rounded-lg shadow-lg shadow-[#8D1A5F]/20 transition-all duration-300">
+                                    <Button
+                                        onClick={handleEnrollNow}
+                                        className="w-full bg-gradient-to-r from-[#8D1A5F] to-[#AD3A7F] hover:from-[#7A1751] hover:to-[#9A2A6F] text-white font-semibold py-3 rounded-lg shadow-lg shadow-[#8D1A5F]/20 transition-all duration-300"
+                                    >
                                         <BookOpen size={18} className="mr-2" />
                                         Enroll Now
                                     </Button>
-                                    <Button variant="outline" className="w-full border-[#8D1A5F] text-[#8D1A5F] font-semibold py-3 rounded-lg hover:bg-[#8D1A5F]/5 transition-all duration-300">
+                                    <Button
+                                        variant="outline"
+                                        onClick={handleAddToCart}
+                                        disabled={isAddingToCart}
+                                        className="w-full border-[#8D1A5F] text-[#8D1A5F] font-semibold py-3 rounded-lg hover:bg-[#8D1A5F]/5 transition-all duration-300"
+                                    >
                                         <ShoppingCart size={18} className="mr-2" />
-                                        Add to Cart
+                                        {isAddingToCart ? "Adding..." : "Add to Cart"}
                                     </Button>
                                 </div>
                             </div>
@@ -243,13 +294,21 @@ function OneCoursePageContent() {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <Button className="w-full bg-gradient-to-r from-[#8D1A5F] to-[#AD3A7F] hover:from-[#7A1751] hover:to-[#9A2A6F] text-white font-semibold py-3 rounded-lg shadow-lg shadow-[#8D1A5F]/20 transition-all duration-300">
+                                    <Button
+                                        onClick={handleEnrollNow}
+                                        className="w-full bg-gradient-to-r from-[#8D1A5F] to-[#AD3A7F] hover:from-[#7A1751] hover:to-[#9A2A6F] text-white font-semibold py-3 rounded-lg shadow-lg shadow-[#8D1A5F]/20 transition-all duration-300"
+                                    >
                                         <BookOpen size={18} className="mr-2" />
                                         Enroll Now
                                     </Button>
-                                    <Button variant="outline" className="w-full border-[#8D1A5F] text-[#8D1A5F] font-semibold py-3 rounded-lg hover:bg-[#8D1A5F]/5 transition-all duration-300">
+                                    <Button
+                                        variant="outline"
+                                        onClick={handleAddToCart}
+                                        disabled={isAddingToCart}
+                                        className="w-full border-[#8D1A5F] text-[#8D1A5F] font-semibold py-3 rounded-lg hover:bg-[#8D1A5F]/5 transition-all duration-300"
+                                    >
                                         <ShoppingCart size={18} className="mr-2" />
-                                        Add to Cart
+                                        {isAddingToCart ? "Adding..." : "Add to Cart"}
                                     </Button>
                                 </div>
                             </div>

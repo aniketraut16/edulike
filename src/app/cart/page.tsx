@@ -3,13 +3,32 @@ import { CartItem, getCart, removeFromCart, updateCartItemQuantity } from "@/uti
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Clock, Globe, Star, Users } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
     const [cart, setCart] = useState<CartItem[]>([]);
-    const [promoCode, setPromoCode] = useState("");
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
-        setCart(getCart());
+        const fetchCart = async () => {
+            try {
+                const cartResponse = await getCart();
+                if (cartResponse.success) {
+                    setCart(cartResponse.data);
+                } else {
+                    setCart([]);
+                }
+            } catch (error) {
+                console.error("Failed to fetch cart:", error);
+                toast.error("Failed to load cart");
+                setCart([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCart();
     }, []);
 
     const subtotal = cart.reduce((total, item) => total + (item.coursePrice * item.quantity), 0);
@@ -17,23 +36,54 @@ export default function CartPage() {
     const GST = subtotal * 0.18;
     const total = subtotal - discount + GST;
 
-    const handleQuantityChange = (courseId: string, newQuantity: number) => {
+    const handleQuantityChange = async (courseId: string, newQuantity: number) => {
         if (newQuantity < 1) return;
-        const updatedCart = updateCartItemQuantity(courseId, newQuantity);
-        setCart(updatedCart);
+
+        try {
+            toast.loading("Updating cart...", { id: 'cart-update' });
+            const updatedCart = await updateCartItemQuantity(courseId, newQuantity);
+            setCart(updatedCart);
+            toast.success("Cart updated successfully", { id: 'cart-update' });
+        } catch (error) {
+            console.error("Failed to update cart:", error);
+            toast.error("Failed to update cart", { id: 'cart-update' });
+        }
     };
 
-    const handleRemoveItem = (courseId: string) => {
-        const updatedCart = removeFromCart(courseId);
-        setCart(updatedCart);
+    const handleRemoveItem = async (courseId: string) => {
+        try {
+            toast.loading("Removing item...", { id: 'cart-remove' });
+            const updatedCart = await removeFromCart(courseId);
+            setCart(updatedCart);
+            toast.success("Item removed from cart", { id: 'cart-remove' });
+        } catch (error) {
+            console.error("Failed to remove item:", error);
+            toast.error("Failed to remove item", { id: 'cart-remove' });
+        }
     };
 
     const formatPrice = (price: number) => {
         return price.toFixed(0);
     };
 
+    if (loading) {
+        return (
+            <div className="mx-auto py-12 px-4 bg-slate-50">
+                <div className="container mx-auto pt-[10vh]">
+                    <div className="flex items-center justify-center min-h-[400px]">
+                        <div className="text-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8D1A5F] mx-auto mb-4"></div>
+                            <p className="text-gray-600">Loading your cart...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="mx-auto py-12 px-4 bg-slate-50">
+            <Toaster position="top-right" />
             <div className="container mx-auto pt-[10vh]">
                 <h1 className="text-4xl font-bold mb-8"> YOUR CART</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -158,7 +208,11 @@ export default function CartPage() {
                                     </div>
                                 </div>
 
-                                <Button className="w-full bg-[#8D1A5F]/90 text-white hover:bg-[#8D1A5F] mt-4 py-6 flex items-center justify-center gap-2 rounded-full">
+                                <Button
+                                    onClick={() => router.push('/checkout')}
+                                    className="w-full bg-[#8D1A5F]/90 text-white hover:bg-[#8D1A5F] mt-4 py-6 flex items-center justify-center gap-2 rounded-full"
+                                    disabled={cart.length === 0}
+                                >
                                     Go to Checkout
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <line x1="5" y1="12" x2="19" y2="12"></line>

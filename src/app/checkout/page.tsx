@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function Checkout() {
     const [cart, setCart] = useState<CartItem[]>([]);
+    const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -22,7 +24,24 @@ export default function Checkout() {
     });
 
     useEffect(() => {
-        setCart(getCart());
+        const fetchCart = async () => {
+            try {
+                const cartResponse = await getCart();
+                if (cartResponse.success) {
+                    setCart(cartResponse.data);
+                } else {
+                    setCart([]);
+                    toast.error("Failed to load cart items");
+                }
+            } catch (error) {
+                console.error("Failed to fetch cart:", error);
+                toast.error("Failed to load cart");
+                setCart([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCart();
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -44,7 +63,14 @@ export default function Checkout() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (cart.length === 0) {
+            toast.error("Your cart is empty");
+            return;
+        }
+
         // Process payment logic here
+        toast.success("Processing payment...");
         console.log("Form submitted:", formData);
         console.log("Cart items:", cart);
     };
@@ -59,8 +85,46 @@ export default function Checkout() {
         return price.toFixed(0);
     };
 
+    if (loading) {
+        return (
+            <div className="mx-auto py-12 px-4 bg-slate-50">
+                <div className="container mx-auto pt-[10vh]">
+                    <div className="flex items-center justify-center min-h-[400px]">
+                        <div className="text-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8D1A5F] mx-auto mb-4"></div>
+                            <p className="text-gray-600">Loading checkout...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (cart.length === 0) {
+        return (
+            <div className="mx-auto py-12 px-4 bg-slate-50">
+                <Toaster position="top-right" />
+                <div className="container mx-auto pt-[10vh]">
+                    <div className="flex items-center justify-center min-h-[400px]">
+                        <div className="text-center">
+                            <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
+                            <p className="text-gray-600 mb-6">Add some courses to proceed with checkout</p>
+                            <Button
+                                onClick={() => window.location.href = '/courses'}
+                                className="bg-[#8D1A5F] hover:bg-[#8D1A5F]/90 text-white"
+                            >
+                                Browse Courses
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="mx-auto py-12 px-4 bg-slate-50">
+            <Toaster position="top-right" />
             <div className="container mx-auto pt-[10vh]">
                 <h1 className="text-4xl font-bold mb-8">CHECKOUT</h1>
 
@@ -271,7 +335,7 @@ export default function Checkout() {
                                     <Button
                                         type="submit"
                                         className="w-full bg-[#8D1A5F]/90 text-white hover:bg-[#8D1A5F] py-6 flex items-center justify-center gap-2 rounded-full"
-                                        disabled={!formData.termsAccepted}
+                                        disabled={!formData.termsAccepted || cart.length === 0}
                                     >
                                         Pay Now
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
