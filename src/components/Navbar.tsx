@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Course } from '@/utils/navbar';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from "@/context/AuthContext";
 import { useContent } from '@/context/ContentContext';
 
@@ -93,10 +93,10 @@ const ExploreDropdown = ({ hoveredCategory, setHoveredCategory, categories }: Ex
                         </span>
                         <hr className='my-4' />
                         <div className='flex flex-col h-full overflow-y-auto'>
-                            {hoveredCategory.courseList.map((course: { name: string; slug: string }, idx: number) => (
+                            {hoveredCategory.courseList.map((course: { name: string; slug: string; id: string }, idx: number) => (
                                 <Link
                                     key={idx}
-                                    href={`/course?id=${course.slug}`}
+                                    href={`/course?id=${course.id}`}
                                     className='text-sm text-gray-700 rounded-md transition-all border-l-3 border-transparent hover:border-gray-500 px-3 py-3 hover:bg-white/70'
                                 >
                                     {course.name}
@@ -311,10 +311,10 @@ const MobileMenu = ({ isOpen, onClose, isLoggedIn, user, logout, categories }: {
                                 <div>
                                     {category.courseList && category.courseList.length > 0 ? (
                                         <ul>
-                                            {category.courseList.map((course: { name: string; slug: string }, courseIdx: number) => (
-                                                <li key={course.slug || courseIdx}>
+                                            {category.courseList.map((course: { name: string; slug: string; id: string }, courseIdx: number) => (
+                                                <li key={course.id || courseIdx}>
                                                     <Link
-                                                        href={`/course?id=${course.slug}`}
+                                                        href={`/course?id=${course.id}`}
                                                         className="block py-2 text-sm text-gray-700 hover:text-[#8D1A5F] transition-colors bg-gray-50 rounded-lg p-2 mb-2"
                                                         onClick={onClose}
                                                     >
@@ -360,6 +360,16 @@ const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const { navbarCourses, cartCount } = useContent();
+    const [searchQuery, setSearchQuery] = useState('');
+    const router = useRouter();
+
+
+    const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            router.push(`/courses?query=${searchQuery}`);
+            setSearchQuery('');
+        }
+    };
 
 
 
@@ -431,6 +441,9 @@ const Navbar = () => {
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                                 <input
                                     type="text"
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    value={searchQuery}
+                                    onKeyDown={handleSearchKeyDown}
                                     placeholder="Search for courses..."
                                     className="w-full pl-10 pr-4 py-2 rounded-xl bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                 />
@@ -523,6 +536,9 @@ const Navbar = () => {
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                                 <input
                                     type="text"
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    value={searchQuery}
+                                    onKeyDown={handleSearchKeyDown}
                                     placeholder="Search for courses..."
                                     className="w-full pl-10 pr-4 py-2 rounded-xl bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                     autoFocus

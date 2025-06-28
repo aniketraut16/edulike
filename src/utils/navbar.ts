@@ -146,6 +146,7 @@ export type Course = {
   courseList: {
     name: string;
     slug: string;
+    id: string;
   }[];
   iconElement: React.ReactNode;
   bg: string;
@@ -269,6 +270,7 @@ export const getNavbarCourses = (navbarCourses: NavbarCourses[]): Course[] => {
         courseList: category.sample_courses.map((course) => ({
           name: course.title,
           slug: course.slug,
+          id: course.id,
         })),
         iconElement: React.createElement(randomIcon, {
           size: 28,
