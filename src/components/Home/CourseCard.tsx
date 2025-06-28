@@ -1,28 +1,19 @@
 'use client'
 import Link from 'next/link';
 import React, { useState } from 'react';
+import { Course } from "@/types/courses";
 
-export default function EnhancedCourseCard({ item }: {
-    item: {
-        title: string;
-        description: string;
-        image: string;
-        price: number;
-        originalPrice: number;
-        lessons: number;
-        difficulty: string;
-    }
-}) {
+export default function EnhancedCourseCard({ item }: { item: Course }) {
     const [isHovered, setIsHovered] = useState(false);
 
     // Convert prices to INR format
-    const formattedPrice = `₹${item.price.toLocaleString('en-IN')}`;
-    const formattedOriginalPrice = `₹${item.originalPrice.toLocaleString('en-IN')}`;
+    const formattedPrice = `₹${item.pricing.individual?.price.toLocaleString('en-IN')}`;
+    const formattedOriginalPrice = `₹${item.pricing.individual?.price.toLocaleString('en-IN')}`;
 
     return (
-        <div className="w-full p-2 sm:p-4">
+        <div className="w-full h-full p-2 sm:p-4">
             <div
-                className={`bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl ${isHovered ? 'shadow-2xl' : ''}`}
+                className={`bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden transform transition-all h-full duration-500 hover:scale-105 hover:shadow-2xl ${isHovered ? 'shadow-2xl' : ''}`}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
@@ -77,7 +68,7 @@ export default function EnhancedCourseCard({ item }: {
                             <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1" viewBox="0 0 24 24" fill="#8D1A5F">
                                 <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z" />
                             </svg>
-                            <span>Difficulty: {item.difficulty}</span>
+                            <span>Difficulty: {item.difficulty_level}</span>
                         </div>
                     </div>
 
