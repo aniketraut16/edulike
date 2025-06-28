@@ -5,8 +5,21 @@ export type Course = {
   description: string;
   image: string;
   instructor: string;
-  price: number;
-  originalPrice: number;
+  pricing: {
+    individual?: {
+      price: number;
+      tobegive: string;
+      assignlimit: number;
+    };
+    institution: {
+      assignLimit: number;
+      price: number;
+    }[];
+    corporate: {
+      assignLimit: number;
+      price: number;
+    }[];
+  };
   lessons: number;
   difficulty_level: string;
   language: string;

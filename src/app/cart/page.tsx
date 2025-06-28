@@ -1,85 +1,22 @@
 "use client";
-import { CartItem, getCart, removeFromCart, updateCartItemQuantity } from "@/utils/cart";
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Clock, Globe, Star, Users } from 'lucide-react';
-import toast, { Toaster } from 'react-hot-toast';
+import { BookOpen, Clock, Globe, Star } from 'lucide-react';
+import { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { useContent } from "@/context/ContentContext";
 
 export default function CartPage() {
-    const [cart, setCart] = useState<CartItem[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { cart, updateCartQuantity, removeCartItem } = useContent();
     const router = useRouter();
-
-    useEffect(() => {
-        const fetchCart = async () => {
-            try {
-                const cartResponse = await getCart();
-                if (cartResponse.success) {
-                    setCart(cartResponse.data);
-                } else {
-                    setCart([]);
-                }
-            } catch (error) {
-                console.error("Failed to fetch cart:", error);
-                toast.error("Failed to load cart");
-                setCart([]);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchCart();
-    }, []);
 
     const subtotal = cart.reduce((total, item) => total + (item.coursePrice * item.quantity), 0);
     const discount = Math.round(subtotal * 0.2); //
     const GST = subtotal * 0.18;
     const total = subtotal - discount + GST;
 
-    const handleQuantityChange = async (courseId: string, newQuantity: number) => {
-        if (newQuantity < 1) return;
-
-        try {
-            toast.loading("Updating cart...", { id: 'cart-update' });
-            const updatedCart = await updateCartItemQuantity(courseId, newQuantity);
-            setCart(updatedCart);
-            toast.success("Cart updated successfully", { id: 'cart-update' });
-        } catch (error) {
-            console.error("Failed to update cart:", error);
-            toast.error("Failed to update cart", { id: 'cart-update' });
-        }
-    };
-
-    const handleRemoveItem = async (courseId: string) => {
-        try {
-            toast.loading("Removing item...", { id: 'cart-remove' });
-            const updatedCart = await removeFromCart(courseId);
-            setCart(updatedCart);
-            toast.success("Item removed from cart", { id: 'cart-remove' });
-        } catch (error) {
-            console.error("Failed to remove item:", error);
-            toast.error("Failed to remove item", { id: 'cart-remove' });
-        }
-    };
-
     const formatPrice = (price: number) => {
         return price.toFixed(0);
     };
-
-    if (loading) {
-        return (
-            <div className="mx-auto py-12 px-4 bg-slate-50">
-                <div className="container mx-auto pt-[10vh]">
-                    <div className="flex items-center justify-center min-h-[400px]">
-                        <div className="text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8D1A5F] mx-auto mb-4"></div>
-                            <p className="text-gray-600">Loading your cart...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="mx-auto py-12 px-4 bg-slate-50">
@@ -143,14 +80,14 @@ export default function CartPage() {
 
                                             <div className="flex items-center gap-4">
                                                 <button
-                                                    onClick={() => handleQuantityChange(item.courseId, item.quantity - 1)}
+                                                    onClick={() => updateCartQuantity(item.courseId, item.quantity - 1)}
                                                     className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded"
                                                 >
                                                     −
                                                 </button>
                                                 <span>{item.quantity}</span>
                                                 <button
-                                                    onClick={() => handleQuantityChange(item.courseId, item.quantity + 1)}
+                                                    onClick={() => updateCartQuantity(item.courseId, item.quantity + 1)}
                                                     className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded"
                                                 >
                                                     +
@@ -158,7 +95,7 @@ export default function CartPage() {
                                             </div>
 
                                             <button
-                                                onClick={() => handleRemoveItem(item.courseId)}
+                                                onClick={() => removeCartItem(item.courseId)}
                                                 className="text-red-500 ml-4"
                                                 aria-label="Remove item"
                                             >

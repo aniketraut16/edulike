@@ -31,7 +31,7 @@ export const getAllCourses = async (
           query,
           language: language.toLowerCase(),
           category,
-          rating,
+          rating: rating === 0 ? undefined : rating,
           difficulty: difficulty.toLowerCase(),
           kcType: kcType.toLowerCase(),
           order_by,

@@ -17,10 +17,10 @@ import {
     ChevronUp,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { Course, getNavbarCourses } from '@/utils/navbar';
+import { Course } from '@/utils/navbar';
 import { usePathname } from 'next/navigation';
 import { useAuth } from "@/context/AuthContext";
-import { getCartItemsNumber } from '@/utils/cart';
+import { useContent } from '@/context/ContentContext';
 
 // Category type is now the same as Course since preprocessing is done in courses.ts
 type Category = Course;
@@ -359,34 +359,9 @@ const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [cartItemsNumber, setCartItemsNumber] = useState(0);
+    const { navbarCourses, cartCount } = useContent();
 
 
-    useEffect(() => {
-        const fetchCartItemsNumber = async () => {
-            const data = await getCartItemsNumber();
-            setCartItemsNumber(data);
-        };
-        fetchCartItemsNumber();
-    }, []);
-
-    // Load categories from API
-    useEffect(() => {
-        const loadCategories = async () => {
-            try {
-                const preprocessedCategories = await getNavbarCourses();
-                setCategories(preprocessedCategories);
-            } catch (error) {
-                console.error('Error loading categories:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        loadCategories();
-    }, []);
 
     useEffect(() => {
         setIsLoggedIn(!!user);
@@ -481,7 +456,7 @@ const Navbar = () => {
                                         color: "#fff"
                                     }}
                                 >
-                                    {cartItemsNumber}
+                                    {cartCount}
                                 </span>
                             </Link>
                             {isLoggedIn && (
@@ -529,7 +504,7 @@ const Navbar = () => {
                                         color: "#fff"
                                     }}
                                 >
-                                    {cartItemsNumber}
+                                    {cartCount}
                                 </span>
                             </Link>
                             <button
@@ -569,7 +544,7 @@ const Navbar = () => {
                     <ExploreDropdown
                         hoveredCategory={hoveredCategory}
                         setHoveredCategory={setHoveredCategory}
-                        categories={categories}
+                        categories={navbarCourses}
                     />
                 )}
 
@@ -583,7 +558,7 @@ const Navbar = () => {
                 isLoggedIn={isLoggedIn}
                 user={user}
                 logout={logout}
-                categories={categories}
+                categories={navbarCourses}
             />
 
             {/* Overlay for mobile menu */}

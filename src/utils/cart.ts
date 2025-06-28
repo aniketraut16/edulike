@@ -36,6 +36,7 @@ export const getCart = async () => {
       return {
         success: false,
         message: "Cart not found",
+        count: 0,
         data: [],
       };
     }
@@ -43,28 +44,17 @@ export const getCart = async () => {
     return {
       success: true,
       message: "Cart items fetched successfully",
+      count: response.data.cartItems.length,
       data: response.data.cartItems,
     };
   } catch (error) {
     return {
       success: false,
       message: "Failed to get cart",
+      count: 0,
       data: [],
       error: error,
     };
-  }
-};
-
-export const getCartItemsNumber = async () => {
-  try {
-    const cartId = localStorage.getItem("kc-device-token");
-    if (!cartId) {
-      return 0;
-    }
-    const response = await axios.get(`${baseUrl}/cart/items?cartId=${cartId}`);
-    return response.data.cartItems.length;
-  } catch (error) {
-    return 0;
   }
 };
 
