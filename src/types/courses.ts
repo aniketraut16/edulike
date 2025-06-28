@@ -58,14 +58,27 @@ export type DetailCourse = {
   difficulty_level: string;
   language: string;
   prerequisites: string;
-  price: number;
-  originalPrice: number;
-  rating: number;
-  reviews: number;
+  pricing: {
+    individual?: {
+      price: string;
+      tobegive: string;
+      assignlimit: number;
+    };
+    institution: {
+      assignLimit: number;
+      price: string;
+    }[];
+    corporate: {
+      assignLimit: number;
+      price: string;
+    }[];
+  };
+  rating: number | null;
+  rating_count: number;
   what_you_will_learn: string[];
   target_audience: string;
   total_duration: number;
-  timetofinish: string;
+  timetofinish: string | null;
   modules: Module[];
   enrollment_count: number;
   module_count: number;
