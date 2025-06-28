@@ -10,12 +10,13 @@ export default function CartPage() {
     const router = useRouter();
 
     const subtotal = cart.reduce((total, item) => total + (item.coursePrice * item.quantity), 0);
-    const discount = Math.round(subtotal * 0.2); //
     const GST = subtotal * 0.18;
-    const total = subtotal - discount + GST;
+    const total = subtotal + GST;
 
-    const formatPrice = (price: number) => {
-        return price.toFixed(0);
+    const formatPrice = (price: number | string) => {
+        const num = typeof price === "number" ? price : parseFloat(price);
+        if (isNaN(num)) return "0";
+        return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
     return (
@@ -40,14 +41,14 @@ export default function CartPage() {
                                             </div>
 
                                             <div className="flex-1">
-                                                <h3 className="text-xl font-medium">{item.courseName}  {(item.for === "individual" || item.for === "institution") && item.assingLimit && <p
+                                                <h3 className="text-xl font-medium">{item.courseName}  {(item.for === "institution" || item.for === "corporate") && <p
                                                     className="ml-2  p-1 px-2 rounded-full text-sm font-semibold w-fit inline"
                                                     style={{
                                                         background: "linear-gradient(90deg, #F3E6F1 0%, #FDE6F1 100%)",
                                                         color: "#8D1A5F"
                                                     }}
                                                 >
-                                                    For {item.for === "individual" ? "Individual" : "Institution"} ({item.assingLimit})
+                                                    For {item.for === "corporate" ? "Corporate" : "Institution"} ({item.assignLimit} Users)
                                                 </p>} </h3>
                                                 <div className="text-sm text-gray-500 mt-1">
                                                     <p>Category: {item.courseCategory}</p>
@@ -126,11 +127,6 @@ export default function CartPage() {
                                 <div className="flex justify-between">
                                     <span>Subtotal</span>
                                     <span className="font-semibold">${formatPrice(subtotal)}</span>
-                                </div>
-
-                                <div className="flex justify-between">
-                                    <span>Discount (-20%)</span>
-                                    <span className="text-red-500">-${formatPrice(discount)}</span>
                                 </div>
 
                                 <div className="flex justify-between">

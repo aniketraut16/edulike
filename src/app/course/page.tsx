@@ -269,8 +269,8 @@ function OneCoursePageContent() {
                                                             key={index}
                                                             onClick={() => handlePricingSelect(option)}
                                                             className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg ${selectedPricing?.assignLimit === option.assignLimit
-                                                                    ? 'bg-[#8D1A5F]/10 text-[#8D1A5F]'
-                                                                    : 'text-gray-700'
+                                                                ? 'bg-[#8D1A5F]/10 text-[#8D1A5F]'
+                                                                : 'text-gray-700'
                                                                 }`}
                                                         >
                                                             <div className="flex justify-between items-center">
@@ -465,8 +465,8 @@ function OneCoursePageContent() {
                                                             key={index}
                                                             onClick={() => handlePricingSelect(option)}
                                                             className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg ${selectedPricing?.assignLimit === option.assignLimit
-                                                                    ? 'bg-[#8D1A5F]/10 text-[#8D1A5F]'
-                                                                    : 'text-gray-700'
+                                                                ? 'bg-[#8D1A5F]/10 text-[#8D1A5F]'
+                                                                : 'text-gray-700'
                                                                 }`}
                                                         >
                                                             <div className="flex justify-between items-center">

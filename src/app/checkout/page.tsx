@@ -77,12 +77,13 @@ export default function Checkout() {
 
     // Calculate costs
     const subtotal = cart.reduce((total, item) => total + (item.coursePrice * item.quantity), 0);
-    const discount = Math.round(subtotal * 0.2);
     const GST = subtotal * 0.18;
-    const total = subtotal - discount + GST;
+    const total = subtotal + GST;
 
     const formatPrice = (price: number) => {
-        return price.toFixed(0);
+        const num = typeof price === "number" ? price : parseFloat(price);
+        if (isNaN(num)) return "0";
+        return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
     if (loading) {
@@ -280,8 +281,8 @@ export default function Checkout() {
                                                     <td className="py-3 pr-6">{item.courseName}</td>
                                                     <td className="py-3 pr-6">
                                                         {item.for === "individual" ? "Individual" :
-                                                            item.for === "institution" ? `Institution (${item.assingLimit})` :
-                                                                item.for === "corporate" ? `Corporate (${item.assingLimit})` : item.for}
+                                                            item.for === "institution" ? `Institution (${item.assignLimit})` :
+                                                                item.for === "corporate" ? `Corporate (${item.assignLimit})` : item.for}
                                                     </td>
                                                     <td className="py-3 text-right pr-6">${formatPrice(item.coursePrice)}</td>
                                                     <td className="py-3 text-right pr-6">{item.quantity}</td>
@@ -296,11 +297,6 @@ export default function Checkout() {
                                     <div className="flex justify-between">
                                         <span>Subtotal</span>
                                         <span className="font-semibold">${formatPrice(subtotal)}</span>
-                                    </div>
-
-                                    <div className="flex justify-between">
-                                        <span>Discount (-20%)</span>
-                                        <span className="text-red-500">-${formatPrice(discount)}</span>
                                     </div>
 
                                     <div className="flex justify-between">

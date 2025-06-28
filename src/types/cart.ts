@@ -18,7 +18,7 @@ export type CartItem = {
   courseLanguage: string;
   quantity: number;
   for: "individual" | "institution" | "corporate";
-  assingLimit?: number;
+  assignLimit?: number;
 };
 
 export type updateCart = {
