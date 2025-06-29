@@ -10,9 +10,9 @@ export const addToCart = async (data: AddToCart, cartId: string) => {
       const randomStr = Math.random().toString(36).substring(2, 7);
       cartId = `cart_${Date.now()}${randomStr}`;
       localStorage.setItem("kc-device-token", cartId);
+      data.cartId = cartId;
     }
 
-    data.cartId = cartId;
     const response = await axios.post(`${baseUrl}/cart/add`, data);
     return {
       success: true,

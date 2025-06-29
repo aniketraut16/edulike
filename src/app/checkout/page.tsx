@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import toast, { Toaster } from 'react-hot-toast';
+import { useContent } from '@/context/ContentContext';
 
 export default function Checkout() {
-    const [cart, setCart] = useState<CartItem[]>([]);
+    const { cart } = useContent();
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         name: '',
@@ -22,27 +23,6 @@ export default function Checkout() {
         country: '',
         termsAccepted: false
     });
-
-    useEffect(() => {
-        const fetchCart = async () => {
-            try {
-                const cartResponse = await getCart();
-                if (cartResponse.success) {
-                    setCart(cartResponse.data);
-                } else {
-                    setCart([]);
-                    toast.error("Failed to load cart items");
-                }
-            } catch (error) {
-                console.error("Failed to fetch cart:", error);
-                toast.error("Failed to load cart");
-                setCart([]);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchCart();
-    }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;

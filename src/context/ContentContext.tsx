@@ -13,6 +13,7 @@ type ContentContextType = {
     topCourses: Course[];
     cartCount: number;
     cart: CartItem[];
+    cartId: string;
     updateCartQuantity: (courseId: string, newQuantity: number) => Promise<void>;
     removeCartItem: (courseId: string) => Promise<void>;
     refreshCart: () => Promise<void>;
@@ -107,6 +108,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
                 topCourses,
                 cartCount,
                 cart,
+                cartId,
                 updateCartQuantity,
                 removeCartItem,
                 refreshCart,

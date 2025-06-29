@@ -26,7 +26,7 @@ function OneCoursePageContent() {
     const [selectedPricing, setSelectedPricing] = useState<PricingOption | null>(null);
     const [availableOptionsForType, setAvailableOptionsForType] = useState<PricingOption[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
-    const { refreshCart } = useContent();
+    const { refreshCart, cartId } = useContent();
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -117,10 +117,10 @@ function OneCoursePageContent() {
 
             const result = await addToCart({
                 courseId: course.id,
-                cartId: '', // Will be set in the function
                 quantity: 1,
                 accessType: selectedPricing.type,
-            });
+                cartId: cartId,
+            }, cartId);
 
             if (result.success) {
                 toast.success("Course added to cart successfully!", { id: 'add-to-cart' });
