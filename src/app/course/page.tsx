@@ -137,11 +137,6 @@ function OneCoursePageContent() {
         }
     };
 
-    const handleEnrollNow = () => {
-        // Implement direct enrollment logic here
-        toast.success("Redirecting to enrollment...");
-        // You can redirect to checkout or enrollment page
-    };
 
     // Helper function to get course price
     const getCoursePrice = () => {
@@ -304,13 +299,7 @@ function OneCoursePageContent() {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <Button
-                                        onClick={handleEnrollNow}
-                                        className="w-full bg-gradient-to-r from-[#8D1A5F] to-[#AD3A7F] hover:from-[#7A1751] hover:to-[#9A2A6F] text-white font-semibold py-3 rounded-lg shadow-lg shadow-[#8D1A5F]/20 transition-all duration-300"
-                                    >
-                                        <BookOpen size={18} className="mr-2" />
-                                        Enroll Now
-                                    </Button>
+
                                     <Button
                                         variant="outline"
                                         onClick={handleAddToCart}
@@ -500,13 +489,7 @@ function OneCoursePageContent() {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <Button
-                                        onClick={handleEnrollNow}
-                                        className="w-full bg-gradient-to-r from-[#8D1A5F] to-[#AD3A7F] hover:from-[#7A1751] hover:to-[#9A2A6F] text-white font-semibold py-3 rounded-lg shadow-lg shadow-[#8D1A5F]/20 transition-all duration-300"
-                                    >
-                                        <BookOpen size={18} className="mr-2" />
-                                        Enroll Now
-                                    </Button>
+
                                     <Button
                                         variant="outline"
                                         onClick={handleAddToCart}

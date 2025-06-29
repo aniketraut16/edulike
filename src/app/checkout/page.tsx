@@ -10,7 +10,6 @@ import { useContent } from '@/context/ContentContext';
 
 export default function Checkout() {
     const { cart } = useContent();
-    const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -66,20 +65,6 @@ export default function Checkout() {
         return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
-    if (loading) {
-        return (
-            <div className="mx-auto py-12 px-4 bg-slate-50">
-                <div className="container mx-auto pt-[10vh]">
-                    <div className="flex items-center justify-center min-h-[400px]">
-                        <div className="text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8D1A5F] mx-auto mb-4"></div>
-                            <p className="text-gray-600">Loading checkout...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     if (cart.length === 0) {
         return (

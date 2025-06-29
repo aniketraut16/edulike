@@ -19,10 +19,10 @@ export const addToCart = async (data: AddToCart, cartId: string) => {
       message: "Course added to cart successfully",
       data: response.data,
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
-      message: "Failed to add course to cart",
+      message: error.response.data.message || "Failed to add course to cart",
       error: error,
     };
   }

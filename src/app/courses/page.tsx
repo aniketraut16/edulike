@@ -470,7 +470,7 @@ function AllCoursesPageContent() {
                                 {courses.length > 0 ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8 ">
                                         {courses.map((course, index) => (
-                                            <CourseCard key={`${course.title}-${index}`} item={course} />
+                                            <CourseCard key={`${course.title}-${index}`} item={course} kcType={selectedKcTypes[0]} />
                                         ))}
                                     </div>
                                 ) : (

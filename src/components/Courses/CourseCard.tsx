@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Course } from '@/types/courses';
 import Link from 'next/link';
 
-export default function CourseCard({ item }: { item: Course }) {
+export default function CourseCard({ item, kcType = "individual" }: { item: Course, kcType?: string }) {
     const [isHovered, setIsHovered] = useState(false);
 
     // Convert prices to INR format
@@ -103,7 +103,7 @@ export default function CourseCard({ item }: { item: Course }) {
                             style={{
                                 background: 'linear-gradient(to right, #8D1A5F, #8D1A5F)'
                             }}
-                            href={`/course?id=${item.id}`}
+                            href={`/course?id=${item.id}${kcType !== "individual" ? `&kcType=${kcType.toLowerCase()}` : ""}`}
                         >
                             Enroll Now
                         </Link>

@@ -72,7 +72,7 @@ export default function OrganizationCourses({ forCorporate }: { forCorporate: bo
                             displayCount = courses.length;
                         }
                         return courses.slice(0, displayCount).map((item, index) => (
-                            <CourseCard key={index} item={item} />
+                            <CourseCard key={index} item={item} kcType={forCorporate ? "corporate" : "institution"} />
                         ));
                     })()}
                 </div>
