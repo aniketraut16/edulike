@@ -1,18 +1,17 @@
 import { AddToCart, updateCart, CartItem } from "@/types/cart";
 import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
 // Export CartItem type for use in other files
 export type { CartItem };
 
-export const addToCart = async (data: AddToCart) => {
+export const addToCart = async (data: AddToCart, cartId: string) => {
   try {
-    let cartId = localStorage.getItem("kc-device-token");
     if (!cartId) {
       const randomStr = Math.random().toString(36).substring(2, 7);
       cartId = `cart_${Date.now()}${randomStr}`;
       localStorage.setItem("kc-device-token", cartId);
     }
+
     data.cartId = cartId;
     const response = await axios.post(`${baseUrl}/cart/add`, data);
     return {
@@ -29,9 +28,8 @@ export const addToCart = async (data: AddToCart) => {
   }
 };
 
-export const getCart = async () => {
+export const getCart = async (cartId: string) => {
   try {
-    const cartId = localStorage.getItem("kc-device-token");
     if (!cartId) {
       return {
         success: false,
@@ -58,9 +56,8 @@ export const getCart = async () => {
   }
 };
 
-export const updateCartItem = async (data: updateCart) => {
+export const updateCartItem = async (data: updateCart, cartId: string) => {
   try {
-    const cartId = localStorage.getItem("kc-device-token");
     if (!cartId) {
       return {
         success: false,
@@ -84,22 +81,25 @@ export const updateCartItem = async (data: updateCart) => {
 // Helper function to update cart item quantity
 export const updateCartItemQuantity = async (
   courseId: string,
-  newQuantity: number
+  newQuantity: number,
+  cartId: string
 ): Promise<CartItem[]> => {
   try {
-    const cartId = localStorage.getItem("kc-device-token");
     if (!cartId) {
       return [];
     }
 
-    await updateCartItem({
-      cartId,
-      courseId,
-      quantity: newQuantity,
-    });
+    await updateCartItem(
+      {
+        cartId,
+        courseId,
+        quantity: newQuantity,
+      },
+      cartId
+    );
 
     // Get updated cart
-    const cartResponse = await getCart();
+    const cartResponse = await getCart(cartId);
     return cartResponse.success ? cartResponse.data : [];
   } catch (error) {
     console.error("Failed to update cart item quantity:", error);
@@ -108,21 +108,26 @@ export const updateCartItemQuantity = async (
 };
 
 // Helper function to remove item from cart (by setting quantity to 0)
-export const removeFromCart = async (courseId: string): Promise<CartItem[]> => {
+export const removeFromCart = async (
+  courseId: string,
+  cartId: string
+): Promise<CartItem[]> => {
   try {
-    const cartId = localStorage.getItem("kc-device-token");
     if (!cartId) {
       return [];
     }
 
-    await updateCartItem({
-      cartId,
-      courseId,
-      quantity: 0,
-    });
+    await updateCartItem(
+      {
+        cartId,
+        courseId,
+        quantity: 0,
+      },
+      cartId
+    );
 
     // Get updated cart
-    const cartResponse = await getCart();
+    const cartResponse = await getCart(cartId);
     return cartResponse.success ? cartResponse.data : [];
   } catch (error) {
     console.error("Failed to remove item from cart:", error);

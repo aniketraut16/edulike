@@ -61,9 +61,20 @@ export default function OrganizationCourses({ forCorporate }: { forCorporate: bo
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {courses.map((item, index) => (
-                        <CourseCard key={index} item={item} />
-                    ))}
+                    {(() => {
+                        // Show at most 9 courses, but only in multiples of 3 (3, 6, or 9)
+                        let displayCount = Math.min(9, courses.length);
+                        if (displayCount >= 3) {
+                            displayCount = displayCount - (displayCount % 3);
+                            if (displayCount === 0) displayCount = 3;
+                        }
+                        else {
+                            displayCount = courses.length;
+                        }
+                        return courses.slice(0, displayCount).map((item, index) => (
+                            <CourseCard key={index} item={item} />
+                        ));
+                    })()}
                 </div>
                 <AnimatedText as="div" className="text-center mt-16" delay={0.3}>
                     <Link

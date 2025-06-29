@@ -5,6 +5,7 @@ import { getNavbarCourses, Course as NavbarCourse } from "@/utils/navbar";
 import axios from "axios";
 import { CartItem, getCart, updateCartItemQuantity, removeFromCart } from "@/utils/cart";
 import toast from 'react-hot-toast';
+import { useAuth } from "./AuthContext";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 type ContentContextType = {
@@ -24,10 +25,21 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     const [topCourses, setTopCourses] = useState<Course[]>([]);
     const [cartCount, setCartCount] = useState<number>(0);
     const [cart, setCart] = useState<CartItem[]>([]);
+    const { user } = useAuth();
+    const [cartId, setCartId] = useState("");
+
+    useEffect(() => {
+        if (user) {
+            setCartId(`cart_${user.uid}`);
+        } else {
+            setCartId(localStorage.getItem("kc-device-token") || "");
+        }
+    }, [user]);
+
 
     const refreshCart = async () => {
         try {
-            const cartResponse = await getCart();
+            const cartResponse = await getCart(cartId);
             if (cartResponse.success) {
                 setCart(cartResponse.data);
                 setCartCount(cartResponse.count);
@@ -47,7 +59,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
         try {
             toast.loading("Updating cart...", { id: 'cart-update' });
-            const updatedCart = await updateCartItemQuantity(courseId, newQuantity);
+            const updatedCart = await updateCartItemQuantity(courseId, newQuantity, cartId);
             setCart(updatedCart);
             setCartCount(updatedCart.length);
             toast.success("Cart updated successfully", { id: 'cart-update' });
@@ -60,7 +72,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     const removeCartItem = async (courseId: string) => {
         try {
             toast.loading("Removing item...", { id: 'cart-remove' });
-            const updatedCart = await removeFromCart(courseId);
+            const updatedCart = await removeFromCart(courseId, cartId);
             setCart(updatedCart);
             setCartCount(updatedCart.length);
             toast.success("Item removed from cart", { id: 'cart-remove' });
