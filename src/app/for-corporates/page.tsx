@@ -59,7 +59,7 @@ export default function CorporatePage() {
                 buttons={[
                     {
                         text: "Get Started",
-                        link: "/courses?for=corporates"
+                        link: "/courses?kcTypes=Corporate"
                     },
                     {
                         text: "How It Works",
@@ -88,7 +88,7 @@ export default function CorporatePage() {
                         <h3 className="text-2xl font-semibold mb-4">Ready to Upskill Your Organization?</h3>
                         <p className="mb-6 text-gray-700">Get started today and see how easy it is to manage learning for your entire workforce.</p>
                         <a
-                            href="/courses?for=corporates"
+                            href="/courses?kcTypes=Corporate"
                             className="inline-block px-8 py-3 rounded-lg text-white font-semibold shadow-lg hover:scale-105 transition"
                             style={{
                                 background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",

@@ -1,9 +1,9 @@
 'use client'
-import EnhancedCourseCard from "@/components/Home/CourseCard";
 import Link from "next/link";
 import AnimatedText from "./AnimatedText";
 import { BoxReveal } from "../magicui/box-reveal";
 import { useContent } from "@/context/ContentContext";
+import CourseCard from "../Courses/CourseCard";
 
 export default function FewCourses() {
     const { topCourses } = useContent()
@@ -53,7 +53,7 @@ export default function FewCourses() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10 sm:mb-12">
                     {topCourses.map((item, index) => (
-                        <EnhancedCourseCard key={index} item={item} />
+                        <CourseCard key={index} item={item} />
                     ))}
                 </div>
 

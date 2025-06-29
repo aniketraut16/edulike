@@ -59,7 +59,7 @@ export default function InstitutionsPage() {
                 buttons={[
                     {
                         text: "Get Started",
-                        link: "/courses?for=institutions"
+                        link: "/courses?kcTypes=Institution"
                     },
                     {
                         text: "How It Works",
@@ -87,7 +87,7 @@ export default function InstitutionsPage() {
                         <h3 className="text-2xl font-semibold mb-4">Ready to Enhance Your Educational Offerings?</h3>
                         <p className="mb-6 text-gray-700">Partner with us today and give your students access to world-class learning resources.</p>
                         <a
-                            href="/courses?for=institutions"
+                            href="/courses?kcTypes=Institution"
                             className="inline-block px-8 py-3 rounded-lg text-white font-semibold shadow-lg hover:scale-105 transition"
                             style={{
                                 background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
