@@ -37,6 +37,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         }
     }, [user]);
 
+    useEffect(() => {
+        if (cartId) {
+            refreshCart();
+        }
+    }, [cartId]);
+
 
     const refreshCart = async () => {
         try {
