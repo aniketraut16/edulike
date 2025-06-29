@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
 import { ContentProvider } from "@/context/ContentContext";
+import AuthGuard from "@/components/AuthGuard";
 
 export const metadata: Metadata = {
   title: "KC Online Education - Learn Anything. From Anywhere.",
@@ -20,9 +21,11 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <ContentProvider>
-            <Navbar />
-            {children}
-            <Footer />
+            <AuthGuard>
+              <Navbar />
+              {children}
+              <Footer />
+            </AuthGuard>
           </ContentProvider>
         </AuthProvider>
       </body>
