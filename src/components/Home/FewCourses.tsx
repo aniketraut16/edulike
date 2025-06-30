@@ -28,6 +28,9 @@ export default function FewCourses() {
                             <AnimatedText
                                 as="h2"
                                 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight px-2 text-center mx-auto"
+                                style={{
+                                    textWrap: "balance"
+                                }}
                                 delay={0.1}
                             >
                                 Empowering Education for{" "}
@@ -45,7 +48,7 @@ export default function FewCourses() {
                                 </span>
                             </AnimatedText>
                         </BoxReveal>
-                        <AnimatedText className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed px-3" delay={0.2}>
+                        <AnimatedText className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed px-2  lg:px-3 text-justify" delay={0.2}>
                             Whether you're a student, a professional, or a lifelong learner, our curated courses are designed to enhance your skills and knowledge. Join thousands of learners who have transformed their careers and lives with our expert-led programs.
                         </AnimatedText>
                     </div>
@@ -58,10 +61,10 @@ export default function FewCourses() {
                 </div>
 
                 <div className="flex justify-center">
-                    <AnimatedText as="div" delay={0.3}>
+                    <AnimatedText as="div" delay={0.3} className="w-full sm:w-auto">
                         <Link
                             href="/courses"
-                            className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95"
+                            className="w-full sm:w-auto block px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm font-semibold transform transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 text-center"
                             style={{
                                 background: "linear-gradient(90deg, #8D1A5F 0%, #C13584 100%)",
                                 color: "#fff"

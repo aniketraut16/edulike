@@ -20,18 +20,18 @@ export default function CartPage() {
     };
 
     return (
-        <div className="mx-auto py-12 px-4 bg-slate-50">
+        <div className="min-h-screen bg-slate-50 py-4 sm:py-8 lg:py-12 px-4">
             <Toaster position="top-right" />
-            <div className="container mx-auto pt-[10vh]">
-                <h1 className="text-4xl font-bold mb-8"> YOUR CART</h1>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-2 rounded-lg shadow-sm bg-white p-6">
+            <div className="container mx-auto pt-[8vh] sm:pt-[10vh]">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 sm:mb-8">YOUR CART</h1>
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
+                    <div className="xl:col-span-2 rounded-lg shadow-sm bg-white p-4 sm:p-6">
                         {cart.length > 0 ? (
                             cart.map((item, index) => (
-                                <>
-                                    <div key={item.courseId} className="mb-4 ">
-                                        <div className="flex items-center gap-6">
-                                            <div className="w-24 h-24 relative">
+                                <div key={item.courseId}>
+                                    <div className="mb-4">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                                            <div className="w-full sm:w-24 h-48 sm:h-24 relative flex-shrink-0">
                                                 <img
                                                     src={item.courseImage}
                                                     alt={item.courseName}
@@ -40,76 +40,84 @@ export default function CartPage() {
                                                 />
                                             </div>
 
-                                            <div className="flex-1">
-                                                <h3 className="text-xl font-medium">{item.courseName}  {(item.for === "institution" || item.for === "corporate") && <p
-                                                    className="ml-2  p-1 px-2 rounded-full text-sm font-semibold w-fit inline"
-                                                    style={{
-                                                        background: "linear-gradient(90deg, #F3E6F1 0%, #FDE6F1 100%)",
-                                                        color: "#8D1A5F"
-                                                    }}
-                                                >
-                                                    For {item.for === "corporate" ? "Corporate" : "Institution"} ({item.assignLimit} Users)
-                                                </p>} </h3>
-                                                <div className="text-sm text-gray-500 mt-1">
-                                                    <p>Category: {item.courseCategory}</p>
-                                                </div>
-                                                <div className="flex flex-wrap items-center gap-6 text-sm mt-1">
-                                                    <div className="flex items-center">
-                                                        <div className="flex mr-2">
-                                                            {[...Array(5)].map((_, i) => (
-                                                                <Star key={i} size={16} className={`${i < Math.floor(4.7) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
-                                                            ))}
+                                            <div className="flex-1 w-full sm:w-auto">
+                                                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                                                    <div className="flex-1">
+                                                        <h3 className="text-lg sm:text-xl font-medium leading-tight">{item.courseName}</h3>
+                                                        {(item.for === "institution" || item.for === "corporate") && (
+                                                            <p
+                                                                className="mt-2 p-1 px-2 rounded-full text-xs sm:text-sm font-semibold w-fit"
+                                                                style={{
+                                                                    background: "linear-gradient(90deg, #F3E6F1 0%, #FDE6F1 100%)",
+                                                                    color: "#8D1A5F"
+                                                                }}
+                                                            >
+                                                                For {item.for === "corporate" ? "Corporate" : "Institution"} ({item.assignLimit} Users)
+                                                            </p>
+                                                        )}
+                                                        <div className="text-sm text-gray-500 mt-2">
+                                                            <p>Category: {item.courseCategory}</p>
                                                         </div>
-                                                        <span className="font-medium">4.7</span>
+                                                        <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-sm mt-2">
+                                                            <div className="flex items-center">
+                                                                <div className="flex mr-2">
+                                                                    {[...Array(5)].map((_, i) => (
+                                                                        <Star key={i} size={14} className={`${i < Math.floor(4.7) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
+                                                                    ))}
+                                                                </div>
+                                                                <span className="font-medium">4.7</span>
+                                                            </div>
+                                                            <div className="flex items-center">
+                                                                <BookOpen size={14} className="mr-1" />
+                                                                <span className="font-medium">{item.courseModulesLength} modules</span>
+                                                            </div>
+                                                            <div className="flex items-center">
+                                                                <Clock size={14} className="mr-1" />
+                                                                <span className="font-medium">{item.courseTotalDuration} hours</span>
+                                                            </div>
+                                                            <div className="flex items-center">
+                                                                <Globe size={14} className="mr-1" />
+                                                                <span className="font-medium">{item.courseLanguage === 'en' ? 'English' : item.courseLanguage}</span>
+                                                            </div>
+                                                        </div>
+                                                        <p className="text-xl font-semibold mt-3">${formatPrice(item.coursePrice)}</p>
+                                                    </div>
 
-                                                    </div>
-                                                    <div className="flex items-center">
-                                                        <BookOpen size={16} className="mr-2" />
-                                                        <span className="font-medium">{item.courseModulesLength} modules</span>
-                                                    </div>
-                                                    <div className="flex items-center">
-                                                        <Clock size={16} className="mr-2" />
-                                                        <span className="font-medium">{item.courseTotalDuration} hours total</span>
-                                                    </div>
-                                                    <div className="flex items-center">
-                                                        <Globe size={16} className="mr-2" />
-                                                        <span className="font-medium">{item.courseLanguage === 'en' ? 'English' : item.courseLanguage}</span>
+                                                    <div className="flex flex-row sm:flex-col lg:flex-row items-center justify-between sm:justify-center lg:justify-end gap-4 sm:gap-2 lg:gap-4 mt-4 sm:mt-0">
+                                                        <div className="flex items-center gap-3">
+                                                            <button
+                                                                onClick={() => updateCartQuantity(item.courseId, item.quantity - 1)}
+                                                                className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                                            >
+                                                                −
+                                                            </button>
+                                                            <span className="min-w-[2rem] text-center font-medium">{item.quantity}</span>
+                                                            <button
+                                                                onClick={() => updateCartQuantity(item.courseId, item.quantity + 1)}
+                                                                className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </div>
+
+                                                        <button
+                                                            onClick={() => removeCartItem(item.courseId)}
+                                                            className="text-red-500 hover:text-red-700 transition-colors p-2"
+                                                            aria-label="Remove item"
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                <path d="M3 6h18"></path>
+                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                                            </svg>
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <p className="text-xl font-semibold mt-2">${formatPrice(item.coursePrice)}</p>
                                             </div>
-
-                                            <div className="flex items-center gap-4">
-                                                <button
-                                                    onClick={() => updateCartQuantity(item.courseId, item.quantity - 1)}
-                                                    className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded"
-                                                >
-                                                    −
-                                                </button>
-                                                <span>{item.quantity}</span>
-                                                <button
-                                                    onClick={() => updateCartQuantity(item.courseId, item.quantity + 1)}
-                                                    className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded"
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-
-                                            <button
-                                                onClick={() => removeCartItem(item.courseId)}
-                                                className="text-red-500 ml-4"
-                                                aria-label="Remove item"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M3 6h18"></path>
-                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                </svg>
-                                            </button>
                                         </div>
                                     </div>
-                                    {index !== cart.length - 1 && <hr className="my-4 border-gray-200 border-2 rounded-full" />}
-                                </>
+                                    {index !== cart.length - 1 && <hr className="my-6 border-gray-200 border-2 rounded-full" />}
+                                </div>
                             ))
                         ) : (
                             <div className="bg-white p-8 rounded-lg shadow-sm text-center">
@@ -119,31 +127,31 @@ export default function CartPage() {
                         )}
                     </div>
 
-                    <div className="lg:col-span-1">
-                        <div className="bg-white p-6 rounded-lg shadow-sm">
-                            <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
+                    <div className="xl:col-span-1">
+                        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm sticky top-4">
+                            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Order Summary</h2>
 
-                            <div className="space-y-4">
-                                <div className="flex justify-between">
+                            <div className="space-y-3 sm:space-y-4">
+                                <div className="flex justify-between text-sm sm:text-base">
                                     <span>Subtotal</span>
                                     <span className="font-semibold">${formatPrice(subtotal)}</span>
                                 </div>
 
-                                <div className="flex justify-between">
+                                <div className="flex justify-between text-sm sm:text-base">
                                     <span>GST (18%)</span>
                                     <span>${formatPrice(GST)}</span>
                                 </div>
 
-                                <div className="border-t pt-4 mt-4">
+                                <div className="border-t pt-3 sm:pt-4 mt-3 sm:mt-4">
                                     <div className="flex justify-between">
-                                        <span className="font-bold">Total</span>
-                                        <span className="font-bold text-xl">${formatPrice(total)}</span>
+                                        <span className="font-bold text-base sm:text-lg">Total</span>
+                                        <span className="font-bold text-lg sm:text-xl">${formatPrice(total)}</span>
                                     </div>
                                 </div>
 
                                 <Button
                                     onClick={() => router.push('/checkout')}
-                                    className="w-full bg-[#8D1A5F]/90 text-white hover:bg-[#8D1A5F] mt-4 py-6 flex items-center justify-center gap-2 rounded-full"
+                                    className="w-full bg-[#8D1A5F]/90 text-white hover:bg-[#8D1A5F] mt-4 sm:mt-6 py-4 sm:py-6 flex items-center justify-center gap-2 rounded-full text-sm sm:text-base"
                                     disabled={cart.length === 0}
                                 >
                                     Go to Checkout

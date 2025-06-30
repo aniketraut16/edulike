@@ -87,9 +87,12 @@ const ServiceCard = ({ service, index }: { service: any, index: number }) => {
                         {service.title}
                     </div>
                 </BoxReveal>
-
                 <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
-                    <h2 className="text-[#461217] text-5xl font-bold leading-tight">
+                    <h2 className="text-[#461217] text-5xl font-bold leading-tight"
+                        style={{
+                            textWrap: "balance"
+                        }}
+                    >
                         {service.subtitle}
                     </h2>
                 </BoxReveal>

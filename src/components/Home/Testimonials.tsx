@@ -53,8 +53,16 @@ export default function Testimonials() {
         <section className="py-20 w-full relative overflow-hidden bg-gradient-to-b from-white to-gray-50">
             <div className="container mx-auto px-4 mb-12">
                 <div className="text-center mb-10">
-                    <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">What Our Students Say</h2>
-                    <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+                    <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900"
+                        style={{
+                            textWrap: "balance"
+                        }}
+                    >What Our Students Say</h2>
+                    <p className="text-gray-600 max-w-2xl mx-auto text-lg"
+                        style={{
+                            textWrap: "balance"
+                        }}
+                    >
                         Discover why thousands of learners choose our platform for their educational journey
                     </p>
                 </div>

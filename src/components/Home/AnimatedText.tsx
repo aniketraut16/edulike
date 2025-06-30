@@ -8,13 +8,15 @@ interface AnimatedTextProps {
     className?: string;
     as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span" | "div";
     delay?: number;
+    style?: React.CSSProperties;
 }
 
 export default function AnimatedText({
     children,
     className = "",
     as = "p",
-    delay = 0
+    delay = 0,
+    style = {}
 }: AnimatedTextProps) {
     const { ref, inView } = useInView({
         triggerOnce: true,
@@ -48,6 +50,7 @@ export default function AnimatedText({
             animate={inView ? "visible" : "hidden"}
             variants={variants}
             className={className}
+            style={style}
         >
             {children}
         </Component>

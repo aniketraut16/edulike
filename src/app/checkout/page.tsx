@@ -68,16 +68,16 @@ export default function Checkout() {
 
     if (cart.length === 0) {
         return (
-            <div className="mx-auto py-12 px-4 bg-slate-50">
+            <div className="min-h-screen bg-slate-50 py-4 sm:py-8 lg:py-12 px-4">
                 <Toaster position="top-right" />
-                <div className="container mx-auto pt-[10vh]">
+                <div className="container mx-auto pt-[8vh] sm:pt-[10vh]">
                     <div className="flex items-center justify-center min-h-[400px]">
                         <div className="text-center">
-                            <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
+                            <h1 className="text-xl sm:text-2xl font-bold mb-4">Your cart is empty</h1>
                             <p className="text-gray-600 mb-6">Add some courses to proceed with checkout</p>
                             <Button
                                 onClick={() => window.location.href = '/courses'}
-                                className="bg-[#8D1A5F] hover:bg-[#8D1A5F]/90 text-white"
+                                className="bg-[#8D1A5F] hover:bg-[#8D1A5F]/90 text-white px-6 py-3"
                             >
                                 Browse Courses
                             </Button>
@@ -89,18 +89,18 @@ export default function Checkout() {
     }
 
     return (
-        <div className="mx-auto py-12 px-4 bg-slate-50">
+        <div className="min-h-screen bg-slate-50 py-4 sm:py-8 lg:py-12 px-4">
             <Toaster position="top-right" />
-            <div className="container mx-auto pt-[10vh]">
-                <h1 className="text-4xl font-bold mb-8">CHECKOUT</h1>
+            <div className="container mx-auto pt-[8vh] sm:pt-[10vh]">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 sm:mb-8">CHECKOUT</h1>
 
                 <form onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 lg:grid-cols-7 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
                         {/* Left side - Customer details form */}
-                        <div className="lg:col-span-4 bg-white p-6 rounded-lg shadow-sm">
-                            <h2 className="text-2xl font-semibold mb-6">Customer Details</h2>
+                        <div className="lg:col-span-3 bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+                            <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Customer Details</h2>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Full Name</Label>
                                     <Input
@@ -110,6 +110,7 @@ export default function Checkout() {
                                         onChange={handleInputChange}
                                         required
                                         placeholder="John Doe"
+                                        className="h-10 sm:h-11"
                                     />
                                 </div>
 
@@ -123,6 +124,7 @@ export default function Checkout() {
                                         onChange={handleInputChange}
                                         required
                                         placeholder="john@example.com"
+                                        className="h-10 sm:h-11"
                                     />
                                 </div>
 
@@ -135,6 +137,7 @@ export default function Checkout() {
                                         onChange={handleInputChange}
                                         required
                                         placeholder="+1 (555) 123-4567"
+                                        className="h-10 sm:h-11"
                                     />
                                 </div>
 
@@ -145,7 +148,7 @@ export default function Checkout() {
                                         name="gender"
                                         value={formData.gender}
                                         onChange={handleInputChange}
-                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                        className="w-full h-10 sm:h-11 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8D1A5F] focus:border-transparent"
                                         required
                                     >
                                         <option value="male">Male</option>
@@ -156,7 +159,7 @@ export default function Checkout() {
                                 </div>
                             </div>
 
-                            <h3 className="text-xl font-semibold mt-8 mb-4">Billing Address</h3>
+                            <h3 className="text-lg sm:text-xl font-semibold mt-6 sm:mt-8 mb-3 sm:mb-4">Billing Address</h3>
 
                             <div className="space-y-4">
                                 <div className="space-y-2">
@@ -168,10 +171,11 @@ export default function Checkout() {
                                         onChange={handleInputChange}
                                         required
                                         placeholder="123 Main Street, Apt 4B"
+                                        className="min-h-[80px] resize-none"
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                     <div className="space-y-2">
                                         <Label htmlFor="city">City</Label>
                                         <Input
@@ -181,6 +185,7 @@ export default function Checkout() {
                                             onChange={handleInputChange}
                                             required
                                             placeholder="New York"
+                                            className="h-10 sm:h-11"
                                         />
                                     </div>
 
@@ -193,6 +198,7 @@ export default function Checkout() {
                                             onChange={handleInputChange}
                                             required
                                             placeholder="NY"
+                                            className="h-10 sm:h-11"
                                         />
                                     </div>
 
@@ -205,6 +211,7 @@ export default function Checkout() {
                                             onChange={handleInputChange}
                                             required
                                             placeholder="10001"
+                                            className="h-10 sm:h-11"
                                         />
                                     </div>
 
@@ -217,6 +224,7 @@ export default function Checkout() {
                                             onChange={handleInputChange}
                                             required
                                             placeholder="United States"
+                                            className="h-10 sm:h-11"
                                         />
                                     </div>
                                 </div>
@@ -224,61 +232,93 @@ export default function Checkout() {
                         </div>
 
                         {/* Right side - Order summary */}
-                        <div className="lg:col-span-3">
-                            <div className="bg-white p-6 rounded-lg shadow-sm">
-                                <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
+                        <div className="lg:col-span-2">
+                            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm sticky top-4">
+                                <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Order Summary</h2>
 
-                                {/* Course details table */}
-                                <div className="overflow-x-auto mb-6">
-                                    <table className="w-full">
-                                        <thead className="border-b">
-                                            <tr>
-                                                <th className="text-left pb-2 pr-6">Course</th>
-                                                <th className="text-left pb-2 pr-6">Type</th>
-                                                <th className="text-right pb-2 pr-6">Price</th>
-                                                <th className="text-right pb-2 pr-6">Qty</th>
-                                                <th className="text-right pb-2">Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y">
-                                            {cart.map((item) => (
-                                                <tr key={item.courseId} className="text-sm">
-                                                    <td className="py-3 pr-6">{item.courseName}</td>
-                                                    <td className="py-3 pr-6">
+                                {/* Course details - Mobile friendly layout */}
+                                <div className="mb-6">
+                                    {/* Desktop Table View */}
+                                    <div className="hidden lg:block overflow-x-auto">
+                                        <table className="w-full text-sm">
+                                            <thead className="border-b">
+                                                <tr>
+                                                    <th className="text-left pb-2 pr-2">Course</th>
+                                                    <th className="text-left pb-2 pr-2">Type</th>
+                                                    <th className="text-right pb-2 pr-2">Price</th>
+                                                    <th className="text-right pb-2 pr-2">Qty</th>
+                                                    <th className="text-right pb-2">Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y">
+                                                {cart.map((item) => (
+                                                    <tr key={item.courseId} className="text-xs">
+                                                        <td className="py-3 pr-2 font-medium">{item.courseName}</td>
+                                                        <td className="py-3 pr-2">
+                                                            {item.for === "individual" ? "Individual" :
+                                                                item.for === "institution" ? `Institution (${item.assignLimit})` :
+                                                                    item.for === "corporate" ? `Corporate (${item.assignLimit})` : item.for}
+                                                        </td>
+                                                        <td className="py-3 text-right pr-2">${formatPrice(item.coursePrice)}</td>
+                                                        <td className="py-3 text-right pr-2">{item.quantity}</td>
+                                                        <td className="py-3 text-right font-medium">${formatPrice(item.coursePrice * item.quantity)}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    {/* Mobile Card View */}
+                                    <div className="lg:hidden space-y-4">
+                                        {cart.map((item) => (
+                                            <div key={item.courseId} className="border rounded-lg p-3 space-y-2">
+                                                <div className="font-medium text-sm">{item.courseName}</div>
+                                                <div className="flex justify-between text-xs text-gray-600">
+                                                    <span>Type:</span>
+                                                    <span>
                                                         {item.for === "individual" ? "Individual" :
                                                             item.for === "institution" ? `Institution (${item.assignLimit})` :
                                                                 item.for === "corporate" ? `Corporate (${item.assignLimit})` : item.for}
-                                                    </td>
-                                                    <td className="py-3 text-right pr-6">${formatPrice(item.coursePrice)}</td>
-                                                    <td className="py-3 text-right pr-6">{item.quantity}</td>
-                                                    <td className="py-3 text-right">${formatPrice(item.coursePrice * item.quantity)}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between text-xs">
+                                                    <span>Price:</span>
+                                                    <span>${formatPrice(item.coursePrice)}</span>
+                                                </div>
+                                                <div className="flex justify-between text-xs">
+                                                    <span>Quantity:</span>
+                                                    <span>{item.quantity}</span>
+                                                </div>
+                                                <div className="flex justify-between text-sm font-medium border-t pt-2">
+                                                    <span>Total:</span>
+                                                    <span>${formatPrice(item.coursePrice * item.quantity)}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
 
                                 <div className="space-y-3 border-t pt-4">
-                                    <div className="flex justify-between">
+                                    <div className="flex justify-between text-sm sm:text-base">
                                         <span>Subtotal</span>
                                         <span className="font-semibold">${formatPrice(subtotal)}</span>
                                     </div>
 
-                                    <div className="flex justify-between">
+                                    <div className="flex justify-between text-sm sm:text-base">
                                         <span>GST (18%)</span>
                                         <span>${formatPrice(GST)}</span>
                                     </div>
 
                                     <div className="border-t pt-4 mt-4">
                                         <div className="flex justify-between">
-                                            <span className="font-bold">Total</span>
-                                            <span className="font-bold text-xl">${formatPrice(total)}</span>
+                                            <span className="font-bold text-base sm:text-lg">Total</span>
+                                            <span className="font-bold text-lg sm:text-xl">${formatPrice(total)}</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="mt-6 space-y-4">
-                                    <div className="flex items-center">
+                                    <div className="flex items-start">
                                         <input
                                             type="checkbox"
                                             id="termsAccepted"
@@ -286,16 +326,16 @@ export default function Checkout() {
                                             checked={formData.termsAccepted}
                                             onChange={handleInputChange}
                                             required
-                                            className="mr-2 h-4 w-4"
+                                            className="mr-3 h-4 w-4 mt-0.5 flex-shrink-0"
                                         />
-                                        <label htmlFor="termsAccepted" className="text-sm">
+                                        <label htmlFor="termsAccepted" className="text-xs sm:text-sm leading-relaxed">
                                             I agree to the <a href="/terms-and-conditions" className="text-[#8D1A5F] underline">Terms and Conditions</a>
                                         </label>
                                     </div>
 
                                     <Button
                                         type="submit"
-                                        className="w-full bg-[#8D1A5F]/90 text-white hover:bg-[#8D1A5F] py-6 flex items-center justify-center gap-2 rounded-full"
+                                        className="w-full bg-[#8D1A5F]/90 text-white hover:bg-[#8D1A5F] py-4 sm:py-6 flex items-center justify-center gap-2 rounded-full text-sm sm:text-base"
                                         disabled={!formData.termsAccepted || cart.length === 0}
                                     >
                                         Pay Now

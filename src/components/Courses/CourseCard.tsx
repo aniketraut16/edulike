@@ -14,7 +14,7 @@ export default function CourseCard({ item, kcType = "individual" }: { item: Cour
     const safeRating = Math.max(0, Math.min(5, Math.floor(Number(item.rating) || 0)));
 
     return (
-        <div className="w-full h-full p-4">
+        <div className="w-full h-full p-2 lg:p-4">
             <div
                 className={`bg-white rounded-2xl shadow-lg overflow-hidden h-full transform transition-all duration-500 hover:scale-105 hover:shadow-2xl ${isHovered ? 'shadow-2xl' : ''}`}
                 onMouseEnter={() => setIsHovered(true)}

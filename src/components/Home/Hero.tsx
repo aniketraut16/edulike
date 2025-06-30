@@ -9,6 +9,8 @@ export default function Hero() {
     const vigorousChangeHeightPadding = 0.2;
     const vigorousChangeHeightRadius = 0.5;
 
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
+
     useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY;
@@ -61,20 +63,24 @@ export default function Hero() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center h-[160vh] pt-[15vh] sm:pt-[20vh] mb-50 bg-gradient-to-b from-white to-slate-50"
+        <div className="flex flex-col items-center justify-center h-[90vh] lg:h-[160vh] pt-[15vh] sm:pt-[20vh] mb-0 lg:mb-50 bg-gradient-to-b from-white to-slate-50"
             style={{
-                paddingLeft: padding,
-                paddingRight: padding
+                paddingLeft: isMobile
+                    ? `${parseFloat(padding.slice(0, -1)) / 2}%`
+                    : padding,
+                paddingRight: isMobile
+                    ? `${parseFloat(padding.slice(0, -1)) / 2}%`
+                    : padding,
             }}
         >
             <div className="relative h-full w-full bg-center bg-cover"
                 style={{
                     backgroundImage: 'url(/images/bg.png)',
-                    borderTopLeftRadius: borderRadius,
-                    borderTopRightRadius: borderRadius
+                    borderTopLeftRadius: isMobile ? "180px" : borderRadius,
+                    borderTopRightRadius: isMobile ? "180px" : borderRadius,
                 }}
             >
-                <div className="absolute inset-0 flex flex-col items-center justify-start pt-[10vh] sm:pt-[20vh] text-center px-4">
+                <div className="absolute inset-0 flex flex-col items-center justify-start pt-[15vh] sm:pt-[20vh] text-center px-4">
                     <motion.h1
                         className="text-3xl sm:text-5xl md:text-7xl font-bold text-white mb-3 sm:mb-5 max-w-3xl px-2"
                         initial="hidden"
@@ -139,7 +145,9 @@ export default function Hero() {
                             <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                         </motion.svg>
                     </motion.button>
-                    <HowitWorks />
+                    <div className="hidden lg:block">
+                        <HowitWorks isMobile={false} />
+                    </div>
                 </div>
             </div>
         </div>

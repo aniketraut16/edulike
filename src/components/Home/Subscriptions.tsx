@@ -3,8 +3,12 @@ export default function Subscriptions() {
         <section className="py-10 sm:py-16 bg-white" >
             <div className="container mx-auto px-4">
                 <div className="text-center mb-8 sm:mb-12">
-                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 text-gray-800 px-2">Your Pace, Your Plan</h2>
-                    <p className="text-gray-600 max-w-2xl mx-auto px-2">
+                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 text-gray-800 px-2" style={{
+                        textWrap: "balance"
+                    }}>Your Pace, Your Plan</h2>
+                    <p className="text-gray-600 max-w-2xl mx-auto px-2" style={{
+                        textWrap: "balance"
+                    }}>
                         Choose the plan that fits your learning style and goals.
                     </p>
                 </div>

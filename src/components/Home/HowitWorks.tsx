@@ -1,7 +1,8 @@
+"use client"
 import { BookOpen, CreditCard, GraduationCap, Users } from "lucide-react"
 import { motion } from "framer-motion"
 
-export default function HowitWorks() {
+export default function HowitWorks({ isMobile }: { isMobile: boolean }) {
     const steps = [
         {
             number: "1",
@@ -35,8 +36,8 @@ export default function HowitWorks() {
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.3,
-                delayChildren: 0.2
+                staggerChildren: isMobile ? 0.15 : 0.3,
+                delayChildren: isMobile ? 0.1 : 0.2
             }
         }
     }
@@ -67,7 +68,7 @@ export default function HowitWorks() {
 
     return (
         <div>
-            <div className="container mx-auto px-6 py-16 translate-y-1/5">
+            <div className={`container mx-auto px-6 py-16 ${!isMobile ? "translate-y-1/5" : ""}`}>
                 {/* Header Section */}
                 <motion.div
                     className="text-center mb-16"
@@ -77,20 +78,20 @@ export default function HowitWorks() {
                     variants={containerVariants}
                 >
                     <motion.h2
-                        className="text-4xl md:text-5xl font-bold text-white mb-4"
+                        className={`text-4xl md:text-5xl font-bold mb-4 ${!isMobile ? "text-white" : "text-black"}`}
                         variants={textVariants}
                         transition={{
-                            duration: 0.8,
+                            duration: isMobile ? 0.4 : 0.8,
                             ease: "easeOut"
                         }}
                     >
                         How it works
                     </motion.h2>
                     <motion.p
-                        className="text-xl text-white max-w-2xl mx-auto"
+                        className={`text-xl max-w-2xl mx-auto ${!isMobile ? "text-white" : "text-black"}`}
                         variants={textVariants}
                         transition={{
-                            duration: 0.8,
+                            duration: isMobile ? 0.4 : 0.8,
                             ease: "easeOut"
                         }}
                     >
@@ -112,12 +113,12 @@ export default function HowitWorks() {
                             className="relative h-full"
                             variants={itemVariants}
                             transition={{
-                                duration: 0.6,
+                                duration: isMobile ? 0.3 : 0.6,
                                 ease: "easeOut"
                             }}
                             whileHover={{
                                 scale: 1.05,
-                                transition: { duration: 0.2 }
+                                transition: { duration: isMobile ? 0.1 : 0.2 }
                             }}
                         >
                             {/* Step Card */}
@@ -130,8 +131,8 @@ export default function HowitWorks() {
                                         scale: 1,
                                         rotate: 0,
                                         transition: {
-                                            delay: index * 0.1 + 0.5,
-                                            duration: 0.5,
+                                            delay: isMobile ? index * 0.05 + 0.2 : index * 0.1 + 0.5,
+                                            duration: isMobile ? 0.3 : 0.5,
                                             type: "spring",
                                             stiffness: 200
                                         }
@@ -153,8 +154,8 @@ export default function HowitWorks() {
                                             scale: 1,
                                             opacity: 1,
                                             transition: {
-                                                delay: index * 0.1 + 0.7,
-                                                duration: 0.4,
+                                                delay: isMobile ? index * 0.05 + 0.3 : index * 0.1 + 0.7,
+                                                duration: isMobile ? 0.2 : 0.4,
                                                 type: "spring"
                                             }
                                         }}
@@ -173,8 +174,8 @@ export default function HowitWorks() {
                                             opacity: 1,
                                             y: 0,
                                             transition: {
-                                                delay: index * 0.1 + 0.9,
-                                                duration: 0.5
+                                                delay: isMobile ? index * 0.05 + 0.4 : index * 0.1 + 0.9,
+                                                duration: isMobile ? 0.3 : 0.5
                                             }
                                         }}
                                         viewport={{ once: true }}
@@ -190,8 +191,8 @@ export default function HowitWorks() {
                                             opacity: 1,
                                             y: 0,
                                             transition: {
-                                                delay: index * 0.1 + 1.1,
-                                                duration: 0.5
+                                                delay: isMobile ? index * 0.05 + 0.5 : index * 0.1 + 1.1,
+                                                duration: isMobile ? 0.3 : 0.5
                                             }
                                         }}
                                         viewport={{ once: true }}
