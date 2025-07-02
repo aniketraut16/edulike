@@ -18,6 +18,7 @@ import axios from "axios";
 
 type AuthContextType = {
     user: User | null;
+    isAdmin: boolean;
     dbUser: DBUser | null;
     isLoading: boolean;
     isDBUserLoading: boolean;
@@ -50,28 +51,37 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [dbUser, setDbUser] = useState<DBUser | null>(null);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [isDBUserLoading, setIsDBUserLoading] = useState(false);
     const [needsCompleteSetup, setNeedsCompleteSetup] = useState(false);
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);
 
             if (currentUser) {
-                // User is logged in with Firebase, check if DB user exists
                 setIsDBUserLoading(true);
+                const token = await currentUser.getIdTokenResult();
+                setIsAdmin(token.claims.admin === true);
+
                 try {
                     const dbUserData = await getDBUserInternal();
                     setDbUser(dbUserData);
                     setNeedsCompleteSetup(false);
                 } catch (error) {
-                    console.log("DB user doesn't exist, needs complete setup");
                     setDbUser(null);
-                    setNeedsCompleteSetup(true);
+                    if (isAdmin) {
+                        setNeedsCompleteSetup(false);
+                    } else {
+                        setNeedsCompleteSetup(true);
+                    }
                 } finally {
                     setIsDBUserLoading(false);
                 }
+
+
             } else {
                 setDbUser(null);
                 setNeedsCompleteSetup(false);
@@ -219,6 +229,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             value={{
                 user,
                 dbUser,
+                isAdmin,
                 isLoading,
                 isDBUserLoading,
                 needsCompleteSetup,

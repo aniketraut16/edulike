@@ -1,15 +1,9 @@
-import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
 import { ContentProvider } from "@/context/ContentContext";
 import AuthGuard from "@/components/AuthGuard";
-
-export const metadata: Metadata = {
-  title: "KC Online Education - Learn Anything. From Anywhere.",
-  description: "Live sessions or self-paced courses—choose how you want to grow with KC Online Education.",
-};
 
 export default function RootLayout({
   children,
@@ -18,6 +12,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <title>KC Online Education - Learn Anything. From Anywhere.</title>
+        <meta name="description" content="Live sessions or self-paced courses—choose how you want to grow with KC Online Education." />
+        <link rel="icon" href="/logo.png" />
+      </head>
       <body>
         <AuthProvider>
           <ContentProvider>

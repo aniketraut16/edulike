@@ -1,7 +1,18 @@
+"use client";
+import { useAuth } from '@/context/AuthContext';
 import { Facebook, Twitter, Instagram, Linkedin, Youtube, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
+
+    const { isAdmin } = useAuth();
+    const pathname = usePathname();
+    const isAdminPage = pathname.includes("/admin");
+
+    if (isAdmin && isAdminPage) {
+        return null;
+    }
     return (
         <footer className="bg-gray-900 text-white py-12">
             <div className="container mx-auto px-4 md:px-6">

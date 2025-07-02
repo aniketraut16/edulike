@@ -351,11 +351,20 @@ const MobileMenu = ({ isOpen, onClose, isLoggedIn, user, logout, categories }: {
 
 // Navbar component
 const Navbar = () => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const { isAdmin, user, logout } = useAuth();
     const pathname = usePathname();
+    const isAdminPage = pathname.includes("/admin");
+
+    if (isAdmin && isAdminPage) {
+        return null;
+    }
+
+
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
     const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
-    const { user, logout } = useAuth();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
