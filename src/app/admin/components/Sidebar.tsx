@@ -7,7 +7,8 @@ import {
     FaCreditCard,
     FaBlog,
     FaQuestionCircle,
-    FaBookOpen
+    FaBookOpen,
+    FaTags
 } from "react-icons/fa";
 import { BiExit, BiMenu, BiX } from "react-icons/bi";
 import { toast } from "react-hot-toast";
@@ -18,6 +19,11 @@ const routes = [
         name: "Courses",
         icon: <FaBookOpen />,
         path: "/admin/courses"
+    },
+    {
+        name: "Categories",
+        icon: <FaTags />,
+        path: "/admin/categories"
     },
     {
         name: "Users",
