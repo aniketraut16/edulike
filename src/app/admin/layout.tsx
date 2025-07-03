@@ -2,6 +2,7 @@
 import SideNavbar from "@/app/admin/components/Sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { redirect } from "next/navigation";
+import { Toaster } from "react-hot-toast";
 
 export default function AdminLayout({
     children,
@@ -21,6 +22,9 @@ export default function AdminLayout({
     }
 
     return (
-        <SideNavbar children={children} />
+        <>
+            <SideNavbar children={children} />
+            <Toaster position="top-right" />
+        </>
     );
 }
