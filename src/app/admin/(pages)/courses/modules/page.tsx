@@ -299,8 +299,8 @@ function ModulesManagement() {
                                                 #{module.order_index}
                                             </span>
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${module.is_active
-                                                    ? 'bg-green-100 text-green-800'
-                                                    : 'bg-gray-100 text-gray-800'
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-gray-100 text-gray-800'
                                                 }`}>
                                                 {module.is_active ? 'Active' : 'Inactive'}
                                             </span>
@@ -322,18 +322,6 @@ function ModulesManagement() {
                                             <span className="text-gray-700 font-medium flex items-center gap-1">
                                                 <Clock className="w-3 h-3" />
                                                 {formatDuration(module.timetofinish)}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="text-gray-500">Created:</span>
-                                            <span className="text-gray-700">
-                                                {new Date(module.created_at).toLocaleDateString()}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="text-gray-500">Last Updated:</span>
-                                            <span className="text-gray-700">
-                                                {new Date(module.updated_at).toLocaleDateString()}
                                             </span>
                                         </div>
                                     </div>

@@ -7,7 +7,7 @@ export const getModules = async (courseId: string): Promise<Module[]> => {
     const response = await axios.get(
       `${baseUrl}/modules?course_id=${courseId}`
     );
-    return response.data;
+    return response.data.modules;
   } catch (error) {
     console.error("Error fetching modules:", error);
     return [];
