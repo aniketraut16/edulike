@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useRouter } from "next/navigation";
 import { Search, Plus, Edit, DollarSign, Image, Star, Settings, Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import toast, { Toaster } from 'react-hot-toast';
 
 
 export default function CoursesPage() {
@@ -30,7 +31,7 @@ export default function CoursesPage() {
     // Form states
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
     const [ratingData, setRatingData] = useState({ rating: 0, total_ratings: 0 });
-    const [error, setError] = useState<string>('');
+
     const [pricingData, setPricingData] = useState({
         tobegive: 'individual' as 'individual' | 'corporate' | 'institution',
         pricing: [{ price: 0, assignlimit: 1 }]
@@ -76,6 +77,7 @@ export default function CoursesPage() {
             setPagination(res.pagination);
         } catch (error) {
             console.error('Error fetching courses:', error);
+            toast.error('Failed to load courses');
         } finally {
             setLoading(false);
         }
@@ -87,12 +89,13 @@ export default function CoursesPage() {
             setCategories(cats);
         } catch (error) {
             console.error('Error fetching categories:', error);
+            toast.error('Failed to load categories');
         }
     };
 
     const handleEditCourse = async (courseId: string) => {
         try {
-            setError('');
+
             const courseData = await getDetailedCourse(courseId);
             if (courseData) {
                 setSelectedCourse(courseData);
@@ -113,7 +116,7 @@ export default function CoursesPage() {
             }
         } catch (error) {
             console.error('Error fetching course details:', error);
-            setError('Failed to load course details');
+            toast.error('Failed to load course details');
         }
     };
 
@@ -152,6 +155,7 @@ export default function CoursesPage() {
             }
         } catch (error) {
             console.error('Error fetching course details:', error);
+            toast.error('Failed to load course pricing details');
         }
     };
 
@@ -177,22 +181,34 @@ export default function CoursesPage() {
 
     const handlePublishToggle = async (courseId: string, currentStatus: boolean) => {
         try {
-            await publishUnpublishCourse(courseId, !currentStatus);
-            fetchCourses(); // Refresh the list
+            const success = await publishUnpublishCourse(courseId, !currentStatus);
+            if (success) {
+                toast.success(`Course ${!currentStatus ? 'published' : 'unpublished'} successfully`);
+                fetchCourses(); // Refresh the list
+            } else {
+                toast.error('Failed to update course status');
+            }
         } catch (error) {
             console.error('Error toggling publish status:', error);
+            toast.error('An error occurred while updating course status');
         }
     };
 
     const submitThumbnailUpdate = async () => {
         if (selectedCourse && thumbnailFile) {
             try {
-                await updateCourseThumbnail(selectedCourse.id, thumbnailFile);
-                setThumbnailModalOpen(false);
-                setThumbnailFile(null);
-                fetchCourses(); // Refresh the list
+                const success = await updateCourseThumbnail(selectedCourse.id, thumbnailFile);
+                if (success) {
+                    toast.success('Thumbnail updated successfully');
+                    setThumbnailModalOpen(false);
+                    setThumbnailFile(null);
+                    fetchCourses(); // Refresh the list
+                } else {
+                    toast.error('Failed to update thumbnail');
+                }
             } catch (error) {
                 console.error('Error updating thumbnail:', error);
+                toast.error('An error occurred while updating thumbnail');
             }
         }
     };
@@ -200,15 +216,21 @@ export default function CoursesPage() {
     const submitRatingUpdate = async () => {
         if (selectedCourse) {
             try {
-                await updateCourseRating({
+                const success = await updateCourseRating({
                     courseId: selectedCourse.id,
                     rating: ratingData.rating,
                     total_ratings: ratingData.total_ratings
                 });
-                setRatingModalOpen(false);
-                fetchCourses(); // Refresh the list
+                if (success) {
+                    toast.success('Rating updated successfully');
+                    setRatingModalOpen(false);
+                    fetchCourses(); // Refresh the list
+                } else {
+                    toast.error('Failed to update rating');
+                }
             } catch (error) {
                 console.error('Error updating rating:', error);
+                toast.error('An error occurred while updating rating');
             }
         }
     };
@@ -242,6 +264,8 @@ export default function CoursesPage() {
 
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
+            <Toaster position="top-right" />
+
             {/* Header */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
                 <div className="flex justify-between items-center mb-6">
@@ -275,7 +299,7 @@ export default function CoursesPage() {
                             variant={all ? "default" : "outline"}
                             size="sm"
                             onClick={() => setAll(true)}
-                            className={all ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+                            className={all ? "bg-indigo-600 hover:bg-indigo-700 text-white" : ""}
                         >
                             All
                         </Button>
@@ -283,175 +307,192 @@ export default function CoursesPage() {
                             variant={!all ? "default" : "outline"}
                             size="sm"
                             onClick={() => setAll(false)}
-                            className={!all ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+                            className={!all ? "bg-indigo-600 hover:bg-indigo-700 text-white" : ""}
                         >
                             Published
                         </Button>
                     </div>
                 </div>
 
-                {error && (
-                    <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-                        {error}
-                        <button
-                            onClick={() => setError('')}
-                            className="ml-2 text-red-500 hover:text-red-700"
-                        >
-                            ×
-                        </button>
-                    </div>
-                )}
+
             </div>
 
-            {/* Course List */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-                {loading ? (
-                    <div className="p-8 text-center">
-                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-                        <p className="mt-2 text-gray-600">Loading courses...</p>
-                    </div>
-                ) : courses.length === 0 ? (
-                    <div className="p-8 text-center">
-                        <p className="text-gray-600">No courses found</p>
-                    </div>
-                ) : (
-                    <div className="divide-y divide-gray-200">
-                        {courses.map((course) => (
-                            <div key={course.id} className="p-6 hover:bg-gray-50 transition-colors">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <h3 className="text-lg font-semibold text-gray-900">{course.title}</h3>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${course.is_published
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-gray-100 text-gray-800'
-                                                }`}>
-                                                {course.is_published ? 'Published' : 'Draft'}
-                                            </span>
-                                        </div>
-                                        <p className="text-gray-600 mb-3 line-clamp-2">{course.description}</p>
-                                        <div className="flex items-center gap-4 text-sm text-gray-500">
-                                            <span>Category: {course.category}</span>
-                                            <span>Level: {course.difficulty_level}</span>
-                                            <span>Language: {course.language}</span>
-                                            <span>Lessons: {course.lessons}</span>
-                                            <span>Enrollments: {course.enrollment_count}</span>
-                                            {course.rating && (
-                                                <span className="flex items-center gap-1">
-                                                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                                    {course.rating} ({course.rating_count})
-                                                </span>
-                                            )}
-                                        </div>
+            {/* Course Cards */}
+            {loading ? (
+                <div className="flex justify-center items-center py-12">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    <p className="ml-3 text-gray-600">Loading courses...</p>
+                </div>
+            ) : courses.length === 0 ? (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+                    <p className="text-gray-600 text-lg">No courses found</p>
+                    <p className="text-gray-500 mt-2">Create your first course to get started</p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {courses.map((course) => (
+                        <div key={course.id} className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                            {/* Course Header */}
+                            <div className="p-6">
+                                <div className="flex items-start justify-between mb-3">
+                                    <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">{course.title}</h3>
+                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ml-2 flex-shrink-0 ${course.is_published
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-gray-100 text-gray-800'
+                                        }`}>
+                                        {course.is_published ? 'Published' : 'Draft'}
+                                    </span>
+                                </div>
+
+                                <p className="text-gray-600 text-sm mb-4 line-clamp-3">{course.description}</p>
+
+                                {/* Course Details */}
+                                <div className="space-y-2 mb-4">
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-gray-500">Category:</span>
+                                        <span className="text-gray-700 font-medium">{course.category}</span>
                                     </div>
-
-                                    <div className="flex items-center gap-2 ml-4">
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => handleEditCourse(course.id)}
-                                            className="text-indigo-600 border-indigo-600 hover:bg-indigo-50"
-                                        >
-                                            <Edit className="w-4 h-4" />
-                                        </Button>
-
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => handlePricingUpdate(course.id)}
-                                            className="text-green-600 border-green-600 hover:bg-green-50"
-                                        >
-                                            <DollarSign className="w-4 h-4" />
-                                        </Button>
-
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => handleThumbnailUpdate(course.id)}
-                                            className="text-blue-600 border-blue-600 hover:bg-blue-50"
-                                        >
-                                            <Image className="w-4 h-4" />
-                                        </Button>
-
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => handleRatingUpdate(course.id)}
-                                            className="text-yellow-600 border-yellow-600 hover:bg-yellow-50"
-                                        >
-                                            <Star className="w-4 h-4" />
-                                        </Button>
-
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => alert('Module management coming soon!')}
-                                            className="text-purple-600 border-purple-600 hover:bg-purple-50"
-                                        >
-                                            <Settings className="w-4 h-4" />
-                                        </Button>
-
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => router.push(`/course?id=${course.id}`)}
-                                            className="text-gray-600 border-gray-600 hover:bg-gray-50"
-                                        >
-                                            <Eye className="w-4 h-4" />
-                                        </Button>
-
-                                        <Button
-                                            size="sm"
-                                            variant={course.is_published ? "outline" : "default"}
-                                            onClick={() => handlePublishToggle(course.id, course.is_published || false)}
-                                            className={course.is_published
-                                                ? "text-red-600 border-red-600 hover:bg-red-50"
-                                                : "bg-indigo-600 hover:bg-indigo-700 text-white"
-                                            }
-                                        >
-                                            {course.is_published ? 'Unpublish' : 'Publish'}
-                                        </Button>
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-gray-500">Level:</span>
+                                        <span className="text-gray-700 capitalize">{course.difficulty_level}</span>
                                     </div>
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-gray-500">Lessons:</span>
+                                        <span className="text-gray-700">{course.lessons}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-gray-500">Enrollments:</span>
+                                        <span className="text-gray-700">{course.enrollment_count}</span>
+                                    </div>
+                                    {course.rating && (
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-gray-500">Rating:</span>
+                                            <div className="flex items-center gap-1">
+                                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                                <span className="text-gray-700">{course.rating} ({course.rating_count})</span>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                )}
 
-                {/* Pagination */}
-                {pagination.total_pages > 1 && (
-                    <div className="p-6 border-t border-gray-200">
-                        <div className="flex items-center justify-between">
-                            <p className="text-sm text-gray-600">
-                                Showing page {pagination.current_page} of {pagination.total_pages}
-                                ({pagination.total_courses} total courses)
-                            </p>
-                            <div className="flex gap-2">
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => goToPage(pagination.current_page - 1)}
-                                    disabled={!pagination.has_prev}
-                                >
-                                    <ChevronLeft className="w-4 h-4" />
-                                    Previous
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => goToPage(pagination.current_page + 1)}
-                                    disabled={!pagination.has_next}
-                                >
-                                    Next
-                                    <ChevronRight className="w-4 h-4" />
-                                </Button>
+                            {/* Action Buttons */}
+                            <div className="border-t border-gray-200 p-4 bg-gray-50">
+                                <div className="grid grid-cols-4 gap-2 mb-3">
+                                    <Button
+                                        size="sm"
+                                        onClick={() => handleEditCourse(course.id)}
+                                        className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                                        title="Edit Course"
+                                    >
+                                        <Edit className="w-4 h-4 mr-1" />
+                                        Edit
+                                    </Button>
+
+                                    <Button
+                                        size="sm"
+                                        onClick={() => handlePricingUpdate(course.id)}
+                                        className="bg-green-600 hover:bg-green-700 text-white"
+                                        title="Update Pricing"
+                                    >
+                                        <DollarSign className="w-4 h-4 mr-1" />
+                                        Price
+                                    </Button>
+
+                                    <Button
+                                        size="sm"
+                                        onClick={() => handleThumbnailUpdate(course.id)}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                                        title="Update Thumbnail"
+                                    >
+                                        <Image className="w-4 h-4 mr-1" />
+                                        Image
+                                    </Button>
+
+                                    <Button
+                                        size="sm"
+                                        onClick={() => handleRatingUpdate(course.id)}
+                                        className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                                        title="Update Rating"
+                                    >
+                                        <Star className="w-4 h-4 mr-1" />
+                                        Rate
+                                    </Button>
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-2">
+                                    <Button
+                                        size="sm"
+                                        onClick={() => toast('Module management coming soon!', { icon: 'ℹ️' })}
+                                        className="bg-purple-600 hover:bg-purple-700 text-white"
+                                        title="Manage Modules"
+                                    >
+                                        <Settings className="w-4 h-4 mr-1" />
+                                        Modules
+                                    </Button>
+
+                                    <Button
+                                        size="sm"
+                                        onClick={() => router.push(`/course?id=${course.id}`)}
+                                        className="bg-gray-600 hover:bg-gray-700 text-white"
+                                        title="View Course"
+                                    >
+                                        <Eye className="w-4 h-4 mr-1" />
+                                        View
+                                    </Button>
+
+                                    <Button
+                                        size="sm"
+                                        onClick={() => handlePublishToggle(course.id, course.is_published || false)}
+                                        className={course.is_published
+                                            ? "bg-red-600 hover:bg-red-700 text-white"
+                                            : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                                        }
+                                        title={course.is_published ? "Unpublish Course" : "Publish Course"}
+                                    >
+                                        {course.is_published ? 'Unpublish' : 'Publish'}
+                                    </Button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
-            </div>
+                    ))}
+                </div>
+            )}
 
-            {/* Thumbnail Update Modal */}
+            {/* Pagination */}
+            {pagination.total_pages > 1 && (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6">
+                    <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-600">
+                            Showing page {pagination.current_page} of {pagination.total_pages}
+                            ({pagination.total_courses} total courses)
+                        </p>
+                        <div className="flex gap-2">
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => goToPage(pagination.current_page - 1)}
+                                disabled={!pagination.has_prev}
+                                className="text-gray-600"
+                            >
+                                <ChevronLeft className="w-4 h-4 mr-1" />
+                                Previous
+                            </Button>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => goToPage(pagination.current_page + 1)}
+                                disabled={!pagination.has_next}
+                                className="text-gray-600"
+                            >
+                                Next
+                                <ChevronRight className="w-4 h-4 ml-1" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <Modal
                 isOpen={thumbnailModalOpen}
                 onClose={() => setThumbnailModalOpen(false)}
@@ -716,14 +757,15 @@ export default function CoursesPage() {
                                     try {
                                         const success = await updateCourse(selectedCourse.id, editFormData);
                                         if (success) {
+                                            toast.success('Course updated successfully');
                                             setEditModalOpen(false);
                                             fetchCourses(); // Refresh the list
                                         } else {
-                                            setError('Failed to update course');
+                                            toast.error('Failed to update course');
                                         }
                                     } catch (error) {
                                         console.error('Error updating course:', error);
-                                        setError('An error occurred while updating the course');
+                                        toast.error('An error occurred while updating the course');
                                     }
                                 }
                             }}
@@ -829,14 +871,15 @@ export default function CoursesPage() {
                                     try {
                                         const success = await updateCoursePricing(selectedCourse.id, pricingData);
                                         if (success) {
+                                            toast.success('Pricing updated successfully');
                                             setPricingModalOpen(false);
                                             fetchCourses(); // Refresh the list
                                         } else {
-                                            setError('Failed to update pricing');
+                                            toast.error('Failed to update pricing');
                                         }
                                     } catch (error) {
                                         console.error('Error updating pricing:', error);
-                                        setError('An error occurred while updating pricing');
+                                        toast.error('An error occurred while updating pricing');
                                     }
                                 }
                             }}
@@ -847,6 +890,6 @@ export default function CoursesPage() {
                     </div>
                 </div>
             </Modal>
-        </div>
+        </div >
     );
 }

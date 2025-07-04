@@ -123,7 +123,7 @@ export const updateCourseRating = async (
   data: CourseRatingArgs
 ): Promise<Boolean> => {
   try {
-    await axios.put(`${baseUrl}/courses/rating`, data);
+    await axios.post(`${baseUrl}/courses/rating`, data);
     return true;
   } catch (error) {
     console.error("Error updating course rating:", error);
