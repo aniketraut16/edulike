@@ -423,7 +423,7 @@ export default function CoursesPage() {
                                 <div className="grid grid-cols-3 gap-2">
                                     <Button
                                         size="sm"
-                                        onClick={() => toast('Module management coming soon!', { icon: 'ℹ️' })}
+                                        onClick={() => router.push(`/admin/courses/modules?courseId=${course.id}&courseName=${encodeURIComponent(course.title)}`)}
                                         className="bg-purple-600 hover:bg-purple-700 text-white"
                                         title="Manage Modules"
                                     >
