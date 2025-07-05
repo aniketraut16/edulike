@@ -173,10 +173,7 @@ function ModulesManagement() {
     };
 
     const handleManageMaterial = (module: Module) => {
-        toast.success(`Material management for "${module.title}" coming soon!`, {
-            duration: 3000,
-            icon: '📚'
-        });
+        router.push(`/admin/courses/materials?moduleId=${module.id}&moduleTitle=${module.title}`);
     };
 
     const formatDuration = (minutes: number) => {
@@ -289,7 +286,7 @@ function ModulesManagement() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {modules
                         .sort((a, b) => a.order_index - b.order_index)
-                        .map((module, index) => (
+                        .map((module) => (
                             <div key={module.id} className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                                 {/* Module Header */}
                                 <div className="p-6">
