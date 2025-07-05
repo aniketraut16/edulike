@@ -4,7 +4,7 @@ import { getCourses, getDetailedCourse, publishUnpublishCourse, updateCourseThum
 import { getCategories } from "@/app/admin/utils/category";
 import { Course, DetailedCourse } from "@/app/admin/types/courses";
 import { Category } from "@/app/admin/types/category";
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
@@ -18,6 +18,7 @@ export default function CoursesPage() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(false);
     const [query, setQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
     const [all, setAll] = useState(true);
     const [categories, setCategories] = useState<Category[]>([]);
 
@@ -64,15 +65,19 @@ export default function CoursesPage() {
         has_prev: false,
     });
 
+    // Debounce search query
     useEffect(() => {
-        fetchCourses();
-        fetchCategories();
-    }, [query, all, pagination.current_page]);
+        const timer = setTimeout(() => {
+            setDebouncedQuery(query);
+        }, 200);
 
-    const fetchCourses = async () => {
+        return () => clearTimeout(timer);
+    }, [query]);
+
+    const fetchCourses = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await getCourses(query, pagination.current_page, all);
+            const res = await getCourses(debouncedQuery, pagination.current_page, all);
             setCourses(res.courses);
             setPagination(res.pagination);
         } catch (error) {
@@ -81,9 +86,9 @@ export default function CoursesPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [debouncedQuery, pagination.current_page, all]);
 
-    const fetchCategories = async () => {
+    const fetchCategories = useCallback(async () => {
         try {
             const cats = await getCategories();
             setCategories(cats);
@@ -91,7 +96,22 @@ export default function CoursesPage() {
             console.error('Error fetching categories:', error);
             toast.error('Failed to load categories');
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchCourses();
+    }, [fetchCourses]);
+
+    useEffect(() => {
+        fetchCategories();
+    }, [fetchCategories]);
+
+    // Reset to page 1 when search query or filter changes
+    useEffect(() => {
+        if (pagination.current_page !== 1) {
+            setPagination(prev => ({ ...prev, current_page: 1 }));
+        }
+    }, [debouncedQuery, all]);
 
     const handleEditCourse = async (courseId: string) => {
         try {

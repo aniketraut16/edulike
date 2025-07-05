@@ -23,6 +23,7 @@ type AuthContextType = {
     isLoading: boolean;
     isDBUserLoading: boolean;
     needsCompleteSetup: boolean;
+    token: string | null;
     setLoading: (value: boolean) => void;
     login: (email: string, password: string) => Promise<void>;
     loginWithGoogle: () => Promise<void>;
@@ -55,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [isLoading, setLoading] = useState(true);
     const [isDBUserLoading, setIsDBUserLoading] = useState(false);
     const [needsCompleteSetup, setNeedsCompleteSetup] = useState(false);
+    const [token, setToken] = useState<string | null>(null);
 
 
     useEffect(() => {
@@ -65,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setIsDBUserLoading(true);
                 const token = await currentUser.getIdTokenResult();
                 setIsAdmin(token.claims.admin === true);
+                setToken(token.token);
 
                 try {
                     const dbUserData = await getDBUserInternal();
@@ -233,6 +236,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 isLoading,
                 isDBUserLoading,
                 needsCompleteSetup,
+                token,
                 setLoading,
                 login,
                 loginWithGoogle,
