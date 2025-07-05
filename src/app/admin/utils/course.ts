@@ -62,7 +62,12 @@ export const createCourse = async (data: {
   pricing: CoursePriceArgs;
 }): Promise<Boolean> => {
   try {
-    const course = await axios.post(`${baseUrl}/courses/create-complete`, data);
+    const course = await axios.post(`${baseUrl}/courses/create-complete`, {
+      ...data.course,
+      total_duration: data.course.timetofinish || 0,
+      total_modules: 0,
+      thumbnail: "",
+    });
     const courseId = course.data.course.id;
     await updateCoursePricing(courseId, data.pricing);
     await updateCourseRating({
