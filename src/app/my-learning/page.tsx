@@ -131,7 +131,7 @@ export default function page() {
                                     <div className="flex flex-col items-center justify-between mt-2 gap-3">
                                         <button
                                             className="text-white bg-[#8D1A5F] text-sm font-medium px-4 py-2 rounded transition w-[150px] hover:bg-white hover:text-[#8D1A5F] hover:border hover:border-[#8D1A5F] cursor-pointer"
-                                            onClick={() => window.location.href = `/course?id=${item.courseId}&mode=learning`}
+                                            onClick={() => window.location.href = `/learn?course_id=${item.courseId}&enrollment_id=${item.enrollmentId}`}
                                         >
                                             {item.progress === 100 ? 'View Certificate' : 'Resume'}
                                         </button>
