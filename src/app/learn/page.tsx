@@ -14,7 +14,11 @@ import {
     FaBook,
     FaClock,
     FaGraduationCap,
-    FaCalendarAlt
+    FaCalendarAlt,
+    FaBars,
+    FaTimes,
+    FaChevronLeft,
+    FaChevronRight
 } from 'react-icons/fa';
 import { MdVideoCall, MdDescription } from 'react-icons/md';
 import { BiLoaderAlt } from 'react-icons/bi';
@@ -28,6 +32,7 @@ function Learning() {
     const [selectedModule, setSelectedModule] = useState<ModuleWithProgress | null>(null);
     const [loading, setLoading] = useState(true);
     const [progressLoading, setProgressLoading] = useState<{ [key: string]: boolean }>({});
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -99,6 +104,33 @@ function Learning() {
         }
     };
 
+    const handleModuleSelect = (module: ModuleWithProgress) => {
+        setSelectedModule(module);
+        setSidebarOpen(false); // Close sidebar on mobile after selection
+    };
+
+    const getCurrentModuleIndex = () => {
+        if (!course || !selectedModule) return -1;
+        return course.modules.findIndex(m => m.moduleId === selectedModule.moduleId);
+    };
+
+    const navigateToModule = (direction: 'prev' | 'next') => {
+        if (!course || !selectedModule) return;
+
+        const currentIndex = getCurrentModuleIndex();
+        let newIndex;
+
+        if (direction === 'prev' && currentIndex > 0) {
+            newIndex = currentIndex - 1;
+        } else if (direction === 'next' && currentIndex < course.modules.length - 1) {
+            newIndex = currentIndex + 1;
+        } else {
+            return;
+        }
+
+        setSelectedModule(course.modules[newIndex]);
+    };
+
     const renderMaterialIcon = (type: string) => {
         switch (type) {
             case 'video':
@@ -147,7 +179,7 @@ function Learning() {
                         )}
                         <button
                             onClick={() => window.open(material.meetLink!, '_blank')}
-                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
                         >
                             <MdVideoCall />
                             Join Meeting
@@ -166,7 +198,7 @@ function Learning() {
                         </div>
                         <button
                             onClick={() => window.open(material.filePath!, '_blank')}
-                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
                         >
                             <FaFileAlt />
                             Open Document
@@ -185,7 +217,7 @@ function Learning() {
                         </div>
                         <button
                             onClick={() => window.open(material.externalUrl!, '_blank')}
-                            className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                            className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
                         >
                             <FaExternalLinkAlt />
                             Open Link
@@ -202,7 +234,7 @@ function Learning() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
                 <div className="text-center">
                     <BiLoaderAlt className="animate-spin text-4xl text-[#8D1A5F] mx-auto mb-4" />
                     <p className="text-gray-600">Loading course content...</p>
@@ -213,7 +245,7 @@ function Learning() {
 
     if (!course || !course.modules.length) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
                 <div className="text-center">
                     <FaGraduationCap className="text-6xl text-gray-400 mx-auto mb-4" />
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">No Course Content</h2>
@@ -225,9 +257,67 @@ function Learning() {
 
     return (
         <div className="min-h-screen bg-gray-50 pt-[10vh]">
-            <div className="flex">
+            {/* Mobile Header */}
+            <div className="lg:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3 sticky top-[10vh] z-20">
+                <div className="flex items-center justify-between">
+                    <button
+                        // onClick={() => setSidebarOpen(true)}
+                        className="flex items-center gap-2 text-[#8D1A5F] font-medium"
+                    >
+                        <FaBook className="text-lg" />
+                        <span className="text-sm">Modules</span>
+                    </button>
+
+                    {selectedModule && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-600">
+                                Module {getCurrentModuleIndex() + 1} of {course.total_modules}
+                            </span>
+                        </div>
+                    )}
+                </div>
+
+                {selectedModule && (
+                    <div className="mt-2">
+                        <h2 className="text-lg font-semibold text-gray-800 truncate">
+                            {selectedModule.moduleTitle}
+                        </h2>
+                        <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
+                            <span>{selectedModule.completedMaterials}/{selectedModule.totalMaterials} completed</span>
+                            <span>
+                                {selectedModule.totalMaterials > 0
+                                    ? Math.round((selectedModule.completedMaterials / selectedModule.totalMaterials) * 100)
+                                    : 0
+                                }%
+                            </span>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className="flex relative">
+                {/* Mobile Sidebar Overlay */}
+                {sidebarOpen && (
+                    <div
+                        className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                )}
+
                 {/* Left Sidebar - Modules */}
-                <div className="w-80 bg-white shadow-lg min-h-screen">
+                <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                    } lg:translate-x-0 fixed lg:relative lg:w-80 w-80 bg-white shadow-lg min-h-screen z-40 transition-transform duration-300 ease-in-out`}>
+
+                    {/* Mobile Close Button */}
+                    <div className="lg:hidden flex justify-end p-4">
+                        <button
+                            onClick={() => setSidebarOpen(false)}
+                            className="text-gray-500 hover:text-gray-700"
+                        >
+                            <FaTimes className="text-xl" />
+                        </button>
+                    </div>
+
                     <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-[#8D1A5F] to-[#B91C8C] text-white">
                         <h1 className="text-xl font-bold mb-2">Course Modules</h1>
                         <div className="flex items-center gap-2 text-sm opacity-90">
@@ -236,7 +326,7 @@ function Learning() {
                         </div>
                     </div>
 
-                    <div className="p-4">
+                    <div className="p-4 overflow-y-auto">
                         {course.modules.map((module, index) => {
                             const isActive = selectedModule?.moduleId === module.moduleId;
                             const progressPercentage = module.totalMaterials > 0
@@ -246,7 +336,7 @@ function Learning() {
                             return (
                                 <div
                                     key={module.moduleId}
-                                    onClick={() => setSelectedModule(module)}
+                                    onClick={() => handleModuleSelect(module)}
                                     className={`p-4 rounded-lg mb-3 cursor-pointer transition-all duration-200 border ${isActive
                                         ? 'bg-[#8D1A5F] text-white border-[#8D1A5F] shadow-md'
                                         : 'bg-gray-50 hover:bg-gray-100 border-gray-200 hover:border-gray-300'
@@ -296,11 +386,11 @@ function Learning() {
                 </div>
 
                 {/* Right Content - Materials */}
-                <div className="flex-1 p-8">
+                <div className="flex-1 p-4 lg:p-8 min-h-screen">
                     {selectedModule ? (
-                        <div>
-                            {/* Module Header */}
-                            <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-200">
+                        <div className="max-w-4xl">
+                            {/* Module Header - Hidden on mobile (shown in mobile header) */}
+                            <div className="hidden lg:block bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-200">
                                 <h1 className="text-3xl font-bold text-gray-800 mb-3">
                                     {selectedModule.moduleTitle}
                                 </h1>
@@ -310,78 +400,136 @@ function Learning() {
                                 </div>
                             </div>
 
+                            {/* Mobile Module Description */}
+                            <div className="lg:hidden bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
+                                <div className="flex items-start gap-2 text-gray-600">
+                                    <MdDescription className="text-lg mt-1 flex-shrink-0" />
+                                    <p className="text-sm leading-relaxed">{selectedModule.moduleDescription}</p>
+                                </div>
+                            </div>
+
+                            {/* Module Navigation */}
+                            <div className="flex justify-between items-center mb-6">
+                                <button
+                                    onClick={() => navigateToModule('prev')}
+                                    disabled={getCurrentModuleIndex() === 0}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${getCurrentModuleIndex() === 0
+                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                        : 'bg-[#8D1A5F] text-white hover:bg-[#7A1850]'
+                                        }`}
+                                >
+                                    <FaChevronLeft />
+                                    <span className="hidden sm:inline">Previous</span>
+                                </button>
+
+                                <span className="text-sm text-gray-600 font-medium">
+                                    Module {getCurrentModuleIndex() + 1} of {course.total_modules}
+                                </span>
+
+                                <button
+                                    onClick={() => navigateToModule('next')}
+                                    disabled={getCurrentModuleIndex() === course.modules.length - 1}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${getCurrentModuleIndex() === course.modules.length - 1
+                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                        : 'bg-[#8D1A5F] text-white hover:bg-[#7A1850]'
+                                        }`}
+                                >
+                                    <span className="hidden sm:inline">Next</span>
+                                    <FaChevronRight />
+                                </button>
+                            </div>
+
                             {/* Materials List */}
-                            <div className="space-y-6">
-                                {selectedModule.materials
-                                    .sort((a, b) => a.orderIndex - b.orderIndex)
-                                    .map((material) => {
-                                        const isCompleted = material.status === "completed";
-                                        const isLoading = progressLoading[material.materialId];
+                            <div className="space-y-4 lg:space-y-6">
+                                {selectedModule.materials && selectedModule.materials.length > 0 ? (
+                                    selectedModule.materials
+                                        .sort((a, b) => a.orderIndex - b.orderIndex)
+                                        .map((material) => {
+                                            const isCompleted = material.status === "completed";
+                                            const isLoading = progressLoading[material.materialId];
 
-                                        return (
-                                            <div
-                                                key={material.materialId}
-                                                className={`bg-white rounded-lg shadow-sm border transition-all duration-200 ${isCompleted
-                                                    ? 'border-green-200 bg-green-50'
-                                                    : 'border-gray-200 hover:border-gray-300'
-                                                    }`}
-                                            >
-                                                <div className="p-6">
-                                                    {/* Material Header */}
-                                                    <div className="flex items-start justify-between mb-4">
-                                                        <div className="flex items-start gap-3 flex-1">
-                                                            <div className="mt-1">
-                                                                {renderMaterialIcon(material.materialType)}
-                                                            </div>
-                                                            <div className="flex-1">
-                                                                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                                                                    {material.materialTitle}
-                                                                </h3>
-                                                                {material.content && (
-                                                                    <p className="text-gray-600 text-sm leading-relaxed mb-3">
-                                                                        {material.content}
-                                                                    </p>
-                                                                )}
-                                                                {material.duration > 0 && (
-                                                                    <div className="flex items-center gap-1 text-sm text-gray-500">
-                                                                        <FaClock />
-                                                                        <span>{material.duration} minutes</span>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Progress Checkbox */}
-                                                        <div className="flex items-center gap-2 ml-4">
-                                                            {isLoading ? (
-                                                                <BiLoaderAlt className="animate-spin text-[#8D1A5F] text-xl" />
-                                                            ) : (
-                                                                <button
-                                                                    onClick={() => handleMaterialProgress(
-                                                                        material,
-                                                                        isCompleted ? "not completed" : "completed"
+                                            return (
+                                                <div
+                                                    key={material.materialId}
+                                                    className={`bg-white rounded-lg shadow-sm border transition-all duration-200 ${isCompleted
+                                                        ? 'border-green-200 bg-green-50'
+                                                        : 'border-gray-200 hover:border-gray-300'
+                                                        }`}
+                                                >
+                                                    <div className="p-4 lg:p-6">
+                                                        {/* Material Header */}
+                                                        <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-3">
+                                                            <div className="flex items-start gap-3 flex-1">
+                                                                <div className="mt-1">
+                                                                    {renderMaterialIcon(material.materialType)}
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <h3 className="text-lg font-semibold text-gray-800 mb-2 break-words">
+                                                                        {material.materialTitle}
+                                                                    </h3>
+                                                                    {material.content && (
+                                                                        <p className="text-gray-600 text-sm leading-relaxed mb-3 break-words">
+                                                                            {material.content}
+                                                                        </p>
                                                                     )}
-                                                                    className={`text-2xl transition-colors ${isCompleted
-                                                                        ? 'text-green-500 hover:text-green-600'
-                                                                        : 'text-gray-300 hover:text-[#8D1A5F]'
-                                                                        }`}
-                                                                >
-                                                                    {isCompleted ? <FaCheckCircle /> : <FaCircle />}
-                                                                </button>
-                                                            )}
-                                                            <span className={`text-sm font-medium ${isCompleted ? 'text-green-600' : 'text-gray-500'
-                                                                }`}>
-                                                                {isCompleted ? 'Completed' : 'Mark Complete'}
-                                                            </span>
-                                                        </div>
-                                                    </div>
+                                                                    {material.duration > 0 && (
+                                                                        <div className="flex items-center gap-1 text-sm text-gray-500">
+                                                                            <FaClock />
+                                                                            <span>{material.duration} minutes</span>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
 
-                                                    {/* Material Content */}
-                                                    {renderMaterialContent(material)}
+                                                            {/* Progress Checkbox */}
+                                                            <div className="flex items-center gap-2 sm:ml-4 self-start">
+                                                                {isLoading ? (
+                                                                    <BiLoaderAlt className="animate-spin text-[#8D1A5F] text-xl" />
+                                                                ) : (
+                                                                    <button
+                                                                        onClick={() => handleMaterialProgress(
+                                                                            material,
+                                                                            isCompleted ? "not completed" : "completed"
+                                                                        )}
+                                                                        className={`text-2xl transition-colors ${isCompleted
+                                                                            ? 'text-green-500 hover:text-green-600'
+                                                                            : 'text-gray-300 hover:text-[#8D1A5F]'
+                                                                            }`}
+                                                                    >
+                                                                        {isCompleted ? <FaCheckCircle /> : <FaCircle />}
+                                                                    </button>
+                                                                )}
+                                                                <span className={`text-sm font-medium ${isCompleted ? 'text-green-600' : 'text-gray-500'
+                                                                    }`}>
+                                                                    {isCompleted ? 'Completed' : 'Mark Complete'}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Material Content */}
+                                                        {renderMaterialContent(material)}
+                                                    </div>
                                                 </div>
+                                            );
+                                        })
+                                ) : (
+                                    /* No Materials Available */
+                                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+                                        <div className="max-w-md mx-auto">
+                                            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                                                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
                                             </div>
-                                        );
-                                    })}
+                                            <h3 className="text-lg sm:text-xl font-semibold mb-2 text-gray-800">
+                                                No Materials Available
+                                            </h3>
+                                            <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                                                No material is available for this module. It will be updated soon.
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ) : (
@@ -400,7 +548,7 @@ function Learning() {
 export default function page() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
                 <div className="text-center">
                     <BiLoaderAlt className="animate-spin text-4xl text-[#8D1A5F] mx-auto mb-4" />
                     <p className="text-gray-600">Loading...</p>
