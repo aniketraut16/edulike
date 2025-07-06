@@ -119,6 +119,7 @@ function OneCoursePageContent() {
                 courseId: course.id,
                 quantity: 1,
                 accessType: selectedPricing.type,
+                assignLimit: selectedPricing.assignLimit,
                 cartId: cartId,
             }, cartId);
 

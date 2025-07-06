@@ -456,6 +456,12 @@ const Navbar = () => {
                                     placeholder="Search for courses..."
                                     className="w-full pl-10 pr-4 py-2 rounded-xl bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                 />
+                                <button
+                                    onClick={() => router.push(`/courses`)}
+                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 text-white text-sm bg-[#8D1A5F] p-[7px] rounded-[9px] cursor-pointer"
+                                >
+                                    Explore All Courses
+                                </button>
                             </div>
                         </div>
 
@@ -552,6 +558,12 @@ const Navbar = () => {
                                     className="w-full pl-10 pr-4 py-2 rounded-xl bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                     autoFocus
                                 />
+                                <button
+                                    onClick={() => router.push(`/courses`)}
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                >
+                                    View All Courses
+                                </button>
                             </div>
                         </div>
                     )}

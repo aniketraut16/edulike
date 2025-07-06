@@ -1,15 +1,20 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { CartItem, getCart } from "@/utils/cart";
+import { enroll } from "@/utils/enroll";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import toast, { Toaster } from 'react-hot-toast';
 import { useContent } from '@/context/ContentContext';
+import { useRouter } from 'next/navigation';
 
 export default function Checkout() {
-    const { cart } = useContent();
+    const { cart, cartId } = useContent();
+    const router = useRouter();
+    const [processing, setProcessing] = useState(false);
+    const [paymentStep, setPaymentStep] = useState<'form' | 'processing' | 'gateway' | 'success'>('form');
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -40,7 +45,7 @@ export default function Checkout() {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (cart.length === 0) {
@@ -48,10 +53,74 @@ export default function Checkout() {
             return;
         }
 
-        // Process payment logic here
-        toast.success("Processing payment...");
-        console.log("Form submitted:", formData);
-        console.log("Cart items:", cart);
+        if (!cartId) {
+            toast.error("Cart ID not found. Please try again.");
+            return;
+        }
+
+        setProcessing(true);
+        setPaymentStep('processing');
+
+        try {
+            // Step 1: Process payment simulation
+            toast.loading("Processing payment...", { id: 'payment' });
+
+            // Simulate payment processing time
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            setPaymentStep('gateway');
+            toast.loading("Connecting to payment gateway...", { id: 'payment' });
+
+            // Step 2: Gateway simulation (additional 3 seconds)
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            // Step 3: Enroll the user
+            toast.loading("Enrolling in courses...", { id: 'payment' });
+
+            const enrollData = {
+                userDetails: {
+                    name: formData.name,
+                    email: formData.email,
+                    phone: formData.phone,
+                    gender: formData.gender,
+                    address: formData.address,
+                    city: formData.city,
+                    state: formData.state,
+                    zipCode: formData.zipCode,
+                    country: formData.country,
+                },
+                cartId: cartId
+            };
+
+            const startTime = Date.now();
+            const result = await enroll(enrollData);
+            const apiTime = Date.now() - startTime;
+
+            // Additional 3 seconds simulation after API call
+            const remainingTime = Math.max(3000 - apiTime, 0);
+            if (remainingTime > 0) {
+                await new Promise(resolve => setTimeout(resolve, remainingTime));
+            }
+
+            if (result.success) {
+                setPaymentStep('success');
+                toast.success("Payment successful! Enrolling in courses...", { id: 'payment' });
+
+                // Wait a moment to show success message
+                setTimeout(() => {
+                    toast.success("Successfully enrolled! Redirecting to your courses...");
+                    router.push('/my-learning');
+                }, 1000);
+            } else {
+                throw new Error(result.message);
+            }
+
+        } catch (error: any) {
+            console.error("Enrollment error:", error);
+            toast.error(error.message || "Payment failed. Please try again.", { id: 'payment' });
+            setPaymentStep('form');
+            setProcessing(false);
+        }
     };
 
     // Calculate costs
@@ -65,6 +134,63 @@ export default function Checkout() {
         return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
+    // Payment processing overlay
+    if (processing) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+                <Toaster position="top-center" />
+                <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+                    <div className="mb-6">
+                        {paymentStep === 'processing' && (
+                            <>
+                                <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#8D1A5F] mx-auto mb-4"></div>
+                                <h2 className="text-xl font-bold text-gray-800 mb-2">Processing Payment</h2>
+                                <p className="text-gray-600">Please wait while we process your payment...</p>
+                            </>
+                        )}
+
+                        {paymentStep === 'gateway' && (
+                            <>
+                                <div className="animate-pulse">
+                                    <div className="w-16 h-16 bg-gradient-to-r from-[#8D1A5F] to-[#B91C8C] rounded-full mx-auto mb-4 flex items-center justify-center">
+                                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <h2 className="text-xl font-bold text-gray-800 mb-2">Secure Payment Gateway</h2>
+                                <p className="text-gray-600">Connecting to secure payment gateway...</p>
+                                <div className="mt-4 flex justify-center">
+                                    <div className="flex space-x-1">
+                                        <div className="w-2 h-2 bg-[#8D1A5F] rounded-full animate-bounce"></div>
+                                        <div className="w-2 h-2 bg-[#8D1A5F] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                                        <div className="w-2 h-2 bg-[#8D1A5F] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        {paymentStep === 'success' && (
+                            <>
+                                <div className="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <h2 className="text-xl font-bold text-green-800 mb-2">Payment Successful!</h2>
+                                <p className="text-gray-600">Enrolling you in your courses...</p>
+                            </>
+                        )}
+                    </div>
+
+                    <div className="bg-gray-50 rounded-lg p-4">
+                        <div className="text-sm text-gray-600 mb-2">Total Amount</div>
+                        <div className="text-2xl font-bold text-[#8D1A5F]">${formatPrice(total)}</div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (cart.length === 0) {
         return (
@@ -111,6 +237,7 @@ export default function Checkout() {
                                         required
                                         placeholder="John Doe"
                                         className="h-10 sm:h-11"
+                                        disabled={processing}
                                     />
                                 </div>
 
@@ -125,6 +252,7 @@ export default function Checkout() {
                                         required
                                         placeholder="john@example.com"
                                         className="h-10 sm:h-11"
+                                        disabled={processing}
                                     />
                                 </div>
 
@@ -138,6 +266,7 @@ export default function Checkout() {
                                         required
                                         placeholder="+1 (555) 123-4567"
                                         className="h-10 sm:h-11"
+                                        disabled={processing}
                                     />
                                 </div>
 
@@ -148,8 +277,9 @@ export default function Checkout() {
                                         name="gender"
                                         value={formData.gender}
                                         onChange={handleInputChange}
-                                        className="w-full h-10 sm:h-11 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8D1A5F] focus:border-transparent"
+                                        className="w-full h-10 sm:h-11 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8D1A5F] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                                         required
+                                        disabled={processing}
                                     >
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
@@ -172,6 +302,7 @@ export default function Checkout() {
                                         required
                                         placeholder="123 Main Street, Apt 4B"
                                         className="min-h-[80px] resize-none"
+                                        disabled={processing}
                                     />
                                 </div>
 
@@ -186,6 +317,7 @@ export default function Checkout() {
                                             required
                                             placeholder="New York"
                                             className="h-10 sm:h-11"
+                                            disabled={processing}
                                         />
                                     </div>
 
@@ -199,6 +331,7 @@ export default function Checkout() {
                                             required
                                             placeholder="NY"
                                             className="h-10 sm:h-11"
+                                            disabled={processing}
                                         />
                                     </div>
 
@@ -212,6 +345,7 @@ export default function Checkout() {
                                             required
                                             placeholder="10001"
                                             className="h-10 sm:h-11"
+                                            disabled={processing}
                                         />
                                     </div>
 
@@ -225,6 +359,7 @@ export default function Checkout() {
                                             required
                                             placeholder="United States"
                                             className="h-10 sm:h-11"
+                                            disabled={processing}
                                         />
                                     </div>
                                 </div>
@@ -327,6 +462,7 @@ export default function Checkout() {
                                             onChange={handleInputChange}
                                             required
                                             className="mr-3 h-4 w-4 mt-0.5 flex-shrink-0"
+                                            disabled={processing}
                                         />
                                         <label htmlFor="termsAccepted" className="text-xs sm:text-sm leading-relaxed">
                                             I agree to the <a href="/terms-and-conditions" className="text-[#8D1A5F] underline">Terms and Conditions</a>
@@ -335,14 +471,23 @@ export default function Checkout() {
 
                                     <Button
                                         type="submit"
-                                        className="w-full bg-[#8D1A5F]/90 text-white hover:bg-[#8D1A5F] py-4 sm:py-6 flex items-center justify-center gap-2 rounded-full text-sm sm:text-base"
-                                        disabled={!formData.termsAccepted || cart.length === 0}
+                                        className="w-full bg-[#8D1A5F]/90 text-white hover:bg-[#8D1A5F] py-4 sm:py-6 flex items-center justify-center gap-2 rounded-full text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                                        disabled={!formData.termsAccepted || cart.length === 0 || processing}
                                     >
-                                        Pay Now
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                                            <polyline points="12 5 19 12 12 19"></polyline>
-                                        </svg>
+                                        {processing ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                                Processing...
+                                            </>
+                                        ) : (
+                                            <>
+                                                Pay Now
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                                </svg>
+                                            </>
+                                        )}
                                     </Button>
                                 </div>
                             </div>
