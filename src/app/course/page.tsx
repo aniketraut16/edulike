@@ -41,31 +41,24 @@ function OneCoursePageContent() {
     useEffect(() => {
         if (!course) return;
 
-        // Determine the target pricing type (kcType from params or default to individual)
-        const targetType = (kcType as 'individual' | 'institution' | 'corporate') || 'individual';
-
-        let selectedType: 'individual' | 'institution' | 'corporate' | null = null;
         let optionsForType: PricingOption[] = [];
 
-        // Try to find the target type first
-        if (targetType === 'individual' && course.pricing.individual) {
-            selectedType = 'individual';
+        // Check which pricing type is available and display it
+        if (course.pricing.individual) {
             optionsForType = [{
                 type: 'individual',
                 assignLimit: course.pricing.individual.assignlimit,
                 price: course.pricing.individual.price,
                 displayText: `Individual (${course.pricing.individual.assignlimit} user)`
             }];
-        } else if (targetType === 'institution' && course.pricing.institution && course.pricing.institution.length > 0) {
-            selectedType = 'institution';
+        } else if (course.pricing.institution && course.pricing.institution.length > 0) {
             optionsForType = course.pricing.institution.map(option => ({
                 type: 'institution' as const,
                 assignLimit: option.assignLimit,
                 price: option.price,
                 displayText: `Institution (${option.assignLimit} users)`
             }));
-        } else if (targetType === 'corporate' && course.pricing.corporate && course.pricing.corporate.length > 0) {
-            selectedType = 'corporate';
+        } else if (course.pricing.corporate && course.pricing.corporate.length > 0) {
             optionsForType = course.pricing.corporate.map(option => ({
                 type: 'corporate' as const,
                 assignLimit: option.assignLimit,
@@ -74,39 +67,10 @@ function OneCoursePageContent() {
             }));
         }
 
-        // If target type is not available, fall back using priority: individual > institution > corporate
-        if (!selectedType) {
-            if (course.pricing.individual) {
-                selectedType = 'individual';
-                optionsForType = [{
-                    type: 'individual',
-                    assignLimit: course.pricing.individual.assignlimit,
-                    price: course.pricing.individual.price,
-                    displayText: `Individual (${course.pricing.individual.assignlimit} user)`
-                }];
-            } else if (course.pricing.institution && course.pricing.institution.length > 0) {
-                selectedType = 'institution';
-                optionsForType = course.pricing.institution.map(option => ({
-                    type: 'institution' as const,
-                    assignLimit: option.assignLimit,
-                    price: option.price,
-                    displayText: `Institution (${option.assignLimit} users)`
-                }));
-            } else if (course.pricing.corporate && course.pricing.corporate.length > 0) {
-                selectedType = 'corporate';
-                optionsForType = course.pricing.corporate.map(option => ({
-                    type: 'corporate' as const,
-                    assignLimit: option.assignLimit,
-                    price: option.price,
-                    displayText: `Corporate (${option.assignLimit} users)`
-                }));
-            }
-        }
-
         setAvailableOptionsForType(optionsForType);
         // Select the first option as default
         setSelectedPricing(optionsForType[0] || null);
-    }, [course, kcType]);
+    }, [course]);
 
     const handleAddToCart = async () => {
         if (!course || !selectedPricing) return;
