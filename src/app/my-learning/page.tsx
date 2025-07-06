@@ -1,7 +1,6 @@
 "use client"
 import { useAuth } from '@/context/AuthContext';
 import { getLearnings, shareCourse } from '@/utils/learnings';
-import { getAllUsers } from '@/app/admin/utils/users';
 import { Learning } from '@/types/learning';
 import React, { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
@@ -61,41 +60,28 @@ export default function page() {
 
     const handleShareSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!shareEmail.trim() || !selectedCourse || !user) {
+        if (!shareEmail.trim() || !selectedCourse) {
             toast.error('Please enter a valid email address');
             return;
         }
 
         setShareLoading(true);
         try {
-            // Get user token from Firebase
-            const token = await user.getIdToken();
 
-            // Search for user by email
-            const { users } = await getAllUsers(token, 1, shareEmail.trim());
-
-            if (users.length === 0) {
-                toast.error("User doesn't exist. Please ask the user to create an account and try again later.");
-                setShareLoading(false);
-                return;
-            }
-
-            // Get the first matching user
-            const targetUser = users[0];
 
             // Share the course
-            const success = await shareCourse({
+            const { success, message } = await shareCourse({
                 enrollment_id: selectedCourse.enrollmentId,
-                user_id: targetUser.firebase_uid
+                email: shareEmail
             });
 
             if (success) {
-                toast.success(`Course successfully shared with ${targetUser.name} (${targetUser.email})`);
+                toast.success(message);
                 setShareModalOpen(false);
                 setShareEmail('');
                 setSelectedCourse(null);
             } else {
-                toast.error('Failed to share course. Please try again.');
+                toast.error(message);
             }
         } catch (error) {
             console.error('Error sharing course:', error);

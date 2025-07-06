@@ -68,18 +68,24 @@ export const MakeProgress = async (data: {
 };
 
 export const shareCourse = async (data: {
+  email: string;
   enrollment_id: string;
-  user_id: string;
 }) => {
-  if (!data.enrollment_id || !data.user_id) {
-    console.warn("No enrollment ID or user ID provided to shareCourse");
-    return false;
+  if (!data.email || !data.enrollment_id) {
+    console.warn("No email or enrollment ID provided to shareCourse");
+    return {
+      success: false,
+      message: "No email or enrollment ID provided to shareCourse",
+    };
   }
   try {
     await axios.post(`${baseUrl}/course-share`, data);
-    return true;
-  } catch (error) {
+    return { success: true, message: "Course shared successfully" };
+  } catch (error: any) {
     console.error("Error sharing course:", error);
-    return false;
+    return {
+      success: false,
+      message: error?.response?.data?.message || "Error sharing course",
+    };
   }
 };
