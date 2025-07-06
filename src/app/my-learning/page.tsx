@@ -1,14 +1,20 @@
 "use client"
 import { useAuth } from '@/context/AuthContext';
-import { getLearnings } from '@/utils/learnings';
+import { getLearnings, shareCourse } from '@/utils/learnings';
+import { getAllUsers } from '@/app/admin/utils/users';
 import { Learning } from '@/types/learning';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function page() {
     const [learnings, setLearnings] = useState<Learning[]>([]);
     const [filteredLearnings, setFilteredLearnings] = useState<Learning[]>([]);
     const [filter, setFilter] = useState<"in-progress" | "completed" | "all">("all");
     const [loading, setLoading] = useState(true);
+    const [shareModalOpen, setShareModalOpen] = useState(false);
+    const [selectedCourse, setSelectedCourse] = useState<Learning | null>(null);
+    const [shareEmail, setShareEmail] = useState('');
+    const [shareLoading, setShareLoading] = useState(false);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -47,6 +53,64 @@ export default function page() {
         setFilter(newFilter);
     };
 
+    const handleShareCourse = (course: Learning) => {
+        setSelectedCourse(course);
+        setShareModalOpen(true);
+        setShareEmail('');
+    };
+
+    const handleShareSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!shareEmail.trim() || !selectedCourse || !user) {
+            toast.error('Please enter a valid email address');
+            return;
+        }
+
+        setShareLoading(true);
+        try {
+            // Get user token from Firebase
+            const token = await user.getIdToken();
+
+            // Search for user by email
+            const { users } = await getAllUsers(token, 1, shareEmail.trim());
+
+            if (users.length === 0) {
+                toast.error("User doesn't exist. Please ask the user to create an account and try again later.");
+                setShareLoading(false);
+                return;
+            }
+
+            // Get the first matching user
+            const targetUser = users[0];
+
+            // Share the course
+            const success = await shareCourse({
+                enrollment_id: selectedCourse.enrollmentId,
+                user_id: targetUser.firebase_uid
+            });
+
+            if (success) {
+                toast.success(`Course successfully shared with ${targetUser.name} (${targetUser.email})`);
+                setShareModalOpen(false);
+                setShareEmail('');
+                setSelectedCourse(null);
+            } else {
+                toast.error('Failed to share course. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error sharing course:', error);
+            toast.error('An error occurred while sharing the course. Please try again.');
+        } finally {
+            setShareLoading(false);
+        }
+    };
+
+    const closeShareModal = () => {
+        setShareModalOpen(false);
+        setShareEmail('');
+        setSelectedCourse(null);
+    };
+
     const getButtonClasses = (buttonFilter: string) => {
         const baseClasses = "px-3 py-1.5 rounded-full font-normal border transition-all duration-200 text-sm sm:text-base";
         const activeClasses = "border-[#8D1A5F] text-white bg-[#8D1A5F]";
@@ -57,6 +121,79 @@ export default function page() {
 
     return (
         <div className="min-h-screen py-8 sm:py-12 px-4 bg-slate-50">
+            <Toaster position="top-right" />
+
+            {/* Share Course Modal */}
+            {shareModalOpen && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+                        <div className="p-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-lg font-semibold text-gray-800">
+                                    Share Course
+                                </h3>
+                                <button
+                                    onClick={closeShareModal}
+                                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div className="mb-4">
+                                <p className="text-sm text-gray-600 mb-2">Course:</p>
+                                <p className="font-medium text-gray-800">{selectedCourse?.courseName}</p>
+                            </div>
+
+                            <form onSubmit={handleShareSubmit}>
+                                <div className="mb-4">
+                                    <label htmlFor="shareEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                                        {selectedCourse?.courseType === "institution" ? "Student" : "Employee"} Email Address
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="shareEmail"
+                                        value={shareEmail}
+                                        onChange={(e) => setShareEmail(e.target.value)}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8D1A5F] focus:border-transparent"
+                                        placeholder="Enter email address..."
+                                        required
+                                        disabled={shareLoading}
+                                    />
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={closeShareModal}
+                                        className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                                        disabled={shareLoading}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="flex-1 px-4 py-2 bg-[#8D1A5F] text-white rounded-lg hover:bg-[#7A1850] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        disabled={shareLoading}
+                                    >
+                                        {shareLoading ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                                Sharing...
+                                            </>
+                                        ) : (
+                                            'Share Course'
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="container mx-auto pt-[10vh]">
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 sm:mb-8 text-center sm:text-left">MY LEARNINGS</h1>
 
@@ -146,6 +283,7 @@ export default function page() {
                                         {item.courseType !== "individual" && (
                                             <button
                                                 className="w-full text-[#8D1A5F] bg-white border border-[#8D1A5F] text-sm font-medium px-4 py-3 rounded-lg transition-colors hover:bg-[#8D1A5F] hover:text-white"
+                                                onClick={() => handleShareCourse(item)}
                                             >
                                                 Assign to {item.courseType === "institution" ? "Student" : "Employee"}
                                             </button>
@@ -175,7 +313,12 @@ export default function page() {
                                                     color: "#8D1A5F"
                                                 }}
                                             >
-                                                For {item.courseType.charAt(0).toUpperCase() + item.courseType.slice(1)} ({item.assignCount}/{item.assignLimit}) left
+                                                For {item.courseType.charAt(0).toUpperCase() + item.courseType.slice(1)} (
+                                                {typeof item.assignLimit === "number" && typeof item.assignCount === "number"
+                                                    ? `${item.assignLimit - item.assignCount}/${item.assignLimit}`
+                                                    : "N/A"
+                                                } left
+                                                )
                                             </div>
                                         )}
                                         <p className="text-gray-600 text-sm sm:text-base mb-3 leading-relaxed">{item.courseDescription}</p>
@@ -202,7 +345,12 @@ export default function page() {
                                         </button>
                                         {item.courseType !== "individual" && (
                                             <button
-                                                className="text-[#8D1A5F] bg-white border border-[#8D1A5F] text-sm font-medium px-4 py-2 rounded-lg transition-colors hover:bg-[#8D1A5F] hover:text-white w-full sm:w-auto min-w-[140px] lg:min-w-[150px]"
+                                                className={`text-[#8D1A5F] bg-white border border-[#8D1A5F] text-sm font-medium px-4 py-2 rounded-lg transition-colors w-full sm:w-auto min-w-[140px] lg:min-w-[150px] ${item.assignCount === item.assignLimit
+                                                    ? 'opacity-60 cursor-not-allowed bg-gray-100 border-gray-300 text-gray-400 hover:bg-gray-100 hover:text-gray-400 hover:border-gray-300'
+                                                    : 'hover:bg-[#8D1A5F] hover:text-white'
+                                                    }`}
+                                                onClick={() => handleShareCourse(item)}
+                                                disabled={item.assignCount === item.assignLimit}
                                             >
                                                 Assign to {item.courseType === "institution" ? "Student" : "Employee"}
                                             </button>

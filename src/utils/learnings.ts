@@ -66,3 +66,20 @@ export const MakeProgress = async (data: {
     return false;
   }
 };
+
+export const shareCourse = async (data: {
+  enrollment_id: string;
+  user_id: string;
+}) => {
+  if (!data.enrollment_id || !data.user_id) {
+    console.warn("No enrollment ID or user ID provided to shareCourse");
+    return false;
+  }
+  try {
+    await axios.post(`${baseUrl}/course-share`, data);
+    return true;
+  } catch (error) {
+    console.error("Error sharing course:", error);
+    return false;
+  }
+};
