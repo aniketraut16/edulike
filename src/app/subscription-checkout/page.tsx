@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Subscription } from '../admin/types/subscription';
+import { subscribe } from '@/utils/subscribe';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +14,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 export default function SubscriptionCheckout() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { user, dbUser, isLoading: authLoading, needsCompleteSetup } = useAuth();
     const [processing, setProcessing] = useState(false);
     const [paymentStep, setPaymentStep] = useState<'form' | 'processing' | 'gateway' | 'success'>('form');
     const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -29,6 +32,27 @@ export default function SubscriptionCheckout() {
     });
 
     useEffect(() => {
+        // Check authentication first
+        if (!authLoading) {
+            if (!user) {
+                toast.error('Please log in to purchase a subscription');
+                router.push('/auth');
+                return;
+            }
+
+            if (needsCompleteSetup) {
+                toast.error('Please complete your profile setup first');
+                router.push('/complete-setup');
+                return;
+            }
+
+            if (!dbUser) {
+                toast.error('Unable to load user profile. Please try again.');
+                router.push('/auth');
+                return;
+            }
+        }
+
         // Get subscription data from URL params or localStorage
         const subscriptionData = searchParams.get('subscription');
         if (subscriptionData) {
@@ -57,7 +81,7 @@ export default function SubscriptionCheckout() {
                 router.push('/subscriptions');
             }
         }
-    }, [searchParams, router]);
+    }, [searchParams, router, user, dbUser, authLoading, needsCompleteSetup]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
@@ -84,6 +108,11 @@ export default function SubscriptionCheckout() {
             return;
         }
 
+        if (!user || !dbUser) {
+            toast.error("Please log in to continue");
+            return;
+        }
+
         setProcessing(true);
         setPaymentStep('processing');
 
@@ -100,39 +129,39 @@ export default function SubscriptionCheckout() {
             // Step 2: Gateway simulation (additional 3 seconds)
             await new Promise(resolve => setTimeout(resolve, 3000));
 
-            // Step 3: Process subscription enrollment
+            // Step 3: Process subscription enrollment using actual API
             toast.loading("Activating subscription...", { id: 'payment' });
 
+            // Calculate expiry date based on subscription duration
+            const currentDate = new Date();
+            const expiryDate = new Date(currentDate.getTime() + (subscription.duration * 24 * 60 * 60 * 1000));
+
             const subscriptionData = {
-                userDetails: {
-                    name: formData.name,
-                    email: formData.email,
-                    phone: formData.phone,
-                    gender: formData.gender,
-                    address: formData.address,
-                    city: formData.city,
-                    state: formData.state,
-                    zipCode: formData.zipCode,
-                    country: formData.country,
-                },
-                subscriptionId: subscription.id,
-                amount: subscription.amount,
-                duration: subscription.duration
+                user_id: dbUser.firebase_uid,
+                expiry_date: expiryDate.toISOString(),
+                subscription_id: subscription.id
             };
 
-            // Simulate subscription activation API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Call the actual subscription API
+            const subscribeSuccess = await subscribe(subscriptionData);
+
+            if (!subscribeSuccess) {
+                throw new Error("Failed to activate subscription");
+            }
 
             setPaymentStep('success');
-            toast.success("Payment successful! Activating subscription...", { id: 'payment' });
+            toast.success("Payment successful! Subscription activated!", { id: 'payment' });
+
+            // Payment gateway simulation after successful API call (3-5 seconds)
+            await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 3000)); // 3-5 seconds
 
             // Clear stored subscription data
             localStorage.removeItem('selectedSubscription');
 
-            // Wait a moment to show success message
+            // Wait a moment to show success message then redirect
             setTimeout(() => {
-                toast.success("Subscription activated! Redirecting to your dashboard...");
-                router.push('/my-learning');
+                toast.success("Redirecting to your subscriptions...");
+                router.push('/my-subscription');
             }, 1000);
 
         } catch (error: any) {
@@ -227,21 +256,61 @@ export default function SubscriptionCheckout() {
         );
     }
 
-    if (!subscription) {
+    // Show loading state while checking authentication
+    if (authLoading) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+                <Toaster position="top-right" />
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                    <p className="text-gray-600 text-lg">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Show error state if not authenticated or no subscription
+    if (!user || !dbUser || !subscription) {
         return (
             <div className="min-h-screen bg-slate-50 py-4 sm:py-8 lg:py-12 px-4">
                 <Toaster position="top-right" />
                 <div className="container mx-auto pt-[8vh] sm:pt-[10vh]">
                     <div className="flex items-center justify-center min-h-[400px]">
                         <div className="text-center">
-                            <h1 className="text-xl sm:text-2xl font-bold mb-4">No subscription selected</h1>
-                            <p className="text-gray-600 mb-6">Please select a subscription plan to proceed</p>
-                            <Button
-                                onClick={() => router.push('/subscriptions')}
-                                className="bg-[#8D1A5F] hover:bg-[#8D1A5F]/90 text-white px-6 py-3"
-                            >
-                                Browse Subscriptions
-                            </Button>
+                            {!user ? (
+                                <>
+                                    <h1 className="text-xl sm:text-2xl font-bold mb-4">Authentication Required</h1>
+                                    <p className="text-gray-600 mb-6">Please log in to purchase a subscription</p>
+                                    <Button
+                                        onClick={() => router.push('/auth')}
+                                        className="bg-[#8D1A5F] hover:bg-[#8D1A5F]/90 text-white px-6 py-3"
+                                    >
+                                        Log In
+                                    </Button>
+                                </>
+                            ) : !subscription ? (
+                                <>
+                                    <h1 className="text-xl sm:text-2xl font-bold mb-4">No subscription selected</h1>
+                                    <p className="text-gray-600 mb-6">Please select a subscription plan to proceed</p>
+                                    <Button
+                                        onClick={() => router.push('/subscriptions')}
+                                        className="bg-[#8D1A5F] hover:bg-[#8D1A5F]/90 text-white px-6 py-3"
+                                    >
+                                        Browse Subscriptions
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <h1 className="text-xl sm:text-2xl font-bold mb-4">Profile Setup Required</h1>
+                                    <p className="text-gray-600 mb-6">Please complete your profile to continue</p>
+                                    <Button
+                                        onClick={() => router.push('/complete-setup')}
+                                        className="bg-[#8D1A5F] hover:bg-[#8D1A5F]/90 text-white px-6 py-3"
+                                    >
+                                        Complete Setup
+                                    </Button>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
