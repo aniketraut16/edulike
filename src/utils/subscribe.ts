@@ -1,3 +1,4 @@
+import { SubscriptionCourses, UserSubscription } from "@/types/subscription";
 import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -16,5 +17,32 @@ export const subscribe = async (data: {
   } catch (error) {
     console.error(error);
     return false;
+  }
+};
+
+export const getSubscription = async (
+  user_id: string
+): Promise<UserSubscription[]> => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}/subscriptions/users/${user_id}/subscriptions`
+    );
+    return response.data.subscriptions;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+export const getSubscriptionCourses = async (
+  subscription_id: string
+): Promise<SubscriptionCourses[]> => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}/subscriptions/${subscription_id}/courses`
+    );
+    return response.data.courses;
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 };
