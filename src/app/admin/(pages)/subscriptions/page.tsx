@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getSubscription, createSubscription, updateSubscription, deleteSubscription } from "@/app/admin/utils/subscription";
 import { Subscription, SubscriptionArgs } from "@/app/admin/types/subscription";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
-import { Search, Plus, Edit2, Trash2, Eye, Calendar, IndianRupee, Users, Clock, Shield } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, Eye, Calendar, IndianRupee, Users, Clock, Shield, BookOpen } from "lucide-react";
 import toast, { Toaster } from 'react-hot-toast';
+import Link from 'next/link';
 
 interface SubscriptionFormProps {
     onSubmit: (e: React.FormEvent) => void;
@@ -422,14 +423,16 @@ export default function SubscriptionsPage() {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div className="flex justify-end gap-2">
-                                                <Button
-                                                    onClick={handleViewSubscription}
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-gray-600 hover:text-gray-900"
-                                                >
-                                                    <Eye size={16} />
-                                                </Button>
+
+                                                <Link href={`/admin/subscriptions/courses?subscriptionId=${subscription.id}`}>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-indigo-600 hover:text-indigo-900"
+                                                    >
+                                                        <BookOpen size={16} />
+                                                    </Button>
+                                                </Link>
                                                 <Button
                                                     onClick={() => openEditModal(subscription)}
                                                     variant="ghost"
@@ -438,6 +441,7 @@ export default function SubscriptionsPage() {
                                                 >
                                                     <Edit2 size={16} />
                                                 </Button>
+
                                                 <Button
                                                     onClick={() => handleDeleteSubscription(subscription.id, subscription.title || 'Untitled')}
                                                     variant="ghost"

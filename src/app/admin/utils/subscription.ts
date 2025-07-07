@@ -2,6 +2,19 @@ import axios from "axios";
 import { Subscription, SubscriptionArgs } from "../types/subscription";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
+export interface SimpleCourse {
+  course_id: string;
+  subscription_id: string;
+  courses: {
+    id: string;
+    title: string;
+    thumbnail: string;
+    difficulty_level: string;
+    language: string;
+    total_duration: number;
+  };
+}
+
 export const getSubscription = async (): Promise<Subscription[]> => {
   try {
     const response = await axios.get(`${baseUrl}/subscriptions`);
@@ -42,5 +55,57 @@ export const deleteSubscription = async (id: string): Promise<Boolean> => {
   } catch (error) {
     console.error(error);
     return false;
+  }
+};
+
+export const addCourseToSubscription = async (
+  subscriptionId: string,
+  courseId: string
+): Promise<{ success: boolean; message: string }> => {
+  try {
+    await axios.post(`${baseUrl}/subscriptions/${subscriptionId}/courses`, {
+      course_id: courseId,
+    });
+    return { success: true, message: "Course added to subscription" };
+  } catch (error: any) {
+    console.error(error);
+    return {
+      success: false,
+      message:
+        error?.response?.data?.message ||
+        "Failed to add course to subscription",
+    };
+  }
+};
+export const removeCourseFromSubscription = async (
+  subscriptionId: string,
+  course_id: string
+): Promise<{ success: boolean; message: string }> => {
+  try {
+    await axios.delete(
+      `${baseUrl}/subscriptions/${subscriptionId}/courses/${course_id}`
+    );
+    return { success: true, message: "Course removed from subscription" };
+  } catch (error: any) {
+    console.error(error);
+    return {
+      success: false,
+      message:
+        error?.response?.data?.message ||
+        "Failed to remove course from subscription",
+    };
+  }
+};
+export const getSubscriptionCoursesForAdmin = async (
+  subscriptionId: string
+): Promise<SimpleCourse[]> => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}/subscriptions/${subscriptionId}/courses`
+    );
+    return response.data.courses as SimpleCourse[];
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 };
