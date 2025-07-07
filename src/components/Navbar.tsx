@@ -7,9 +7,7 @@ import {
     User,
     ChevronDown,
     ChevronRight,
-    Settings,
     BookOpen,
-    Heart,
     HelpCircle,
     LogOut,
     Menu,
@@ -112,11 +110,10 @@ const ExploreDropdown = ({ hoveredCategory, setHoveredCategory, categories }: Ex
 
 const UserDropdown = () => {
     const userMenuItems = [
-        { icon: User, label: 'My Profile', href: '/profile' },
-        { icon: BookOpen, label: 'My Courses', href: '/my-courses' },
-        { icon: Heart, label: 'Wishlist', href: '/wishlist' },
-        { icon: Settings, label: 'Settings', href: '/settings' },
-        { icon: HelpCircle, label: 'Help & Support', href: '/help' },
+        { icon: BookOpen, label: 'My Learning', href: '/my-learning' },
+        { icon: User, label: 'My Subscription', href: '/my-subscription' },
+        { icon: ShoppingCart, label: 'Cart', href: '/cart' },
+        { icon: HelpCircle, label: 'Help and Support', href: '/contact' },
     ];
 
 
@@ -186,11 +183,10 @@ const MobileMenu = ({ isOpen, onClose, isLoggedIn, user, logout, categories }: {
     const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
     const userMenuItems = [
-        { icon: User, label: 'My Profile', href: '/profile' },
-        { icon: BookOpen, label: 'My Courses', href: '/my-courses' },
-        { icon: Heart, label: 'Wishlist', href: '/wishlist' },
-        { icon: Settings, label: 'Settings', href: '/settings' },
-        { icon: HelpCircle, label: 'Help & Support', href: '/help' },
+        { icon: BookOpen, label: 'My Learning', href: '/my-learning' },
+        { icon: User, label: 'My Subscription', href: '/my-subscription' },
+        { icon: ShoppingCart, label: 'Cart', href: '/cart' },
+        { icon: HelpCircle, label: 'Help and Support', href: '/contact' },
     ];
 
     const toggleCategory = (categoryName: string) => {
