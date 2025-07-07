@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
-import { Search, Plus, Edit2, Trash2, Eye, Calendar, IndianRupee, Users, Clock } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, Eye, Calendar, IndianRupee, Users, Clock, Shield } from "lucide-react";
 import toast, { Toaster } from 'react-hot-toast';
 
 interface SubscriptionFormProps {
@@ -82,12 +82,12 @@ const SubscriptionForm = React.memo(({ onSubmit, title, formData, setFormData, c
         </div>
 
         <div className="flex flex-col gap-2">
-            <Label htmlFor="description">Description *</Label>
+            <Label htmlFor="description">Features(comma separated) *</Label>
             <Textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Enter subscription description"
+                placeholder="Enter subscription features (comma separated)"
                 rows={4}
                 required
                 disabled={isLoading}
@@ -212,7 +212,16 @@ export default function SubscriptionsPage() {
         }
     };
 
+    // Protected subscription IDs used on home screen
+    const protectedSubscriptionIds = ['sub_X57p7pikGe', 'sub_twadXxEmVV'];
+
     const handleDeleteSubscription = async (id: string, title: string) => {
+        // Check if this subscription is protected
+        if (protectedSubscriptionIds.includes(id)) {
+            toast.error(`Cannot delete "${title}" - This subscription is used on the home screen`);
+            return;
+        }
+
         if (!confirm(`Are you sure you want to delete the subscription "${title}"? This action cannot be undone.`)) {
             return;
         }
@@ -353,12 +362,27 @@ export default function SubscriptionsPage() {
                                     <tr key={subscription.id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div>
-                                                <div className="text-sm font-medium text-gray-900">
-                                                    {subscription.title || 'Untitled Subscription'}
+                                                <div className="flex items-center gap-2">
+                                                    <div className="text-sm font-medium text-gray-900">
+                                                        {subscription.title || 'Untitled Subscription'}
+                                                    </div>
+                                                    {protectedSubscriptionIds.includes(subscription.id) && (
+                                                        <div className="flex items-center gap-1">
+                                                            <Shield size={14} className="text-blue-600" />
+                                                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                                                Protected
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="text-sm text-gray-500 max-w-xs truncate">
                                                     {subscription.description}
                                                 </div>
+                                                {protectedSubscriptionIds.includes(subscription.id) && (
+                                                    <div className="text-xs text-blue-600 mt-1">
+                                                        Used on home screen
+                                                    </div>
+                                                )}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
@@ -418,7 +442,15 @@ export default function SubscriptionsPage() {
                                                     onClick={() => handleDeleteSubscription(subscription.id, subscription.title || 'Untitled')}
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="text-red-600 hover:text-red-900"
+                                                    disabled={protectedSubscriptionIds.includes(subscription.id)}
+                                                    className={protectedSubscriptionIds.includes(subscription.id)
+                                                        ? "text-gray-400 cursor-not-allowed"
+                                                        : "text-red-600 hover:text-red-900"
+                                                    }
+                                                    title={protectedSubscriptionIds.includes(subscription.id)
+                                                        ? "Cannot delete - Used on home screen"
+                                                        : "Delete subscription"
+                                                    }
                                                 >
                                                     <Trash2 size={16} />
                                                 </Button>
