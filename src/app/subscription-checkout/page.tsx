@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Subscription } from '../admin/types/subscription';
 import { subscribe } from '@/utils/subscribe';
 import { useAuth } from '@/context/AuthContext';
@@ -11,7 +11,7 @@ import { IndianRupee, Calendar, Users, BookOpen, Check, Clock } from 'lucide-rea
 import toast, { Toaster } from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function SubscriptionCheckout() {
+function SubscriptionCheckout() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { user, dbUser, isLoading: authLoading, needsCompleteSetup } = useAuth();
@@ -600,4 +600,11 @@ export default function SubscriptionCheckout() {
             </div>
         </div>
     );
-} 
+}
+export default function page() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <SubscriptionCheckout />
+        </Suspense>
+    )
+}
