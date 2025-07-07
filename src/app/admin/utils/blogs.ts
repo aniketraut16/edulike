@@ -32,7 +32,7 @@ export const getBlogs = async (
 export const getBlogById = async (id: string): Promise<Blog | null> => {
   try {
     const response = await axios.get(`${baseUrl}/blogs/${id}`);
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error fetching blog by id:", error);
     return null;
