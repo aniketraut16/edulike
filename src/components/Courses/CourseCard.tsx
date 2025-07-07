@@ -7,9 +7,8 @@ export default function CourseCard({ item, kcType = "individual" }: { item: Cour
     const [isHovered, setIsHovered] = useState(false);
 
     // Convert prices to INR format
-    const formattedPrice = `₹${item.pricing.individual?.price.toLocaleString('en-IN')}`;
-    const formattedOriginalPrice = `₹${item.pricing.individual?.price.toLocaleString('en-IN')}`;
-
+    const formattedPrice = `₹${item.pricing?.individual?.price.toLocaleString('en-IN')}`;
+    const formattedOriginalPrice = `₹${item.pricing?.individual?.price.toLocaleString('en-IN')}`;
     // Ensure rating is a valid integer between 0 and 5
     const safeRating = Math.max(0, Math.min(5, Math.floor(Number(item.rating) || 0)));
 
