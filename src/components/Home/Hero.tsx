@@ -80,9 +80,14 @@ export default function Hero() {
                     borderTopRightRadius: isMobile ? "180px" : borderRadius,
                 }}
             >
-                <div className="absolute inset-0 flex flex-col items-center justify-start pt-[15vh] sm:pt-[20vh] text-center px-4">
+                <div className="w-full h-full bg-black/70 absolute inset-0 overflow-hidden" style={{
+                    borderTopLeftRadius: isMobile ? "180px" : borderRadius,
+                    borderTopRightRadius: isMobile ? "180px" : borderRadius,
+                }} />
+                <div className="absolute inset-0 flex flex-col items-center  gap-3justify-start pt-[15vh] sm:pt-[20vh] text-center px-4">
+
                     <motion.h1
-                        className="text-3xl sm:text-5xl md:text-7xl font-bold text-white mb-3 sm:mb-5 max-w-3xl px-2"
+                        className="text-3xl sm:text-5xl md:text-7xl font-bold text-white mb-3 mt-5 sm:mb-5 max-w-3xl px-2"
                         initial="hidden"
                         animate="visible"
                         variants={heroVariants}
@@ -108,7 +113,7 @@ export default function Hero() {
                         Enroll in courses. Expand your skills. Achieve your goals.
                     </motion.p>
                     <motion.button
-                        className="bg-white text-black hover:bg-opacity-90 px-5 sm:px-7 py-2 sm:py-2.5 rounded-full text-sm sm:text-base font-medium flex items-center"
+                        className="bg-white text-black hover:bg-opacity-90 px-5 sm:px-7 py-2 sm:py-2.5 rounded-full text-sm sm:text-base font-medium flex items-center mt-7"
                         initial="hidden"
                         animate="visible"
                         variants={buttonVariants}

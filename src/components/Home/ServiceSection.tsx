@@ -81,7 +81,7 @@ const ServiceCard = ({ service, index }: { service: any, index: number }) => {
                 />
             )}
 
-            <div className="flex flex-col space-y-7 w-full md:w-[53%]">
+            <div className="flex flex-col space-y-10 w-full md:w-[53%]">
                 <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
                     <div className="text-[#67180C] font-medium text-sm tracking-wide">
                         {service.title}
@@ -104,12 +104,12 @@ const ServiceCard = ({ service, index }: { service: any, index: number }) => {
                 </BoxReveal>
 
                 <BoxReveal boxColor={"transparent"} duration={0.5} width="100%">
-                    <a href={service.link} className="inline-flex items-center text-[#67180C] font-medium">
+                    <a href={service.link} className="inline-flex items-center text-[#67180C] font-medium bg-white px-4 py-2 rounded-full">
                         Learn More <HiArrowRight className="ml-2" />
                     </a>
                 </BoxReveal>
 
-                <div className="grid grid-cols-2 gap-y-4 mt-auto mb-10">
+                <div className="grid grid-cols-2 gap-y-8 mt-auto mb-20">
                     {service.features.map((feature: any, index: number) => (
                         <div key={index} className="flex items-center gap-2">
                             <div className="w-6 h-6 flex items-center justify-center">

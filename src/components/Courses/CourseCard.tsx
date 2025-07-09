@@ -7,8 +7,8 @@ export default function CourseCard({ item, kcType = "individual" }: { item: Cour
     const [isHovered, setIsHovered] = useState(false);
 
     // Convert prices to INR format
-    const formattedPrice = `₹${item.pricing?.individual?.price.toLocaleString('en-IN')}`;
-    const formattedOriginalPrice = `₹${item.pricing?.individual?.price.toLocaleString('en-IN')}`;
+    const formattedPrice = `₹${Number(item.pricing).toLocaleString('en-IN')}`;
+    const formattedOriginalPrice = `₹${Number(item.pricing).toLocaleString('en-IN')}`;
     // Ensure rating is a valid integer between 0 and 5
     const safeRating = Math.max(0, Math.min(5, Math.floor(Number(item.rating) || 0)));
 
@@ -21,7 +21,7 @@ export default function CourseCard({ item, kcType = "individual" }: { item: Cour
             >
                 {/* Image Section with Gradient Overlay */}
                 <div className="h-56 relative overflow-hidden">
-                    <img src={item.image} alt={item.title} className="object-cover w-full h-full"
+                    <img src={item.image || "https://hukumchandcollegeajmer.org/wp-content/uploads/2017/11/dummy-3.jpg"} alt={item.title} className="object-cover w-full h-full"
                         onError={(e) => {
                             e.currentTarget.src = "https://hukumchandcollegeajmer.org/wp-content/uploads/2017/11/dummy-3.jpg";
                         }}
@@ -65,7 +65,7 @@ export default function CourseCard({ item, kcType = "individual" }: { item: Cour
                     </p>
 
                     {/* Course Features */}
-                    <div className="flex items-center space-x-4 mb-4 text-xs text-gray-500">
+                    <div className="flex items-center space-x-4 mb-4 text-xs text-gray-500 ">
                         <div className="flex items-center">
                             <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="#8D1A5F">
                                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
@@ -78,6 +78,17 @@ export default function CourseCard({ item, kcType = "individual" }: { item: Cour
                             </svg>
                             <span>Difficulty: {item.difficulty_level.charAt(0).toUpperCase() + item.difficulty_level.slice(1)}</span>
                         </div>
+
+                        <p
+                            className="p-1 px-2 rounded-full font-semibold w-fit"
+                            style={{
+                                background: "linear-gradient(90deg, #F3E6F1 0%, #FDE6F1 100%)",
+                                color: "#8D1A5F"
+                            }}
+                        >
+                            {item.kcType === "individual" ? "Individual" : item.kcType === "institution" ? "Institution" : "Corporate"}
+                        </p>
+
                     </div>
 
                     {/* Price and Action */}

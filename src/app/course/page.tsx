@@ -20,7 +20,6 @@ type PricingOption = {
 function OneCoursePageContent() {
     const searchParams = useSearchParams();
     const id = searchParams.get("id");
-    const kcType = searchParams.get("kcType");
     const [course, setCourse] = useState<DetailCourse | null>(null);
     const [isAddingToCart, setIsAddingToCart] = useState(false);
     const [selectedPricing, setSelectedPricing] = useState<PricingOption | null>(null);
@@ -43,23 +42,29 @@ function OneCoursePageContent() {
 
         let optionsForType: PricingOption[] = [];
 
-        // Check which pricing type is available and display it
-        if (course.pricing.individual) {
-            optionsForType = [{
-                type: 'individual',
-                assignLimit: course.pricing.individual.assignlimit,
-                price: course.pricing.individual.price,
-                displayText: `Individual (${course.pricing.individual.assignlimit} user)`
-            }];
-        } else if (course.pricing.institution && course.pricing.institution.length > 0) {
-            optionsForType = course.pricing.institution.map(option => ({
+        // Check kcType and handle pricing accordingly
+        if (course.pricing.kcType === 'individual') {
+            // For individual, take only the first pricing option and don't show dropdown
+            const firstOption = course.pricing.pricing[0];
+            if (firstOption) {
+                optionsForType = [{
+                    type: 'individual',
+                    assignLimit: firstOption.assignLimit,
+                    price: firstOption.price,
+                    displayText: `Individual (${firstOption.assignLimit} user)`
+                }];
+            }
+        } else if (course.pricing.kcType === 'institution') {
+            // For institution, show dropdown with all pricing tiers
+            optionsForType = course.pricing.pricing.map(option => ({
                 type: 'institution' as const,
                 assignLimit: option.assignLimit,
                 price: option.price,
                 displayText: `Institution (${option.assignLimit} users)`
             }));
-        } else if (course.pricing.corporate && course.pricing.corporate.length > 0) {
-            optionsForType = course.pricing.corporate.map(option => ({
+        } else if (course.pricing.kcType === 'corporate') {
+            // For corporate, show dropdown with all pricing tiers
+            optionsForType = course.pricing.pricing.map(option => ({
                 type: 'corporate' as const,
                 assignLimit: option.assignLimit,
                 price: option.price,
@@ -119,9 +124,9 @@ function OneCoursePageContent() {
         return language.charAt(0).toUpperCase() + language.slice(1);
     };
 
-    // Check if dropdown should be shown (multiple options for the same type)
+    // Check if dropdown should be shown (multiple options for corporate/institution only)
     const shouldShowDropdown = () => {
-        return availableOptionsForType.length > 1;
+        return selectedPricing?.type !== 'individual' && availableOptionsForType.length > 1;
     };
 
     const handlePricingSelect = (option: PricingOption) => {

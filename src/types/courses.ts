@@ -5,27 +5,13 @@ export type Course = {
   description: string;
   image: string;
   instructor: string;
-  pricing: {
-    individual?: {
-      price: number;
-      tobegive: string;
-      assignlimit: number;
-    };
-    institution: {
-      assignLimit: number;
-      price: number;
-    }[];
-    corporate: {
-      assignLimit: number;
-      price: number;
-    }[];
-  };
+  pricing: string;
   lessons: number;
   difficulty_level: string;
   language: string;
   rating: number;
   category: string;
-  kcType?: string;
+  kcType: string;
   enrollment_count: number;
 };
 
@@ -59,16 +45,8 @@ export type DetailCourse = {
   language: string;
   prerequisites: string;
   pricing: {
-    individual?: {
-      price: string;
-      tobegive: string;
-      assignlimit: number;
-    };
-    institution: {
-      assignLimit: number;
-      price: string;
-    }[];
-    corporate: {
+    kcType: "corporate" | "individual" | "institution";
+    pricing: {
       assignLimit: number;
       price: string;
     }[];
