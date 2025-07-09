@@ -12,7 +12,8 @@ export default function page() {
     const [loading, setLoading] = useState(true);
     const [shareModalOpen, setShareModalOpen] = useState(false);
     const [selectedCourse, setSelectedCourse] = useState<Learning | null>(null);
-    const [shareEmail, setShareEmail] = useState('');
+    const [shareEmails, setShareEmails] = useState<string[]>([]);
+    const [currentEmail, setCurrentEmail] = useState('');
     const [shareLoading, setShareLoading] = useState(false);
     const { user } = useAuth();
 
@@ -55,31 +56,78 @@ export default function page() {
     const handleShareCourse = (course: Learning) => {
         setSelectedCourse(course);
         setShareModalOpen(true);
-        setShareEmail('');
+        setShareEmails([]);
+        setCurrentEmail('');
+    };
+
+    const addEmail = () => {
+        if (!currentEmail.trim()) {
+            toast.error('Please enter a valid email address');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(currentEmail.trim())) {
+            toast.error('Please enter a valid email format');
+            return;
+        }
+
+        if (shareEmails.includes(currentEmail.trim())) {
+            toast.error('This email is already added');
+            return;
+        }
+
+        const remainingLimit = selectedCourse ? (selectedCourse.assignLimit || 0 - (selectedCourse.assignCount || 0)) : 0;
+        if (shareEmails.length >= remainingLimit) {
+            toast.error(`You can only assign to ${remainingLimit} more ${selectedCourse?.courseType === "institution" ? "students" : "employees"}`);
+            return;
+        }
+
+        setShareEmails([...shareEmails, currentEmail.trim()]);
+        setCurrentEmail('');
+    };
+
+    const removeEmail = (index: number) => {
+        setShareEmails(shareEmails.filter((_, i) => i !== index));
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addEmail();
+        }
     };
 
     const handleShareSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!shareEmail.trim() || !selectedCourse) {
-            toast.error('Please enter a valid email address');
+        if (shareEmails.length === 0) {
+            toast.error('Please add at least one email address');
+            return;
+        }
+
+        if (!selectedCourse) {
+            toast.error('No course selected');
             return;
         }
 
         setShareLoading(true);
         try {
-
-
-            // Share the course
             const { success, message } = await shareCourse({
                 enrollment_id: selectedCourse.enrollmentId,
-                email: shareEmail
+                email_list: shareEmails
             });
 
             if (success) {
                 toast.success(message);
                 setShareModalOpen(false);
-                setShareEmail('');
+                setShareEmails([]);
+                setCurrentEmail('');
                 setSelectedCourse(null);
+                // Refresh learnings to update assign counts
+                if (user?.uid) {
+                    const data = await getLearnings(user.uid);
+                    setLearnings(data);
+                }
             } else {
                 toast.error(message);
             }
@@ -93,7 +141,8 @@ export default function page() {
 
     const closeShareModal = () => {
         setShareModalOpen(false);
-        setShareEmail('');
+        setShareEmails([]);
+        setCurrentEmail('');
         setSelectedCourse(null);
     };
 
@@ -105,6 +154,8 @@ export default function page() {
         return `${baseClasses} ${filter === buttonFilter ? activeClasses : inactiveClasses}`;
     };
 
+    const remainingAssignLimit = selectedCourse ? (selectedCourse.assignLimit || 0 - (selectedCourse.assignCount || 0)) : 0;
+
     return (
         <div className="min-h-screen py-8 sm:py-12 px-4 bg-slate-50">
             <Toaster position="top-right" />
@@ -112,7 +163,7 @@ export default function page() {
             {/* Share Course Modal */}
             {shareModalOpen && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+                    <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                         <div className="p-6">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-lg font-semibold text-gray-800">
@@ -130,24 +181,76 @@ export default function page() {
 
                             <div className="mb-4">
                                 <p className="text-sm text-gray-600 mb-2">Course:</p>
-                                <p className="font-medium text-gray-800">{selectedCourse?.courseName}</p>
+                                <p className="font-medium text-gray-800 mb-2">{selectedCourse?.courseName}</p>
+                                <div className="flex items-center gap-4 text-sm">
+                                    <span className="text-gray-600">
+                                        Remaining assignments: <span className="font-semibold text-[#8D1A5F]">{remainingAssignLimit}</span>
+                                    </span>
+                                    <span className="text-gray-600">
+                                        Selected: <span className="font-semibold text-blue-600">{shareEmails.length}</span>
+                                    </span>
+                                </div>
                             </div>
 
                             <form onSubmit={handleShareSubmit}>
                                 <div className="mb-4">
-                                    <label htmlFor="shareEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                                        {selectedCourse?.courseType === "institution" ? "Student" : "Employee"} Email Address
+                                    <label htmlFor="currentEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Add {selectedCourse?.courseType === "institution" ? "Student" : "Employee"} Email Addresses
                                     </label>
-                                    <input
-                                        type="email"
-                                        id="shareEmail"
-                                        value={shareEmail}
-                                        onChange={(e) => setShareEmail(e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8D1A5F] focus:border-transparent"
-                                        placeholder="Enter email address..."
-                                        required
-                                        disabled={shareLoading}
-                                    />
+
+                                    {/* Email Input */}
+                                    <div className="flex gap-2 mb-3">
+                                        <input
+                                            type="email"
+                                            id="currentEmail"
+                                            value={currentEmail}
+                                            onChange={(e) => setCurrentEmail(e.target.value)}
+                                            onKeyPress={handleKeyPress}
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8D1A5F] focus:border-transparent"
+                                            placeholder="Enter email address..."
+                                            disabled={shareLoading || shareEmails.length >= remainingAssignLimit}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={addEmail}
+                                            className="px-4 py-2 bg-[#8D1A5F] text-white rounded-lg hover:bg-[#7A1850] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                            disabled={shareLoading || shareEmails.length >= remainingAssignLimit || !currentEmail.trim()}
+                                        >
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                            </svg>
+                                            Add
+                                        </button>
+                                    </div>
+
+                                    {/* Added Emails List */}
+                                    {shareEmails.length > 0 && (
+                                        <div className="border border-gray-200 rounded-lg p-3 max-h-40 overflow-y-auto">
+                                            <p className="text-sm font-medium text-gray-700 mb-2">Added Email Addresses:</p>
+                                            <div className="space-y-2">
+                                                {shareEmails.map((email, index) => (
+                                                    <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded border">
+                                                        <span className="text-sm text-gray-700 flex-1 break-all">{email}</span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeEmail(index)}
+                                                            className="ml-2 text-red-500 hover:text-red-700 transition-colors flex-shrink-0"
+                                                            disabled={shareLoading}
+                                                        >
+                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Helper Text */}
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        Press Enter or click Add to include an email. You can add up to {remainingAssignLimit} email addresses.
+                                    </p>
                                 </div>
 
                                 <div className="flex gap-3">
@@ -162,7 +265,7 @@ export default function page() {
                                     <button
                                         type="submit"
                                         className="flex-1 px-4 py-2 bg-[#8D1A5F] text-white rounded-lg hover:bg-[#7A1850] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                        disabled={shareLoading}
+                                        disabled={shareLoading || shareEmails.length === 0}
                                     >
                                         {shareLoading ? (
                                             <>
@@ -170,7 +273,9 @@ export default function page() {
                                                 Sharing...
                                             </>
                                         ) : (
-                                            'Share Course'
+                                            <>
+                                                Share with {shareEmails.length} {shareEmails.length === 1 ? 'recipient' : 'recipients'}
+                                            </>
                                         )}
                                     </button>
                                 </div>

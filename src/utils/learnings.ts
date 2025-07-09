@@ -68,14 +68,14 @@ export const MakeProgress = async (data: {
 };
 
 export const shareCourse = async (data: {
-  email: string;
+  email_list: string[];
   enrollment_id: string;
 }) => {
-  if (!data.email || !data.enrollment_id) {
-    console.warn("No email or enrollment ID provided to shareCourse");
+  if (!data.email_list || !data.enrollment_id) {
+    console.warn("No email list or enrollment ID provided to shareCourse");
     return {
       success: false,
-      message: "No email or enrollment ID provided to shareCourse",
+      message: "No email list or enrollment ID provided to shareCourse",
     };
   }
   try {
