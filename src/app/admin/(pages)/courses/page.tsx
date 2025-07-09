@@ -48,7 +48,8 @@ export default function CoursesPage() {
         target_audience: '',
         is_active: true,
         is_published: false,
-        timetofinish: 0
+        timetofinish: 0,
+        enrollment_count: 0
     });
 
     const [pagination, setPagination] = useState<{
@@ -130,7 +131,8 @@ export default function CoursesPage() {
                     target_audience: courseData.target_audience,
                     is_active: courseData.is_active,
                     is_published: courseData.is_published,
-                    timetofinish: courseData.timetofinish || 0
+                    timetofinish: courseData.timetofinish || 0,
+                    enrollment_count: courseData.enrollment_count || 0
                 });
                 setEditModalOpen(true);
             }
@@ -675,6 +677,17 @@ export default function CoursesPage() {
                                 placeholder="Who is this course for?"
                             />
                         </div>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Enrollment Count
+                        </label>
+                        <Input
+                            type="number"
+                            value={editFormData.enrollment_count}
+                            onChange={(e) => setEditFormData(prev => ({ ...prev, enrollment_count: Number(e.target.value) }))}
+                            placeholder="Number of enrollments"
+                        />
                     </div>
 
                     <div>

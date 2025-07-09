@@ -41,6 +41,7 @@ export type CourseArgs = {
   what_you_will_learn: string[];
   target_audience: string;
   is_active: boolean;
+  enrollment_count?: number;
   is_published: boolean;
   timetofinish: number;
 };
