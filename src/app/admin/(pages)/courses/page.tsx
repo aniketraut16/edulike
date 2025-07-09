@@ -404,7 +404,7 @@ export default function CoursesPage() {
                                     <Button
                                         size="sm"
                                         onClick={() => handleEditCourse(course.id)}
-                                        className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                                        className="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 border border-indigo-200"
                                         title="Edit Course"
                                     >
                                         <Edit className="w-4 h-4 mr-1" />
@@ -414,7 +414,7 @@ export default function CoursesPage() {
                                     <Button
                                         size="sm"
                                         onClick={() => handlePricingUpdate(course.id)}
-                                        className="bg-green-600 hover:bg-green-700 text-white"
+                                        className="bg-green-100 hover:bg-green-200 text-green-700 border border-green-200"
                                         title="Update Pricing"
                                     >
                                         <DollarSign className="w-4 h-4 mr-1" />
@@ -424,7 +424,7 @@ export default function CoursesPage() {
                                     <Button
                                         size="sm"
                                         onClick={() => handleThumbnailUpdate(course.id)}
-                                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                                        className="bg-blue-100 hover:bg-blue-200 text-blue-700 border border-blue-200"
                                         title="Update Thumbnail"
                                     >
                                         <Image className="w-4 h-4 mr-1" />
@@ -434,7 +434,7 @@ export default function CoursesPage() {
                                     <Button
                                         size="sm"
                                         onClick={() => handleRatingUpdate(course.id)}
-                                        className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                                        className="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 border border-yellow-200"
                                         title="Update Rating"
                                     >
                                         <Star className="w-4 h-4 mr-1" />
@@ -446,7 +446,7 @@ export default function CoursesPage() {
                                     <Button
                                         size="sm"
                                         onClick={() => router.push(`/admin/courses/modules?courseId=${course.id}&courseName=${encodeURIComponent(course.title)}`)}
-                                        className="bg-purple-600 hover:bg-purple-700 text-white"
+                                        className="bg-purple-100 hover:bg-purple-200 text-purple-700 border border-purple-200"
                                         title="Manage Modules"
                                     >
                                         <Settings className="w-4 h-4 mr-1" />
@@ -456,7 +456,7 @@ export default function CoursesPage() {
                                     <Button
                                         size="sm"
                                         onClick={() => router.push(`/course?id=${course.id}`)}
-                                        className="bg-gray-600 hover:bg-gray-700 text-white"
+                                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200"
                                         title="View Course"
                                     >
                                         <Eye className="w-4 h-4 mr-1" />
@@ -466,9 +466,10 @@ export default function CoursesPage() {
                                     <Button
                                         size="sm"
                                         onClick={() => handlePublishToggle(course.id, course.is_published || false)}
-                                        className={course.is_published
-                                            ? "bg-red-600 hover:bg-red-700 text-white"
-                                            : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                                        className={
+                                            course.is_published
+                                                ? "bg-red-100 hover:bg-red-200 text-red-700 border border-red-200"
+                                                : "bg-indigo-100 hover:bg-indigo-200 text-indigo-700 border border-indigo-200"
                                         }
                                         title={course.is_published ? "Unpublish Course" : "Publish Course"}
                                     >
