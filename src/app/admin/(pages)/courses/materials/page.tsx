@@ -63,6 +63,67 @@ function MaterialManagementPage() {
     });
 
     const [documentFile, setDocumentFile] = useState<File | null>(null);
+    const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
+
+    // Validation functions
+    const validateVideoUrl = (url: string): boolean => {
+        if (!url) return false;
+
+        // Check if it's a YouTube URL
+        const isYouTubeUrl = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//.test(url);
+        if (isYouTubeUrl) return true;
+
+        // Check if it's a direct video file with https
+        const isDirectVideo = /^https:\/\/.*\.(mp4|mkv|webm|mov|avi|flv|wmv)$/i.test(url);
+        return isDirectVideo;
+    };
+
+    const validateMeetLink = (url: string): boolean => {
+        if (!url) return false;
+
+        // Google Meet patterns
+        const isGoogleMeet = /^https:\/\/meet\.google\.com\/[a-z0-9-]+$/i.test(url) ||
+            /^https:\/\/meet\.google\.com\/[a-z0-9-]+\?[^?]*$/i.test(url);
+
+        // Zoom patterns
+        const isZoom = /^https:\/\/[^\.]*\.?zoom\.us\/j\/\d+(\?pwd=.*)?$/i.test(url) ||
+            /^https:\/\/zoom\.us\/j\/\d+(\?pwd=.*)?$/i.test(url);
+
+        return isGoogleMeet || isZoom;
+    };
+
+    const validateExternalUrl = (url: string): boolean => {
+        if (!url) return false;
+        return /^https:\/\//.test(url);
+    };
+
+    const validateForm = (form: CreateMaterialForm): { [key: string]: string } => {
+        const errors: { [key: string]: string } = {};
+
+        if (!form.title.trim()) {
+            errors.title = 'Title is required';
+        }
+
+        switch (form.type) {
+            case 'video':
+                if (form.file_path && !validateVideoUrl(form.file_path)) {
+                    errors.file_path = 'Must be a YouTube URL or direct video file URL starting with https:// and ending with .mp4, .mkv, .webm, .mov, .avi, .flv, or .wmv';
+                }
+                break;
+            case 'live_session':
+                if (form.meet_link && !validateMeetLink(form.meet_link)) {
+                    errors.meet_link = 'Must be a valid Google Meet or Zoom meeting link';
+                }
+                break;
+            case 'external_link':
+                if (form.external_url && !validateExternalUrl(form.external_url)) {
+                    errors.external_url = 'Must be a valid URL starting with https://';
+                }
+                break;
+        }
+
+        return errors;
+    };
 
     useEffect(() => {
         if (moduleId) {
@@ -87,6 +148,15 @@ function MaterialManagementPage() {
 
     const handleCreateMaterial = async () => {
         if (!moduleId) return;
+
+        // Validate form
+        const errors = validateForm(createForm);
+        setValidationErrors(errors);
+
+        if (Object.keys(errors).length > 0) {
+            toast.error('Please fix the validation errors');
+            return;
+        }
 
         try {
             const materialData: MaterialArgs = {
@@ -122,6 +192,7 @@ function MaterialManagementPage() {
                 toast.success('Material created successfully');
                 setCreateModalOpen(false);
                 resetCreateForm();
+                setValidationErrors({});
                 fetchMaterials();
             } else {
                 toast.error('Failed to create material');
@@ -134,6 +205,15 @@ function MaterialManagementPage() {
 
     const handleEditMaterial = async () => {
         if (!selectedMaterial) return;
+
+        // Validate form
+        const errors = validateForm(editForm);
+        setValidationErrors(errors);
+
+        if (Object.keys(errors).length > 0) {
+            toast.error('Please fix the validation errors');
+            return;
+        }
 
         try {
             const materialData: MaterialArgs = {
@@ -169,6 +249,7 @@ function MaterialManagementPage() {
                 toast.success('Material updated successfully');
                 setEditModalOpen(false);
                 setSelectedMaterial(null);
+                setValidationErrors({});
                 fetchMaterials();
             } else {
                 toast.error('Failed to update material');
@@ -213,6 +294,7 @@ function MaterialManagementPage() {
             scheduled_at: material.scheduled_at || '',
             external_url: material.external_url || '',
         });
+        setValidationErrors({}); // Clear validation errors
         setEditModalOpen(true);
     };
 
@@ -225,6 +307,7 @@ function MaterialManagementPage() {
             is_active: true,
         });
         setDocumentFile(null);
+        setValidationErrors({});
     };
 
     const getMaterialIcon = (type: string) => {
@@ -269,9 +352,12 @@ function MaterialManagementPage() {
                                 type="url"
                                 value={form.file_path || ''}
                                 onChange={(e) => setForm({ ...form, file_path: e.target.value })}
-                                placeholder="https://example.com/video.mp4"
-                                className="mt-1"
+                                placeholder="https://youtube.com/watch?v=xxx or https://example.com/video.mp4"
+                                className={`mt-1 ${validationErrors.file_path ? 'border-red-500' : ''}`}
                             />
+                            {validationErrors.file_path && (
+                                <p className="text-red-500 text-sm mt-1">{validationErrors.file_path}</p>
+                            )}
                         </div>
                         <div>
                             <Label htmlFor="duration">Duration (minutes)</Label>
@@ -291,15 +377,18 @@ function MaterialManagementPage() {
                 return (
                     <>
                         <div>
-                            <Label htmlFor="meet_link">Google Meet Link</Label>
+                            <Label htmlFor="meet_link">Meet Link</Label>
                             <Input
                                 id="meet_link"
                                 type="url"
                                 value={form.meet_link || ''}
                                 onChange={(e) => setForm({ ...form, meet_link: e.target.value })}
-                                placeholder="https://meet.google.com/xxx-xxxx-xxx"
-                                className="mt-1"
+                                placeholder="https://meet.google.com/xxx-xxxx-xxx or https://zoom.us/j/xxx"
+                                className={`mt-1 ${validationErrors.meet_link ? 'border-red-500' : ''}`}
                             />
+                            {validationErrors.meet_link && (
+                                <p className="text-red-500 text-sm mt-1">{validationErrors.meet_link}</p>
+                            )}
                         </div>
                         <div>
                             <Label htmlFor="scheduled_at">Scheduled Date & Time</Label>
@@ -323,8 +412,11 @@ function MaterialManagementPage() {
                             value={form.external_url || ''}
                             onChange={(e) => setForm({ ...form, external_url: e.target.value })}
                             placeholder="https://example.com"
-                            className="mt-1"
+                            className={`mt-1 ${validationErrors.external_url ? 'border-red-500' : ''}`}
                         />
+                        {validationErrors.external_url && (
+                            <p className="text-red-500 text-sm mt-1">{validationErrors.external_url}</p>
+                        )}
                     </div>
                 );
             case 'document':
@@ -558,7 +650,10 @@ function MaterialManagementPage() {
             {/* Create Material Modal */}
             <Modal
                 isOpen={createModalOpen}
-                onClose={() => setCreateModalOpen(false)}
+                onClose={() => {
+                    setCreateModalOpen(false);
+                    setValidationErrors({});
+                }}
                 title="Add New Material"
                 className="max-w-2xl overflow-y-auto"
             >
@@ -570,8 +665,11 @@ function MaterialManagementPage() {
                             value={createForm.title}
                             onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })}
                             placeholder="Enter material title"
-                            className="mt-1"
+                            className={`mt-1 ${validationErrors.title ? 'border-red-500' : ''}`}
                         />
+                        {validationErrors.title && (
+                            <p className="text-red-500 text-sm mt-1">{validationErrors.title}</p>
+                        )}
                     </div>
 
                     <div>
@@ -579,7 +677,10 @@ function MaterialManagementPage() {
                         <select
                             id="type"
                             value={createForm.type}
-                            onChange={(e) => setCreateForm({ ...createForm, type: e.target.value as MaterialType })}
+                            onChange={(e) => {
+                                setCreateForm({ ...createForm, type: e.target.value as MaterialType });
+                                setValidationErrors({}); // Clear validation errors when type changes
+                            }}
                             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500"
                         >
                             <option value="video">Video</option>
@@ -629,7 +730,10 @@ function MaterialManagementPage() {
 
                     <div className="flex justify-end gap-4 pt-6 border-t">
                         <Button
-                            onClick={() => setCreateModalOpen(false)}
+                            onClick={() => {
+                                setCreateModalOpen(false);
+                                setValidationErrors({});
+                            }}
                             variant="outline"
                         >
                             Cancel
@@ -648,7 +752,10 @@ function MaterialManagementPage() {
             {/* Edit Material Modal */}
             <Modal
                 isOpen={editModalOpen}
-                onClose={() => setEditModalOpen(false)}
+                onClose={() => {
+                    setEditModalOpen(false);
+                    setValidationErrors({});
+                }}
                 title="Edit Material"
                 className="max-w-2xl"
             >
@@ -660,8 +767,11 @@ function MaterialManagementPage() {
                             value={editForm.title}
                             onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
                             placeholder="Enter material title"
-                            className="mt-1"
+                            className={`mt-1 ${validationErrors.title ? 'border-red-500' : ''}`}
                         />
+                        {validationErrors.title && (
+                            <p className="text-red-500 text-sm mt-1">{validationErrors.title}</p>
+                        )}
                     </div>
 
                     <div>
@@ -704,7 +814,10 @@ function MaterialManagementPage() {
 
                     <div className="flex justify-end gap-4 pt-6 border-t">
                         <Button
-                            onClick={() => setEditModalOpen(false)}
+                            onClick={() => {
+                                setEditModalOpen(false);
+                                setValidationErrors({});
+                            }}
                             variant="outline"
                         >
                             Cancel

@@ -18,7 +18,8 @@ import {
     FaBars,
     FaTimes,
     FaChevronLeft,
-    FaChevronRight
+    FaChevronRight,
+    FaInfoCircle
 } from 'react-icons/fa';
 import { MdVideoCall, MdDescription } from 'react-icons/md';
 import { BiLoaderAlt } from 'react-icons/bi';
@@ -33,6 +34,7 @@ function Learning() {
     const [loading, setLoading] = useState(true);
     const [progressLoading, setProgressLoading] = useState<{ [key: string]: boolean }>({});
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [showProgressInfo, setShowProgressInfo] = useState(true);
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -55,6 +57,19 @@ function Learning() {
 
         fetchCourse();
     }, [course_id, user?.uid]);
+
+    // Check localStorage for dismissed progress info
+    useEffect(() => {
+        const dismissed = localStorage.getItem('progressInfoDismissed');
+        if (dismissed === 'true') {
+            setShowProgressInfo(false);
+        }
+    }, []);
+
+    const dismissProgressInfo = () => {
+        setShowProgressInfo(false);
+        localStorage.setItem('progressInfoDismissed', 'true');
+    };
 
     const handleMaterialProgress = async (material: MaterialWithProgress, newStatus: "completed" | "not completed") => {
         if (!enrollment_id) return;
@@ -149,20 +164,58 @@ function Learning() {
     const renderMaterialContent = (material: MaterialWithProgress) => {
         switch (material.materialType) {
             case 'video':
-                return material.filePath ? (
-                    <div className="mt-4">
-                        <video
-                            controls
-                            className="w-full rounded-lg shadow-lg"
-                            style={{ maxHeight: '400px' }}
-                        >
-                            <source src={material.filePath} type="video/mp4" />
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                ) : (
-                    <p className="text-gray-500 mt-4">Video not available</p>
-                );
+                if (!material.filePath) {
+                    return <p className="text-gray-500 mt-4">Video not available</p>;
+                }
+
+                // Helper to check if the filePath is a YouTube URL
+                const isYouTubeUrl = (url: string) => {
+                    return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//.test(url);
+                };
+
+                // Helper to check if the filePath is a direct video file
+                const isDirectVideo = (url: string) => {
+                    return /\.(mp4|mkv|webm|mov|avi|flv|wmv)$/i.test(url);
+                };
+
+                if (isYouTubeUrl(material.filePath)) {
+                    // Extract YouTube video ID
+                    const match = material.filePath.match(
+                        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+                    );
+                    const videoId = match ? match[1] : null;
+                    if (!videoId) {
+                        return <p className="text-gray-500 mt-4">Invalid YouTube link</p>;
+                    }
+                    return (
+                        <div className="mt-4 aspect-video w-full rounded-lg overflow-hidden shadow-lg bg-black">
+                            <iframe
+                                src={`https://www.youtube.com/embed/${videoId}`}
+                                title="YouTube video player"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                className="w-full h-full"
+                            ></iframe>
+                        </div>
+                    );
+                } else if (isDirectVideo(material.filePath)) {
+                    // Render direct video file
+                    return (
+                        <div className="mt-4">
+                            <video
+                                controls
+                                className="w-full rounded-lg shadow-lg"
+                                style={{ maxHeight: '400px' }}
+                            >
+                                <source src={material.filePath} />
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    );
+                } else {
+                    // Unknown video type
+                    return <p className="text-gray-500 mt-4">Video format not supported</p>;
+                }
 
             case 'live_session':
                 return material.meetLink ? (
@@ -438,6 +491,32 @@ function Learning() {
                                     <FaChevronRight />
                                 </button>
                             </div>
+
+                            {/* Progress Instructions */}
+                            {showProgressInfo && (
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 relative">
+                                    <div className="flex items-start gap-3">
+                                        <div className="flex-shrink-0 mt-0.5">
+                                            <FaInfoCircle className="w-5 h-5 text-blue-500" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <h4 className="text-sm font-medium text-blue-800 mb-1">
+                                                How to Track Your Progress
+                                            </h4>
+                                            <p className="text-sm text-blue-700 leading-relaxed">
+                                                Click the circle icon next to each material and select "Mark Complete" to track your progress.
+                                                Complete all materials in a module to finish it and advance through the course.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={dismissProgressInfo}
+                                            className="absolute top-3 right-3 text-blue-400 hover:text-blue-600 transition-colors"
+                                        >
+                                            <FaTimes className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Materials List */}
                             <div className="space-y-4 lg:space-y-6">

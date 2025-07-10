@@ -1,6 +1,6 @@
 "use client"
 import CourseCard from '@/components/Courses/CourseCard';
-import { SubscriptionCourses } from '@/types/subscription';
+import { Course } from "@/types/courses";
 import { getSubscriptionCourses } from '@/utils/subscribe';
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { Suspense, useEffect, useState } from 'react';
@@ -10,10 +10,9 @@ function SubscriptionCoursesContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const subscription_id = searchParams.get("subscription_id");
-    const [courses, setCourses] = useState<SubscriptionCourses[]>([]);
+    const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [subscriptionTitle, setSubscriptionTitle] = useState<string>('');
 
     const fetchCourses = async () => {
         if (!subscription_id) {
@@ -26,12 +25,6 @@ function SubscriptionCoursesContent() {
             setLoading(true);
             const coursesData = await getSubscriptionCourses(subscription_id);
             setCourses(coursesData);
-
-            // Extract subscription title from first course if available
-            if (coursesData.length > 0 && coursesData[0].subscription_id) {
-                // You might want to fetch subscription details here
-                setSubscriptionTitle('Plus Plan'); // Fallback, you can enhance this
-            }
         } catch (err) {
             setError('Failed to load courses');
             console.error('Error fetching courses:', err);
@@ -50,7 +43,7 @@ function SubscriptionCoursesContent() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="min-h-screen bg-white flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="mx-auto h-12 w-12 animate-spin text-purple-600" />
                     <p className="mt-4 text-gray-600">Loading your courses...</p>
@@ -61,7 +54,7 @@ function SubscriptionCoursesContent() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="min-h-screen bg-white flex items-center justify-center">
                 <div className="text-center">
                     <BookOpen className="mx-auto h-12 w-12 text-red-500" />
                     <p className="mt-4 text-red-600">{error}</p>
@@ -77,7 +70,7 @@ function SubscriptionCoursesContent() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8 pt-[15vh]">
+        <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8 pt-[15vh]">
             <div className="max-w-7xl mx-auto">
                 {/* Header Section */}
                 <div className="mb-8">
@@ -103,20 +96,12 @@ function SubscriptionCoursesContent() {
                                     Available Courses
                                 </h1>
                                 <p className="text-lg text-purple-100 mb-2">
-                                    Courses included in your {subscriptionTitle || 'subscription'} plan
+                                    Courses included in your subscription plan
                                 </p>
                                 <div className="flex items-center space-x-6 text-purple-100">
                                     <div className="flex items-center">
                                         <BookOpen className="h-5 w-5 mr-2" />
                                         <span>{courses.length} Courses</span>
-                                    </div>
-                                    <div className="flex items-center">
-                                        <GraduationCap className="h-5 w-5 mr-2" />
-                                        <span>All Levels</span>
-                                    </div>
-                                    <div className="flex items-center">
-                                        <Clock className="h-5 w-5 mr-2" />
-                                        <span>Lifetime Access</span>
                                     </div>
                                 </div>
                             </div>
@@ -168,8 +153,8 @@ function SubscriptionCoursesContent() {
                         {/* Courses Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                             {courses.map((course) => (
-                                <div key={course.course_id} className="transform hover:scale-105 transition-transform duration-200">
-                                    <CourseCard item={course.courses} />
+                                <div key={course.id} className="transform hover:scale-105 transition-transform duration-200">
+                                    <CourseCard item={course} />
                                 </div>
                             ))}
                         </div>
@@ -184,7 +169,7 @@ function SubscriptionCoursesContent() {
 export default function SubscriptionCoursesPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="min-h-screen bg-white flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="mx-auto h-12 w-12 animate-spin text-purple-600" />
                     <p className="mt-4 text-gray-600">Loading courses...</p>

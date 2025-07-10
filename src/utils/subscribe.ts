@@ -1,4 +1,5 @@
-import { SubscriptionCourses, UserSubscription } from "@/types/subscription";
+import { UserSubscription } from "@/types/subscription";
+import { Course } from "@/types/courses";
 import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -35,7 +36,7 @@ export const getSubscription = async (
 };
 export const getSubscriptionCourses = async (
   subscription_id: string
-): Promise<SubscriptionCourses[]> => {
+): Promise<Course[]> => {
   try {
     const response = await axios.get(
       `${baseUrl}/subscriptions/${subscription_id}/courses`

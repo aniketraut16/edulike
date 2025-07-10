@@ -1,4 +1,3 @@
-import { Course } from "@/types/courses";
 export type UserSubscription = {
   user_id: string;
   subscription_id: string;
@@ -15,10 +14,4 @@ export type UserSubscription = {
     created_at: string;
     updated_at: string;
   };
-};
-
-export type SubscriptionCourses = {
-  course_id: string;
-  subscription_id: string;
-  courses: Course;
 };

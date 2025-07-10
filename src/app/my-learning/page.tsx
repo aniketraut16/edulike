@@ -157,7 +157,7 @@ export default function page() {
     const remainingAssignLimit = selectedCourse ? (selectedCourse.assignLimit || 0 - (selectedCourse.assignCount || 0)) : 0;
 
     return (
-        <div className="min-h-screen py-8 sm:py-12 px-4 bg-slate-50">
+        <div className="min-h-screen py-8 sm:py-12 px-4 bg-white">
             <Toaster position="top-right" />
 
             {/* Share Course Modal */}
