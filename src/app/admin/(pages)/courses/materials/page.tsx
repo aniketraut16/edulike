@@ -13,7 +13,21 @@ import { Label } from "@/components/ui/label";
 import { Plus, Edit, Trash2, Video, Link, FileText, Calendar, ArrowLeft, Eye, FileQuestion } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-type MaterialType = 'video' | 'live_session' | 'external_link' | 'document';
+type MaterialType = 'video' | 'live_session' | 'external_link' | 'document' | 'quiz';
+
+interface QuizOption {
+    id: string;
+    text: string;
+    isCorrect: boolean;
+}
+
+interface QuizQuestion {
+    id: string;
+    question: string;
+    options: QuizOption[];
+    explanation?: string;
+    allowMultipleCorrect: boolean;
+}
 
 interface CreateMaterialForm {
     title: string;
@@ -43,6 +57,7 @@ function MaterialManagementPage() {
     // Modal states
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [quizQuestionsModalOpen, setQuizQuestionsModalOpen] = useState(false);
     const [selectedMaterial, setSelectedMaterial] = useState<OneMaterial | null>(null);
 
     // Form states
@@ -64,6 +79,19 @@ function MaterialManagementPage() {
 
     const [documentFile, setDocumentFile] = useState<File | null>(null);
     const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
+
+    // Quiz questions state (for demonstration)
+    const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
+    const [newQuestion, setNewQuestion] = useState<QuizQuestion>({
+        id: '',
+        question: '',
+        options: [
+            { id: '1', text: '', isCorrect: false },
+            { id: '2', text: '', isCorrect: false },
+        ],
+        explanation: '',
+        allowMultipleCorrect: false
+    });
 
     // Validation functions
     const validateVideoUrl = (url: string): boolean => {
@@ -123,6 +151,114 @@ function MaterialManagementPage() {
         }
 
         return errors;
+    };
+
+    // Quiz question handlers (for demonstration)
+    const handleManageQuestions = (material: OneMaterial) => {
+        setSelectedMaterial(material);
+        // For demonstration, initialize with some sample questions
+        setQuizQuestions([
+            {
+                id: '1',
+                question: 'What is the capital of France?',
+                options: [
+                    { id: '1', text: 'London', isCorrect: false },
+                    { id: '2', text: 'Paris', isCorrect: true },
+                    { id: '3', text: 'Berlin', isCorrect: false },
+                    { id: '4', text: 'Madrid', isCorrect: false },
+                ],
+                explanation: 'Paris is the capital and largest city of France.',
+                allowMultipleCorrect: false
+            }
+        ]);
+        setQuizQuestionsModalOpen(true);
+    };
+
+    const handleAddQuestion = () => {
+        if (!newQuestion.question.trim()) {
+            toast.error('Please enter a question');
+            return;
+        }
+
+        const hasCorrectAnswer = newQuestion.options.some(option => option.isCorrect);
+        if (!hasCorrectAnswer) {
+            toast.error('Please select at least one correct answer');
+            return;
+        }
+
+        // Check if all options have text
+        const emptyOptions = newQuestion.options.filter(option => !option.text.trim());
+        if (emptyOptions.length > 0) {
+            toast.error('Please fill in all option texts');
+            return;
+        }
+
+        const questionWithId = {
+            ...newQuestion,
+            id: Date.now().toString(),
+        };
+
+        setQuizQuestions(prev => [...prev, questionWithId]);
+
+        // Reset form
+        setNewQuestion({
+            id: '',
+            question: '',
+            options: [
+                { id: '1', text: '', isCorrect: false },
+                { id: '2', text: '', isCorrect: false },
+            ],
+            explanation: '',
+            allowMultipleCorrect: false
+        });
+
+        toast.success('Question added successfully!');
+    };
+
+    const handleDeleteQuestion = (questionId: string) => {
+        setQuizQuestions(prev => prev.filter(q => q.id !== questionId));
+        toast.success('Question deleted successfully!');
+    };
+
+    const updateQuestionOption = (optionId: string, field: 'text' | 'isCorrect', value: string | boolean) => {
+        setNewQuestion(prev => ({
+            ...prev,
+            options: prev.options.map(option =>
+                option.id === optionId
+                    ? { ...option, [field]: value }
+                    : field === 'isCorrect' && value === true && !prev.allowMultipleCorrect
+                        ? { ...option, isCorrect: false } // Only one correct answer for single correct mode
+                        : option
+            )
+        }));
+    };
+
+    const addOption = () => {
+        if (newQuestion.options.length >= 6) return;
+
+        const newOptionId = (newQuestion.options.length + 1).toString();
+        setNewQuestion(prev => ({
+            ...prev,
+            options: [...prev.options, { id: newOptionId, text: '', isCorrect: false }]
+        }));
+    };
+
+    const removeOption = () => {
+        if (newQuestion.options.length <= 2) return;
+
+        setNewQuestion(prev => ({
+            ...prev,
+            options: prev.options.slice(0, -1)
+        }));
+    };
+
+    const toggleAnswerMode = () => {
+        setNewQuestion(prev => ({
+            ...prev,
+            allowMultipleCorrect: !prev.allowMultipleCorrect,
+            // Reset all correct answers when switching modes
+            options: prev.options.map(option => ({ ...option, isCorrect: false }))
+        }));
     };
 
     useEffect(() => {
@@ -337,6 +473,8 @@ function MaterialManagementPage() {
                 return 'External Link';
             case 'document':
                 return 'Document';
+            case 'quiz':
+                return 'Quiz';
             default:
                 return type;
         }
@@ -435,6 +573,18 @@ function MaterialManagementPage() {
                         {isEdit && <p className="text-sm text-gray-500 mt-1">Leave empty to keep current document</p>}
                     </div>
                 );
+            case 'quiz':
+                return (
+                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="flex items-center gap-2 mb-2">
+                            <FileQuestion className="h-5 w-5 text-blue-600" />
+                            <span className="font-medium text-blue-800">Quiz Configuration</span>
+                        </div>
+                        <p className="text-sm text-blue-700">
+                            After creating this quiz material, use the "Manage Questions" button to add quiz questions and answers.
+                        </p>
+                    </div>
+                );
             default:
                 return null;
         }
@@ -478,6 +628,8 @@ function MaterialManagementPage() {
                 return !!material.external_url;
             case 'document':
                 return !!material.file_path;
+            case 'quiz':
+                return false; // Quiz materials don't have viewable URLs
             default:
                 return false;
         }
@@ -623,6 +775,17 @@ function MaterialManagementPage() {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div className="flex items-center gap-2">
+                                                {material.type === 'quiz' && (
+                                                    <Button
+                                                        onClick={() => handleManageQuestions(material)}
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className={`text-purple-600 border-purple-600 hover:bg-purple-50 ${!material.is_active ? 'opacity-50' : ''}`}
+                                                        title="Manage Questions"
+                                                    >
+                                                        <FileQuestion className="h-4 w-4" />
+                                                    </Button>
+                                                )}
                                                 <Button
                                                     onClick={() => openEditModal(material)}
                                                     variant="outline"
@@ -831,6 +994,254 @@ function MaterialManagementPage() {
                             className="bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50"
                         >
                             Update Material
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Quiz Questions Management Modal */}
+            <Modal
+                isOpen={quizQuestionsModalOpen}
+                onClose={() => setQuizQuestionsModalOpen(false)}
+                title={`Manage Quiz Questions - ${selectedMaterial?.title}`}
+                className="max-w-4xl max-h-[90vh] overflow-y-auto"
+            >
+                <div className="space-y-6">
+                    {/* Add New Question Form */}
+                    <div className="bg-gray-50 p-6 rounded-lg border">
+                        <h3 className="text-lg font-semibold mb-4">Add New Question</h3>
+
+                        <div className="space-y-4">
+                            {/* Question Input */}
+                            <div>
+                                <Label htmlFor="new_question">Question <span className="text-red-500">*</span></Label>
+                                <Textarea
+                                    id="new_question"
+                                    value={newQuestion.question}
+                                    onChange={(e) => setNewQuestion(prev => ({ ...prev, question: e.target.value }))}
+                                    placeholder="Enter your question here..."
+                                    className="mt-1"
+                                    rows={3}
+                                />
+                            </div>
+
+                            {/* Answer Mode Toggle */}
+                            <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <div>
+                                    <Label className="font-medium text-blue-800">Answer Mode</Label>
+                                    <p className="text-xs text-blue-600 mt-1">
+                                        {newQuestion.allowMultipleCorrect
+                                            ? 'Multiple correct answers allowed'
+                                            : 'Only one correct answer allowed'
+                                        }
+                                    </p>
+                                </div>
+                                <Button
+                                    type="button"
+                                    onClick={toggleAnswerMode}
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-blue-600 border-blue-600 hover:bg-blue-100"
+                                >
+                                    {newQuestion.allowMultipleCorrect ? 'Switch to Single' : 'Switch to Multiple'}
+                                </Button>
+                            </div>
+
+                            {/* Options */}
+                            <div>
+                                <div className="flex items-center justify-between mb-3">
+                                    <Label>Answer Options <span className="text-red-500">*</span></Label>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm text-gray-500">
+                                            {newQuestion.options.length} options
+                                        </span>
+                                        <Button
+                                            type="button"
+                                            onClick={removeOption}
+                                            disabled={newQuestion.options.length <= 2}
+                                            variant="outline"
+                                            size="sm"
+                                            className="text-red-600 border-red-600 hover:bg-red-50 disabled:opacity-50"
+                                        >
+                                            Remove
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            onClick={addOption}
+                                            disabled={newQuestion.options.length >= 6}
+                                            variant="outline"
+                                            size="sm"
+                                            className="text-green-600 border-green-600 hover:bg-green-50 disabled:opacity-50"
+                                        >
+                                            Add Option
+                                        </Button>
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    {newQuestion.options.map((option, index) => (
+                                        <div key={option.id} className="flex items-center gap-3 p-3 border rounded-lg bg-white">
+                                            <span className="font-medium text-sm text-gray-600 min-w-[20px]">
+                                                {String.fromCharCode(65 + index)}.
+                                            </span>
+                                            <Input
+                                                value={option.text}
+                                                onChange={(e) => updateQuestionOption(option.id, 'text', e.target.value)}
+                                                placeholder={`Option ${String.fromCharCode(65 + index)}`}
+                                                className="flex-1"
+                                            />
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type={newQuestion.allowMultipleCorrect ? "checkbox" : "radio"}
+                                                    name={newQuestion.allowMultipleCorrect ? undefined : "correct_answer"}
+                                                    checked={option.isCorrect}
+                                                    onChange={(e) => updateQuestionOption(option.id, 'isCorrect', e.target.checked)}
+                                                    className="h-4 w-4 text-green-600"
+                                                />
+                                                <Label className="text-sm text-green-600">Correct</Label>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-gray-500 mt-2">
+                                    {newQuestion.allowMultipleCorrect
+                                        ? 'Check all correct answers'
+                                        : 'Select the radio button next to the correct answer'
+                                    }
+                                </p>
+                            </div>
+
+                            {/* Explanation */}
+                            <div>
+                                <Label htmlFor="explanation">Explanation (Optional)</Label>
+                                <Textarea
+                                    id="explanation"
+                                    value={newQuestion.explanation}
+                                    onChange={(e) => setNewQuestion(prev => ({ ...prev, explanation: e.target.value }))}
+                                    placeholder="Provide an explanation for the correct answer..."
+                                    className="mt-1"
+                                    rows={2}
+                                />
+                            </div>
+
+                            {/* Add Question Button */}
+                            <div className="flex justify-end">
+                                <Button
+                                    onClick={handleAddQuestion}
+                                    className="bg-green-600 hover:bg-green-700 text-white"
+                                >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add Question
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Existing Questions List */}
+                    <div>
+                        <h3 className="text-lg font-semibold mb-4">
+                            Existing Questions ({quizQuestions.length})
+                        </h3>
+
+                        {quizQuestions.length === 0 ? (
+                            <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+                                <FileQuestion className="h-12 w-12 mx-auto mb-3 text-gray-400" />
+                                <p>No questions added yet</p>
+                                <p className="text-sm">Add your first question using the form above</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                {quizQuestions.map((question, questionIndex) => (
+                                    <div key={question.id} className="border rounded-lg p-6 bg-white">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div>
+                                                <h4 className="font-medium text-gray-900">
+                                                    Question {questionIndex + 1}
+                                                </h4>
+                                                <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full mt-2 ${question.allowMultipleCorrect
+                                                    ? 'bg-purple-100 text-purple-800'
+                                                    : 'bg-blue-100 text-blue-800'
+                                                    }`}>
+                                                    {question.allowMultipleCorrect ? 'Multiple Choice' : 'Single Choice'}
+                                                </span>
+                                            </div>
+                                            <Button
+                                                onClick={() => handleDeleteQuestion(question.id)}
+                                                variant="outline"
+                                                size="sm"
+                                                className="text-red-600 border-red-600 hover:bg-red-50"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+
+                                        <div className="mb-4">
+                                            <p className="text-gray-800 font-medium">{question.question}</p>
+                                        </div>
+
+                                        <div className="space-y-2 mb-4">
+                                            {question.options.map((option, optionIndex) => (
+                                                <div
+                                                    key={option.id}
+                                                    className={`flex items-center gap-3 p-3 rounded-lg border ${option.isCorrect
+                                                        ? 'bg-green-50 border-green-200'
+                                                        : 'bg-gray-50 border-gray-200'
+                                                        }`}
+                                                >
+                                                    <span className="font-medium text-sm text-gray-600 min-w-[20px]">
+                                                        {String.fromCharCode(65 + optionIndex)}.
+                                                    </span>
+                                                    <span className="flex-1">{option.text}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        {/* Show the type of input this would be */}
+                                                        <div className={`w-4 h-4 border-2 flex items-center justify-center ${question.allowMultipleCorrect ? 'rounded' : 'rounded-full'
+                                                            } ${option.isCorrect
+                                                                ? 'border-green-600 bg-green-600'
+                                                                : 'border-gray-400'
+                                                            }`}>
+                                                            {option.isCorrect && (
+                                                                <span className="text-white text-xs">
+                                                                    {question.allowMultipleCorrect ? '✓' : '●'}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        {option.isCorrect && (
+                                                            <span className="text-green-600 text-sm font-medium">Correct</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {question.explanation && (
+                                            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                                <p className="text-sm text-blue-800">
+                                                    <span className="font-medium">Explanation: </span>
+                                                    {question.explanation}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Modal Actions */}
+                    <div className="flex justify-end gap-4 pt-6 border-t">
+                        <Button
+                            onClick={() => setQuizQuestionsModalOpen(false)}
+                            variant="outline"
+                        >
+                            Close
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                toast.success(`Quiz saved with ${quizQuestions.length} questions!`);
+                                setQuizQuestionsModalOpen(false);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                        >
+                            Save Quiz
                         </Button>
                     </div>
                 </div>
