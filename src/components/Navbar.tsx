@@ -100,6 +100,14 @@ const ExploreDropdown = ({ hoveredCategory, setHoveredCategory, categories }: Ex
                                     {course.name}
                                 </Link>
                             ))}
+                            <div className=' pt-4 border-t border-gray-300'>
+                                <Link
+                                    href={`/courses?categories=${hoveredCategory.category_id}`}
+                                    className='w-full flex items-center justify-center py-2 px-3 text-sm font-medium text-white bg-[#8D1A5F] hover:bg-[#8D1A5F] rounded-md transition-colors duration-200'
+                                >
+                                    View All {hoveredCategory.name} Courses
+                                </Link>
+                            </div>
                         </div>
                     </>
                 )}

@@ -73,6 +73,7 @@ import {
 
 // Only include neutral icons in the type (not category-specific)
 export type Course = {
+  category_id: string;
   name: string;
   icon:
     | typeof FlaskConical
@@ -265,6 +266,7 @@ export const getNavbarCourses = (navbarCourses: NavbarCourses[]): Course[] => {
 
       return {
         name: category.name,
+        category_id: category.id,
         icon: randomIcon,
         noofcourses: category.total_courses,
         courseList: category.sample_courses.map((course) => ({
