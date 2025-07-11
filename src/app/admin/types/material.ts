@@ -28,12 +28,16 @@ export type DocumentMaterial = Material & {
   type: "document";
   file_path: string;
 };
+export type QuizMaterial = Material & {
+  type: "quiz";
+};
 
 export type MaterialArgs =
   | VideoLinkMaterial
   | GoogleMeetMaterial
   | ExternalLinkMaterial
-  | DocumentMaterial;
+  | DocumentMaterial
+  | QuizMaterial;
 
 export type OneMaterial = {
   id: string;

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Plus, Edit, Trash2, Video, Link, FileText, Calendar, ArrowLeft, Eye } from "lucide-react";
+import { Plus, Edit, Trash2, Video, Link, FileText, Calendar, ArrowLeft, Eye, FileQuestion } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type MaterialType = 'video' | 'live_session' | 'external_link' | 'document';
@@ -320,6 +320,8 @@ function MaterialManagementPage() {
                 return <Link className="h-4 w-4" />;
             case 'document':
                 return <FileText className="h-4 w-4" />;
+            case 'quiz':
+                return <FileQuestion className="h-4 w-4" />;
             default:
                 return <FileText className="h-4 w-4" />;
         }
@@ -687,6 +689,7 @@ function MaterialManagementPage() {
                             <option value="live_session">Live Session</option>
                             <option value="external_link">External Link</option>
                             <option value="document">Document</option>
+                            <option value="quiz">Quiz</option>
                         </select>
                     </div>
 
