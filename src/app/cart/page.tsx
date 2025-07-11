@@ -10,8 +10,7 @@ export default function CartPage() {
     const router = useRouter();
 
     const subtotal = cart.reduce((total, item) => total + (item.coursePrice * item.quantity), 0);
-    const GST = subtotal * 0.18;
-    const total = subtotal + GST;
+    const total = subtotal;
 
     const formatPrice = (price: number | string) => {
         const num = typeof price === "number" ? price : parseFloat(price);
@@ -132,21 +131,9 @@ export default function CartPage() {
                             <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Order Summary</h2>
 
                             <div className="space-y-3 sm:space-y-4">
-                                <div className="flex justify-between text-sm sm:text-base">
-                                    <span>Subtotal</span>
-                                    <span className="font-semibold">${formatPrice(subtotal)}</span>
-                                </div>
-
-                                <div className="flex justify-between text-sm sm:text-base">
-                                    <span>GST (18%)</span>
-                                    <span>${formatPrice(GST)}</span>
-                                </div>
-
-                                <div className="border-t pt-3 sm:pt-4 mt-3 sm:mt-4">
-                                    <div className="flex justify-between">
-                                        <span className="font-bold text-base sm:text-lg">Total</span>
-                                        <span className="font-bold text-lg sm:text-xl">${formatPrice(total)}</span>
-                                    </div>
+                                <div className="flex justify-between">
+                                    <span className="font-bold text-base sm:text-lg">Total</span>
+                                    <span className="font-bold text-lg sm:text-xl">${formatPrice(total)}</span>
                                 </div>
 
                                 <Button

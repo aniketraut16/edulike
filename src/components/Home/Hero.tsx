@@ -2,8 +2,10 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import HowitWorks from './HowitWorks';
+import { useRouter } from 'next/navigation';
 
 export default function Hero() {
+    const router = useRouter();
     const [padding, setPadding] = useState('7%');
     const [borderRadius, setBorderRadius] = useState('250%');
     const vigorousChangeHeightPadding = 0.2;
@@ -129,6 +131,9 @@ export default function Hero() {
                             transition: { duration: 0.2 }
                         }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                            router.push('/courses');
+                        }}
                     >
                         Start Learning Now
                         <motion.svg

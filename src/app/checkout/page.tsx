@@ -125,8 +125,7 @@ export default function Checkout() {
 
     // Calculate costs
     const subtotal = cart.reduce((total, item) => total + (item.coursePrice * item.quantity), 0);
-    const GST = subtotal * 0.18;
-    const total = subtotal + GST;
+    const total = subtotal;
 
     const formatPrice = (price: number) => {
         const num = typeof price === "number" ? price : parseFloat(price);
@@ -434,21 +433,9 @@ export default function Checkout() {
                                 </div>
 
                                 <div className="space-y-3 border-t pt-4">
-                                    <div className="flex justify-between text-sm sm:text-base">
-                                        <span>Subtotal</span>
-                                        <span className="font-semibold">${formatPrice(subtotal)}</span>
-                                    </div>
-
-                                    <div className="flex justify-between text-sm sm:text-base">
-                                        <span>GST (18%)</span>
-                                        <span>${formatPrice(GST)}</span>
-                                    </div>
-
-                                    <div className="border-t pt-4 mt-4">
-                                        <div className="flex justify-between">
-                                            <span className="font-bold text-base sm:text-lg">Total</span>
-                                            <span className="font-bold text-lg sm:text-xl">${formatPrice(total)}</span>
-                                        </div>
+                                    <div className="flex justify-between">
+                                        <span className="font-bold text-base sm:text-lg">Total</span>
+                                        <span className="font-bold text-lg sm:text-xl">${formatPrice(total)}</span>
                                     </div>
                                 </div>
 

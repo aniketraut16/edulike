@@ -192,8 +192,7 @@ function SubscriptionCheckout() {
 
     // Calculate costs
     const subtotal = subscription ? parseFloat(subscription.amount) : 0;
-    const GST = subtotal * 0.18;
-    const total = subtotal + GST;
+    const total = subtotal;
 
     // Payment processing overlay
     if (processing) {
@@ -527,29 +526,11 @@ function SubscriptionCheckout() {
                                 </div>
 
                                 <div className="space-y-3 border-t pt-4">
-                                    <div className="flex justify-between text-sm sm:text-base">
-                                        <span>Subtotal</span>
-                                        <div className="flex items-center font-semibold">
-                                            <IndianRupee size={16} className="mr-1" />
-                                            {formatPrice(subtotal)}
-                                        </div>
-                                    </div>
-
-                                    <div className="flex justify-between text-sm sm:text-base">
-                                        <span>GST (18%)</span>
-                                        <div className="flex items-center">
-                                            <IndianRupee size={16} className="mr-1" />
-                                            {formatPrice(GST)}
-                                        </div>
-                                    </div>
-
-                                    <div className="border-t pt-4 mt-4">
-                                        <div className="flex justify-between">
-                                            <span className="font-bold text-base sm:text-lg">Total</span>
-                                            <div className="flex items-center font-bold text-lg sm:text-xl">
-                                                <IndianRupee size={20} className="mr-1" />
-                                                {formatPrice(total)}
-                                            </div>
+                                    <div className="flex justify-between">
+                                        <span className="font-bold text-base sm:text-lg">Total</span>
+                                        <div className="flex items-center font-bold text-lg sm:text-xl">
+                                            <IndianRupee size={20} className="mr-1" />
+                                            {formatPrice(total)}
                                         </div>
                                     </div>
                                 </div>
