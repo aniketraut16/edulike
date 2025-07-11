@@ -276,7 +276,7 @@ function ModulesManagement() {
                     <p className="text-gray-500 mt-2">Create your first module to get started</p>
                     <Button
                         onClick={() => setCreateModalOpen(true)}
-                        className="mt-4 bg-indigo-600 hover:bg-indigo-700"
+                        className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white"
                     >
                         <Plus className="w-4 h-4 mr-2" />
                         Create Module
@@ -437,7 +437,7 @@ function ModulesManagement() {
                         <Button
                             onClick={handleCreateModule}
                             disabled={isSubmitting || !createFormData.title.trim()}
-                            className="bg-indigo-600 hover:bg-indigo-700"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white"
                         >
                             {isSubmitting ? "Creating..." : "Create Module"}
                         </Button>
@@ -533,7 +533,7 @@ function ModulesManagement() {
                         <Button
                             onClick={handleUpdateModule}
                             disabled={isSubmitting || !editFormData.title.trim()}
-                            className="bg-indigo-600 hover:bg-indigo-700"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white"
                         >
                             {isSubmitting ? "Updating..." : "Update Module"}
                         </Button>

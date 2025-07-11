@@ -540,7 +540,7 @@ export default function CoursesPage() {
                         <Button
                             onClick={submitThumbnailUpdate}
                             disabled={!thumbnailFile}
-                            className="bg-indigo-600 hover:bg-indigo-700"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white"
                         >
                             Update Thumbnail
                         </Button>
@@ -586,7 +586,7 @@ export default function CoursesPage() {
                         </Button>
                         <Button
                             onClick={submitRatingUpdate}
-                            className="bg-indigo-600 hover:bg-indigo-700"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white"
                         >
                             Update Rating
                         </Button>
@@ -803,7 +803,7 @@ export default function CoursesPage() {
                                     }
                                 }
                             }}
-                            className="bg-indigo-600 hover:bg-indigo-700"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white"
                         >
                             Save Changes
                         </Button>
@@ -917,7 +917,7 @@ export default function CoursesPage() {
                                     }
                                 }
                             }}
-                            className="bg-indigo-600 hover:bg-indigo-700"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white"
                         >
                             Update Pricing
                         </Button>
