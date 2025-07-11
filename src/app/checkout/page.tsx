@@ -9,9 +9,11 @@ import { Textarea } from "@/components/ui/textarea";
 import toast, { Toaster } from 'react-hot-toast';
 import { useContent } from '@/context/ContentContext';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Checkout() {
     const { cart, cartId } = useContent();
+    const { user } = useAuth();
     const router = useRouter();
     const [processing, setProcessing] = useState(false);
     const [paymentStep, setPaymentStep] = useState<'form' | 'processing' | 'gateway' | 'success'>('form');
@@ -246,12 +248,13 @@ export default function Checkout() {
                                         id="email"
                                         name="email"
                                         type="email"
-                                        value={formData.email}
+                                        value={user?.email || formData.email}
                                         onChange={handleInputChange}
                                         required
                                         placeholder="john@example.com"
                                         className="h-10 sm:h-11"
-                                        disabled={processing}
+                                        disabled={!!user?.email}
+                                        readOnly={!!user?.email}
                                     />
                                 </div>
 

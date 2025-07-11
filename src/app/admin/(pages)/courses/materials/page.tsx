@@ -575,26 +575,26 @@ function MaterialManagementPage() {
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {materials.map((material) => (
-                                    <tr key={material.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <tr key={material.id} className={`hover:bg-gray-50 ${!material.is_active ? 'opacity-60 bg-gray-25' : ''}`}>
+                                        <td className={`px-6 py-4 whitespace-nowrap text-sm ${!material.is_active ? 'text-gray-500' : 'text-gray-900'}`}>
                                             {material.order_index}
                                         </td>
                                         <td className="px-6 py-4">
                                             <div>
-                                                <div className="text-sm font-medium text-gray-900">
+                                                <div className={`text-sm font-medium ${!material.is_active ? 'text-gray-500' : 'text-gray-900'}`}>
                                                     {material.title}
                                                 </div>
                                                 {material.content && (
-                                                    <div className="text-sm text-gray-500 truncate max-w-xs">
+                                                    <div className={`text-sm truncate max-w-xs ${!material.is_active ? 'text-gray-400' : 'text-gray-500'}`}>
                                                         {material.content}
                                                     </div>
                                                 )}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center gap-2">
+                                            <div className={`flex items-center gap-2 ${!material.is_active ? 'text-gray-400' : 'text-gray-900'}`}>
                                                 {getMaterialIcon(material.type)}
-                                                <span className="text-sm text-gray-900">
+                                                <span className="text-sm">
                                                     {formatMaterialType(material.type)}
                                                 </span>
                                             </div>
@@ -613,7 +613,7 @@ function MaterialManagementPage() {
                                                     onClick={() => handleViewMaterial(material)}
                                                     variant="outline"
                                                     size="sm"
-                                                    className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                                                    className={`text-blue-600 border-blue-600 hover:bg-blue-50 ${!material.is_active ? 'opacity-50' : ''}`}
                                                 >
                                                     <Eye className="h-4 w-4" />
                                                 </Button>
@@ -625,7 +625,7 @@ function MaterialManagementPage() {
                                                     onClick={() => openEditModal(material)}
                                                     variant="outline"
                                                     size="sm"
-                                                    className="text-indigo-600 border-indigo-600 hover:bg-indigo-50"
+                                                    className={`text-indigo-600 border-indigo-600 hover:bg-indigo-50 ${!material.is_active ? 'opacity-50' : ''}`}
                                                 >
                                                     <Edit className="h-4 w-4" />
                                                 </Button>
@@ -633,7 +633,7 @@ function MaterialManagementPage() {
                                                     onClick={() => handleDeleteMaterial(material.id, material.title)}
                                                     variant="outline"
                                                     size="sm"
-                                                    className="text-red-600 border-red-600 hover:bg-red-50"
+                                                    className={`text-red-600 border-red-600 hover:bg-red-50 ${!material.is_active ? 'opacity-50' : ''}`}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>

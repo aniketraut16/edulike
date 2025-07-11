@@ -287,7 +287,7 @@ function ModulesManagement() {
                     {modules
                         .sort((a, b) => a.order_index - b.order_index)
                         .map((module) => (
-                            <div key={module.id} className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                            <div key={module.id} className={`bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow ${!module.is_active ? 'opacity-60 grayscale' : ''}`}>
                                 {/* Module Header */}
                                 <div className="p-6">
                                     <div className="flex items-start justify-between mb-3">
@@ -304,19 +304,19 @@ function ModulesManagement() {
                                         </div>
                                     </div>
 
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                                    <h3 className={`text-lg font-semibold mb-2 line-clamp-2 ${!module.is_active ? 'text-gray-500' : 'text-gray-900'}`}>
                                         {module.title}
                                     </h3>
 
-                                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                                    <p className={`text-sm mb-4 line-clamp-3 ${!module.is_active ? 'text-gray-400' : 'text-gray-600'}`}>
                                         {module.description}
                                     </p>
 
                                     {/* Module Details */}
                                     <div className="space-y-2 mb-4">
                                         <div className="flex items-center justify-between text-sm">
-                                            <span className="text-gray-500">Duration:</span>
-                                            <span className="text-gray-700 font-medium flex items-center gap-1">
+                                            <span className={!module.is_active ? 'text-gray-400' : 'text-gray-500'}>Duration:</span>
+                                            <span className={`font-medium flex items-center gap-1 ${!module.is_active ? 'text-gray-500' : 'text-gray-700'}`}>
                                                 <Clock className="w-3 h-3" />
                                                 {formatDuration(module.timetofinish)}
                                             </span>
@@ -325,12 +325,12 @@ function ModulesManagement() {
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div className="border-t border-gray-200 p-4 bg-gray-50">
+                                <div className={`border-t border-gray-200 p-4 ${!module.is_active ? 'bg-gray-100' : 'bg-gray-50'}`}>
                                     <div className="grid grid-cols-3 gap-2">
                                         <Button
                                             size="sm"
                                             onClick={() => handleManageMaterial(module)}
-                                            className="bg-purple-600 hover:bg-purple-700 text-white"
+                                            className={`bg-purple-600 hover:bg-purple-700 text-white ${!module.is_active ? 'opacity-50' : ''}`}
                                             title="Manage Material"
                                         >
                                             <Settings className="w-4 h-4 mr-1" />
@@ -340,7 +340,7 @@ function ModulesManagement() {
                                         <Button
                                             size="sm"
                                             onClick={() => handleEditModule(module)}
-                                            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                                            className={`bg-indigo-600 hover:bg-indigo-700 text-white ${!module.is_active ? 'opacity-50' : ''}`}
                                             title="Update Module"
                                         >
                                             <Edit className="w-4 h-4 mr-1" />
@@ -350,7 +350,7 @@ function ModulesManagement() {
                                         <Button
                                             size="sm"
                                             onClick={() => handleDeleteModule(module)}
-                                            className="bg-red-600 hover:bg-red-700 text-white"
+                                            className={`bg-red-600 hover:bg-red-700 text-white ${!module.is_active ? 'opacity-50' : ''}`}
                                             title="Delete Module"
                                         >
                                             <Trash2 className="w-4 h-4 mr-1" />
