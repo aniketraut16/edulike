@@ -207,7 +207,7 @@ function BlogsPageContent() {
                                     onClick={() => handleBlogClick(blog.id)}
                                 >
                                     {/* Blog Image */}
-                                    <div className="h-48 bg-gradient-to-br from-purple-100 to-indigo-100 relative overflow-hidden">
+                                    <div className="h-48 bg-gradient-to-br from-purple-100 to-[#8D1A5F] relative overflow-hidden">
                                         {blog.image_url ? (
                                             <img
                                                 src={blog.image_url}

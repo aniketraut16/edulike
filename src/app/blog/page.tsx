@@ -81,7 +81,7 @@ function BlogPage() {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8D1A5F] mx-auto"></div>
                     <p className="mt-4 text-gray-600">Loading blog post...</p>
                 </div>
             </div>
@@ -95,7 +95,7 @@ function BlogPage() {
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Blog not found</h2>
                     <button
                         onClick={() => router.push('/')}
-                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                        className="px-4 py-2 bg-[#8D1A5F] text-white rounded-lg hover:bg-[#8D1A5F]-700"
                     >
                         Go Home
                     </button>
@@ -145,14 +145,14 @@ function BlogPage() {
             {/* Blog Content */}
             <div className="max-w-6xl mx-auto px-6 py-12">
                 <article className="p-8 md:p-12">
-                    <div className="prose prose-lg prose-indigo max-w-none">
+                    <div className="prose prose-lg prose-[#8D1A5F] max-w-none">
                         <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             rehypePlugins={[rehypeHighlight]}
                             components={{
                                 // Custom styling for different elements
                                 h1: ({ children }) => (
-                                    <h1 className="text-3xl font-bold text-gray-900 mb-6 pb-2 border-b-2 border-indigo-100">
+                                    <h1 className="text-3xl font-bold text-gray-900 mb-6 pb-2 border-b-2 border-[#8D1A5F]">
                                         {children}
                                     </h1>
                                 ),
@@ -172,7 +172,7 @@ function BlogPage() {
                                     </p>
                                 ),
                                 blockquote: ({ children }) => (
-                                    <blockquote className="border-l-4 border-indigo-300 pl-6 my-6 italic text-gray-600 bg-indigo-50 py-2">
+                                    <blockquote className="border-l-4 border-[#8D1A5F] pl-6 my-6 italic text-gray-600 bg-[#8D1A5F]-50 py-2">
                                         {children}
                                     </blockquote>
                                 ),
@@ -180,7 +180,7 @@ function BlogPage() {
                                     const isInline = !className
                                     if (isInline) {
                                         return (
-                                            <code className="bg-gray-100 text-indigo-600 px-2 py-1 rounded text-sm font-mono">
+                                            <code className="bg-gray-100 text-[#8D1A5F] px-2 py-1 rounded text-sm font-mono">
                                                 {children}
                                             </code>
                                         )
@@ -243,7 +243,7 @@ function BlogPage() {
                                 a: ({ href, children }) => (
                                     <a
                                         href={href}
-                                        className="text-indigo-600 hover:text-indigo-800 underline"
+                                        className="text-[#8D1A5F] hover:text-[#8D1A5F]-800 underline"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
@@ -267,7 +267,7 @@ export default function page() {
         <Suspense fallback={
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8D1A5F] mx-auto"></div>
                     <p className="mt-4 text-gray-600">Loading...</p>
                 </div>
             </div>

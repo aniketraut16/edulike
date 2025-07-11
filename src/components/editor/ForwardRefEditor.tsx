@@ -11,7 +11,7 @@ const Editor = dynamic(() => import('./InitializedMDXEditor'), {
     loading: () => (
         <div className="flex items-center justify-center p-8 border border-gray-300 rounded-lg bg-gray-50">
             <div className="text-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600 mx-auto"></div>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#8D1A5F] mx-auto"></div>
                 <p className="mt-2 text-sm text-gray-600">Loading editor...</p>
             </div>
         </div>

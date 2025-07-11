@@ -233,7 +233,7 @@ const colorPalette = [
   { bg: "bg-blue-100", border: "hover:border-blue-500", icon: "#3B82F6" },
   { bg: "bg-orange-100", border: "hover:border-orange-500", icon: "#F97316" },
   { bg: "bg-green-100", border: "hover:border-green-500", icon: "#10B981" },
-  { bg: "bg-indigo-100", border: "hover:border-indigo-500", icon: "#6366F1" },
+  { bg: "bg-[#8D1A5F]", border: "hover:border-[#8D1A5F]", icon: "#6366F1" },
   { bg: "bg-pink-100", border: "hover:border-pink-500", icon: "#EC4899" },
   { bg: "bg-yellow-100", border: "hover:border-yellow-500", icon: "#FBBF24" },
   { bg: "bg-purple-100", border: "hover:border-purple-500", icon: "#A855F7" },

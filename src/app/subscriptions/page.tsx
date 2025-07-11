@@ -50,7 +50,7 @@ export default function SubscriptionsPage() {
             'from-green-500/80 via-green-600/70 to-green-900/80 border-green-700/40',
             'from-yellow-400/80 via-yellow-500/70 to-yellow-700/80 border-yellow-600/40',
             'from-red-500/80 via-red-600/70 to-red-900/80 border-red-700/40',
-            'from-indigo-500/80 via-indigo-600/70 to-indigo-900/80 border-indigo-700/40',
+            'from-[#8D1A5F]/80 via-[#8D1A5F]/70 to-[#8D1A5F]-900/80 border-[#8D1A5F]-700/40',
         ];
         return gradients[index % gradients.length];
     };

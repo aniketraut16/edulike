@@ -90,7 +90,7 @@ export default function FewBlogs() {
                                     className="bg-white rounded-lg sm:rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
                                     onClick={() => handleBlogClick(blog.id)}
                                 >
-                                    <div className="h-40 sm:h-48 bg-gradient-to-br from-purple-100 to-indigo-100 relative overflow-hidden">
+                                    <div className="h-40 sm:h-48 bg-gradient-to-br from-purple-100 to-[#8D1A5F] relative overflow-hidden">
                                         {blog.image_url ? (
                                             <img
                                                 src={blog.image_url}
@@ -136,7 +136,7 @@ export default function FewBlogs() {
                         <div className="text-center mt-8 sm:mt-12">
                             <button
                                 onClick={handleViewAllBlogs}
-                                className="inline-flex items-center px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                                className="inline-flex items-center px-6 py-3 bg-[#8D1A5F] text-white font-medium rounded-lg hover:bg-[#8D1A5F] transition-colors"
                             >
                                 View All Blogs
                                 <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

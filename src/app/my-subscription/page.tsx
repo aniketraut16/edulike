@@ -114,7 +114,7 @@ export default function MySubscriptionPage() {
 
     if (authLoading || loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="min-h-screen bg-white flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="mx-auto h-12 w-12 animate-spin text-blue-600" />
                     <p className="mt-4 text-gray-600">Loading your subscriptions...</p>
@@ -125,7 +125,7 @@ export default function MySubscriptionPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="min-h-screen bg-white flex items-center justify-center">
                 <div className="text-center">
                     <Package className="mx-auto h-12 w-12 text-red-500" />
                     <p className="mt-4 text-red-600">{error}</p>
@@ -141,7 +141,7 @@ export default function MySubscriptionPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8 pt-[15vh]">
+        <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8 pt-[15vh]">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-12">

@@ -477,7 +477,7 @@ function SubscriptionCheckout() {
 
                                 {/* Subscription details */}
                                 <div className="mb-6">
-                                    <div className="border rounded-lg p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+                                    <div className="border rounded-lg p-4 bg-gradient-to-br from-blue-50 to-[#8D1A5F]-50 border-blue-200">
                                         <div className="flex items-center gap-3 mb-3">
                                             <div className="p-2 bg-blue-100 rounded-full">
                                                 <Calendar size={20} className="text-blue-600" />
