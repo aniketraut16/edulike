@@ -237,7 +237,10 @@ function SubscriptionCoursesManagement() {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
                                                     <img
-                                                        src={course.courses.thumbnail}
+                                                        src={course.courses.thumbnail || "https://hukumchandcollegeajmer.org/wp-content/uploads/2017/11/dummy-3.jpg"}
+                                                        onError={(e) => {
+                                                            e.currentTarget.src = "https://hukumchandcollegeajmer.org/wp-content/uploads/2017/11/dummy-3.jpg";
+                                                        }}
                                                         alt={course.courses.title}
                                                         className="h-12 w-12 rounded-lg object-cover mr-4"
                                                     />

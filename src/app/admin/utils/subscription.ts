@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Subscription, SubscriptionArgs } from "../types/subscription";
+import { Course } from "../types/courses";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export interface SimpleCourse {
@@ -103,7 +104,19 @@ export const getSubscriptionCoursesForAdmin = async (
     const response = await axios.get(
       `${baseUrl}/subscriptions/${subscriptionId}/courses`
     );
-    return response.data.courses as SimpleCourse[];
+    const res = response.data.courses.map((course: Course) => ({
+      course_id: course.id,
+      subscription_id: subscriptionId,
+      courses: {
+        id: course.id,
+        title: course.title,
+        thumbnail: course.image,
+        difficulty_level: course.difficulty_level,
+        language: course.language,
+        total_duration: course.total_duration,
+      },
+    })) as SimpleCourse[];
+    return res as SimpleCourse[];
   } catch (error) {
     console.error(error);
     return [];
